@@ -5,15 +5,15 @@ By `Tom Dykstra`_
 
 The Contoso University sample web application demonstrates how to create ASP.NET Core 1.0 MVC web applications using Entity Framework Core 1.0 and Visual Studio 2015. 
 
-The sample application is a web site for a fictional Contoso University. It includes functionality such as student admission, course creation, and instructor assignments. This tutorial series explains how to build the Contoso University sample application from scratch. You can `download the completed application <https://github.com/aspnet/Docs/tree/master/data/ef-mvc/intro/cu-final>`_.
+The sample application is a web site for a fictional Contoso University. It includes functionality such as student admission, course creation, and instructor assignments. This tutorial series explains how to build the Contoso University sample application from scratch. You can `download the completed application <https://github.com/aspnet/Docs/tree/master/data/ef-mvc/intro/cu-final>`__.
 
-EF Core 1.0 is the latest version of EF but does not yet have all the features of EF 6.x. For information about how to choose between EF 6.x and EF Core 1.0, see `EF Core vs. EF6.x <https://ef.readthedocs.io/en/latest/efcore-vs-ef6/index.html>`__.  If you choose EF 6.x, see `the previous version of this tutorial series <https://www.asp.net/mvc/overview/getting-started/getting-started-with-ef-using-mvc/creating-an-entity-framework-data-model-for-an-asp-net-mvc-application>`_.
+EF Core 1.0 is the latest version of EF but does not yet have all the features of EF 6.x. For information about how to choose between EF 6.x and EF Core 1.0, see `EF Core vs. EF6.x <https://ef.readthedocs.io/en/latest/efcore-vs-ef6/index.html>`___.  If you choose EF 6.x, see `the previous version of this tutorial series <https://www.asp.net/mvc/overview/getting-started/getting-started-with-ef-using-mvc/creating-an-entity-framework-data-model-for-an-asp-net-mvc-application>`__.
 
 Prerequisites
 -------------
 
-* `Visual Studio 2015 <https://www.visualstudio.com/products/vs-2015-product-editions>`_ with `Update 3 <https://www.visualstudio.com/news/releasenotes/vs2015-update3-vs>`_ or later.
-* `.NET Core 1.0 with Visual Studio tools <https://go.microsoft.com/fwlink/?LinkId=817245>`_.
+* `Visual Studio 2015 <https://www.visualstudio.com/products/vs-2015-product-editions>`__ with `Update 3 <https://www.visualstudio.com/news/releasenotes/vs2015-update3-vs>`__ or later.
+* `.NET Core 1.0 with Visual Studio tools <https://go.microsoft.com/fwlink/?LinkId=817245>`__.
 
 If you haven't worked with ASP.NET Core MVC in Visual Studio, see :doc:`/tutorials/first-mvc-app/start-mvc`.
 
@@ -22,10 +22,10 @@ Entity Framework Core 1.0 is not a prerequisite because you install the EF NuGet
 Troubleshooting
 ---------------
 
-If you run into a problem you can't resolve, you can generally find the solution by comparing your code to the completed project that you can download. If you don't find what you need there, you can post questions to the `ASP.NET Entity Framework forum <http://forums.asp.net/1227.aspx>`_, the `Entity Framework and LINQ to Entities forum <http://social.msdn.microsoft.com/forums/en-US/adodotnetentityframework/threads/>`_, or StackOverflow.com for `ASP.NET Core <http://stackoverflow.com/questions/tagged/asp.net-core>`_ or `EF Core <http://stackoverflow.com/questions/tagged/entity-framework-core>`_.
+If you run into a problem you can't resolve, you can generally find the solution by comparing your code to the completed project that you can download. If you don't find what you need there, you can post questions to the `ASP.NET Entity Framework forum <http://forums.asp.net/1227.aspx>`__, the `Entity Framework and LINQ to Entities forum <http://social.msdn.microsoft.com/forums/en-US/adodotnetentityframework/threads/>`__, or StackOverflow.com for `ASP.NET Core <http://stackoverflow.com/questions/tagged/asp.net-core>`__ or `EF Core <http://stackoverflow.com/questions/tagged/entity-framework-core>`__.
 
 The Contoso University Web Application
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+--------------------------------------
 
 The application you'll be building in these tutorials is a simple university web site.
 
@@ -77,7 +77,7 @@ In `Views\Home\Index.cshtml`, replace the contents of the file with the followin
 .. literalinclude::  intro/Views/Home/Index.cshtml
    :language: html
 
-Press CTRL+F5 to run the project or **Debug > Start Without Debugging**. You see the home page with the main menu.
+Press CTRL+F5 to run the project or choose **Debug > Start Without Debugging** from the menu. You see the home page with the main menu.
 
 .. image:: intro/_static/students-index.png
    :alt: Contoso University home page
@@ -85,7 +85,7 @@ Press CTRL+F5 to run the project or **Debug > Start Without Debugging**. You see
 Install Entity Framework Core
 -----------------------------
 
-To use EF Core, install the package for the database provider(s) you want to target. This tutorial uses SQL Server. For a list of available providers see `Database Providers <https://docs.efproject.net/en/latest/providers/index.html>`_.
+To use EF Core, install the package for the database provider(s) you want to target. This tutorial uses SQL Server. For a list of available providers see `Database Providers <https://docs.efproject.net/en/latest/providers/index.html>`__.
 
 * Click **Tools > NuGet Package Manager > Package Manager Console**.
 * Run ``install-package Microsoft.EntityFrameworkCore.SqlServer``
@@ -195,13 +195,11 @@ When the database is created, the table names will be the same as the DbSet prop
 Register the context with dependency injection
 ----------------------------------------------
 
-The concept of dependency injection is central to ASP.NET Core. Services (such as EF database context objects) are registered with dependency injection during application startup. Components that require these services (such as MVC controllers) are then provided these services via constructor parameters. You'll see the controller constructor code that gets a context instance later in this tutorial.
-
-For more information, see :doc:`/fundamentals/dependency-injection`.
+ASP.NET Core implements :doc:`dependency injection </fundamentals/dependency-injection>` by default. Services (such as EF database context objects) are registered with dependency injection during application startup. Components that require these services (such as MVC controllers) are provided these services via constructor parameters. You'll see the controller constructor code that gets a context instance later in this tutorial.
 
 So that ASP.NET Core can provide an instance of ``SchoolContext`` to your controllers, you'll register it as a service.
 
-* Open **Startup.cs**
+* Open *Startup.cs*.
 * Add the highlighted ``using`` statements.
 
 .. literalinclude::  intro/samples/cu/Startup.cs
@@ -221,18 +219,23 @@ Now you can use the ``AddDbContext`` method to register the context as a service
   :end-before:  #endregion
   :emphasize-lines: 1-2
 
-The name of the connection string (which is in the *appsettings.json* file) is passed in to the context by calling a method on a ``DbContextOptionsBuilder`` object. The ASP.NET Core configuration system reads the connection string. For local development, it gets the connection string from the *appsettings.json* file:
+SQL Server Express LocalDB
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+The name of the connection string is passed in to the context by calling a method on a ``DbContextOptionsBuilder`` object. For local development, the doc:`ASP.NET Core configuration system </fundamentals/configuration>` reads the connection string from the *appsettings.json* file. 
 
 .. literalinclude::  intro/samples/cu/appsettings.json
   :language: json
   :end-before:  Logging
   :emphasize-lines: 5-6
 
-For more information, see :doc:`/fundamentals/configuration`. 
+Your *appsettings.json* file created by the Visual Studio new-project template will have a generated database name with a suffix to guarantee uniqueness.
 
-The connection string specifies a SQL Server LocalDB database. LocalDB is a lightweight version of the SQL Server Express Database Engine that is targeted for development. LocalDB starts on demand and runs in user mode, so there is no complex configuration. By default, LocalDB creates *.mdf* database files in the `C:/Users/<user>` directory.
+The connection string specifies a SQL Server LocalDB database. LocalDB is a lightweight version of the SQL Server Express Database Engine and is intended for application development, not production use. LocalDB starts on demand and runs in user mode, so there is no complex configuration. By default, LocalDB creates *.mdf* database files in the `C:/Users/<user>` directory.
 
-Set up EF to initialize the database with test data
+For more information, see :doc:`/fundamentals/dependency-injection` and .
+
+Add code to initialize the database with test data
 ---------------------------------------------------
 
 The Entity Framework will create an empty database for you.  In this section, you write a method that is called after the database is created in order to populate it with test data.
@@ -247,7 +250,7 @@ following code, which causes a database to be created when needed and loads test
   :start-after: #region snippet_Intro
   :end-before:  #endregion
 
-Notice that the code uses arrays rather than ``List<T>`` collections. This is done to optimize performance. 
+The code uses arrays rather than ``List<T>`` collections to optimize performance. 
 
 In *Startup.cs*, add a line at the end of the ``Configure`` method to call this seed method on application startup.
 
@@ -256,7 +259,7 @@ In *Startup.cs*, add a line at the end of the ``Configure`` method to call this 
   :start-after: #region snippet_CallSeed
   :end-before:  #endregion
 
-Now the first time you run the application the database will be seeded with test data. And whenever you change your data model, you can delete the database, update your seed method, and start afresh with a new database the same way. In later tutorials you'll see how to modify the database when the data model changes, without deleting and re-creating it.
+Now the first time you run the application the database will be created and seeded with test data. Whenever you change your data model, you can delete the database, update your seed method, and start afresh with a new database the same way. In later tutorials you'll see how to modify the database when the data model changes, without deleting and re-creating it.
 
 Create a controller and views
 -----------------------------
@@ -286,17 +289,17 @@ The controller contains an ``Index`` action method, which displays all students 
 
 .. literalinclude::  intro/samples/cu/Controllers/StudentsController.cs
   :language: c#
-  :start-after: #region snippet_Context
+  :start-after: #region snippet_ScaffoldedIndex
   :end-before:  #endregion
 
-This code uses asynchronous programming, which you'll learn about later in this tutorial.
+You'll learn about the asynchronous programming elements in this code later in the tutorial.
 
 The `Views\Students\Index.cshtml` view displays this list in a table:
 
 .. literalinclude::  intro/samples/cu/Views/Students/Index1.cshtml
   :language: html
 
-Press CTRL+F5 to run the project or **Debug > Start Without Debugging**.
+Press CTRL+F5 to run the project or choose **Debug > Start Without Debugging** from the menu.
 
 Click the Students tab to see the test data that the ``DbInitializer.Initialize`` method inserted. Depending on how narrow your browser window is, you'll see the ``Student`` tab link in the top address bar or you'll have to click the navigation icon in the upper right corner to see the link.
 
@@ -358,17 +361,17 @@ In the following code, the ``async`` keyword, ``Task`` return value, ``await`` k
   :end-before:  #endregion
 
 * The method is marked with the ``async`` keyword, which tells the compiler to generate callbacks for parts of the method body and to automatically create the ``Task<ActionResult>`` object that is returned.
-* The return type is ``Task<IActionResult>`` rather than ``IActionResult``. The `Task<T>` return type represents ongoing work with a result of type ``T``.
+* The return type is ``Task<IActionResult>`` rather than ``IActionResult``. The ``Task<T>`` return type represents ongoing work with a result of type ``T``.
 * The ``await`` keyword was applied to the ``ToListAsync`` method call. When the compiler sees this keyword, behind the scenes it splits the method into two parts. The first part ends with the operation that is started asynchronously. The second part is put into a callback method that is called when the operation completes.
 * The asynchronous version of the ``ToList`` extension method was called.
 
-Some things to be aware of when you are using asynchronous programming with the Entity Framework:
+Some things to be aware of when you are writing asynchronous code that uses the Entity Framework:
 
 * Only statements that cause queries or commands to be sent to the database are executed asynchronously. That includes, for example, ``ToListAsync``, ``SingleOrDefaultAsync``, and ``SaveChangesAsync``.  It does not include, for example, statements that just change an ``IQueryable``, such as ``var students = *context.Students.Where(s => s.LastName = "Davolio")``.
 * The async code is not thread safe. In other words, don't try to do multiple operations in parallel using the same context instance.
 * If you want to take advantage of the performance benefits of async code, make sure that any library packages that you're using (such as for paging), also use async if they call any Entity Framework methods that cause queries to be sent to the database.
 
-For more information about asynchronous programming in .NET, see `Async Overview <https://docs.microsoft.com/en-us/dotnet/articles/standard/async>`_.
+For more information about asynchronous programming in .NET, see `Async Overview <https://docs.microsoft.com/en-us/dotnet/articles/standard/async>`__.
 
 Summary
 -------

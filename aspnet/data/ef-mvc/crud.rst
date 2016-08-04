@@ -1,248 +1,185 @@
 Create, Read, Update, and Delete operations
 ===========================================
 
-The Contoso University sample web application demonstrates how to create ASP.NET Core 1.0 MVC web applications using Entity Framework Core 1.0 and Visual Studio 2015. For information about the tutorial series, see [the first tutorial in the series](todo).
+By `Tom Dykstra`_
+
+The Contoso University sample web application demonstrates how to create ASP.NET Core 1.0 MVC web applications using Entity Framework Core 1.0 and Visual Studio 2015. For information about the tutorial series, see :doc:`the first tutorial in the series </data/ef-mvc/intro>`.
 
 In the previous tutorial you created an MVC application that stores and displays data using the Entity Framework and SQL Server LocalDB. In this tutorial you'll review and customize the CRUD (create, read, update, delete) code that the MVC scaffolding automatically creates for you in controllers and views.
 
-**Note** It's a common practice to implement the repository pattern in order to create an abstraction layer between your controller and the data access layer. To keep these tutorials simple and focused on teaching how to use the Entity Framework itself, they don't use repositories. For information about repositories with EF, see [the last tutorial in this series](todo).
+.. note:: It's a common practice to implement the repository pattern in order to create an abstraction layer between your controller and the data access layer. To keep these tutorials simple and focused on teaching how to use the Entity Framework itself, they don't use repositories. For information about repositories with EF, see :doc:`the last tutorial in this series </data/ef-mvc/advanced>`.
 
 In this tutorial, you'll work with the following web pages:
 
-![Students details page](todo)
+.. image:: intro/_static/student-details.png
+   :alt: Student Details page
 
-![Students create page](todo)
+.. image:: intro/_static/student-create.png
+   :alt: Student Create page
 
-![Students delete page](todo)
+.. image:: intro/_static/student-edit.png
+   :alt: Student Edit page
 
-## Customize the Details Page
+.. image:: intro/_static/student-delete.png
+   :alt: Student Delete page
 
-The scaffolded code for the Students Index page left out the Enrollments property, because that property holds a collection. In the Details page you'll display the contents of the collection in an HTML table.
+Customize the Details page
+--------------------------
 
-In Controllers\StudentController.cs, the action method for the Details view uses the SinglgeOrDefaultAsync method to retrieve a single Student entity.
+The scaffolded code for the Students Index page left out the ``Enrollments`` property, because that property holds a collection. In the ``Details`` page you'll display the contents of the collection in an HTML table.
 
-```
-public async Task<IActionResult> Details(int? id)
-{
-    if (id == null)
-    {
-        return NotFound();
-    }
+In `Controllers\StudentController.cs`, the action method for the Details view uses the ``SingleOrDefaultAsync`` method to retrieve a single Student entity. Change the line that reads a Student entity so that it looks like the highlighted line in the following example. The change adds a call to the ``Include`` method that causes the context to load the ``Student.Enrollments`` and ``Enrollment.Course`` navigation properties when it reads ``Student`` entities.  You'll learn more about the ``Include`` method in the :doc:`reading related data </data/ef-mvc/read-related-data>` tutorial.
 
-    var student = await _context.Students.SingleOrDefaultAsync(m => m.ID == id);
-    if (student == null)
-    {
-        return NotFound();
-    }
+.. literalinclude::  intro/samples/cu/Controllers/StudentsController.cs
+  :language: c#
+  :start-after: #region snippet_Details
+  :end-before:  #endregion
+  :emphasize-lines: 8
 
-    return View(student);
-}
-```
+The key value is passed to the method as the ``id`` parameter and comes from route data in the Details hyperlink on the Index page.
 
-The key value is passed to the method as the id parameter and comes from route data in the Details hyperlink on the Index page.
-
-## Route data todo -sidebar formatting
+Route data
+^^^^^^^^^^
 
 Route data is data that the model binder found in a URL segment specified in the routing table. For example, the default route specifies controller, action, and id segments:
 
-```
- routes.MapRoute(
-    name: "Default",
-    url: "{controller}/{action}/{id}",
-    defaults: new { controller = "Home", action = "Index", id = UrlParameter.Optional }
-);
-```
+.. literalinclude::  intro/samples/cu/Startup.cs
+  :language: c#
+  :start-after: #region snippet_Route
+  :end-before:  #endregion
 
-In the following URL, the default route maps Instructor as the controller, Index as the action and 1 as the id; these are route data values.
+In the following URL, the default route maps Instructor as the controller, Index as the action, and 1 as the id; these are route data values.
 
-`http://localhost:1230/Instructor/Index/1?courseID=2021`
+.. code-block::
+
+http://localhost:1230/Instructor/Index/1?courseID=2021
 
 "?courseID=2021" is a query string value. The model binder will also work if you pass the id as a query string value:
 
-`http://localhost:1230/Instructor/Index?id=1&CourseID=2021`
+.. code-block::
 
-The URLs are created by [tag helper](todo) statements in the Razor view. In the following Razor code, the id parameter matches the default route, so id is added to the route data.
+http://localhost:1230/Instructor/Index?id=1&CourseID=2021
 
-`<a asp-action="Edit" asp-route-id="@item.ID">Edit</a>`
+The URLs are created by tag helper statements in the Razor view. In the following Razor code, the id parameter matches the default route, so id is added to the route data.
+
+.. code-block::
+
+<a asp-action="Edit" asp-route-id="@item.ID">Edit</a>
 
 In the following Razor code, studentID doesn't match a parameter in the default route, so it's added as a query string.
 
-`<a asp-action="Edit" asp-route-studentID="@item.ID">Edit</a>`
+.. code-block::
 
-todo end of sidebar
+<a asp-action="Edit" asp-route-studentID="@item.ID">Edit</a>
 
-In Controllers\StudentController.cs, change the line in the Details method that reads a Student entity so that it looks like the following example:
+Add enrollments to the Details view
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-var student = await _context.Students.Include(s => s.Enrollments).ThenInclude(e => e.Course).SingleOrDefaultAsync(m => m.ID == id);
+Open `Views\Student\Details.cshtml`. Each field is displayed using a DisplayFor helper, as shown in the following example:
 
-This code causes the context to load the Student.Enrollments and Enrollment.Course navigation properties when it reads Student entities.  You'll learn more about Include statements in [the reading related data tutorial](todo).  
+.. literalinclude::  intro/samples/cu/Views/Students/Details.cshtml
+  :language: c#
+  :start-after: snippet_Date
+  :end-before:  snippet_Date
 
-Open Views\Student\Details.cshtml. Each field is displayed using a DisplayFor helper, as shown in the following example:
+After the last field and immediately before the closing </dl> tag, add the following code to display a list of enrollments:
 
-```
-<dt>
-    @Html.DisplayNameFor(model => model.EnrollmentDate)
-</dt>
-<dd>
-    @Html.DisplayFor(model => model.EnrollmentDate)
-</dd>
-```
-
-After the last field and immediately before the closing </dl> tag, add the highlighted code to display a list of enrollments, as shown in the following example:
-
-```
-        <dt>
-            @Html.DisplayNameFor(model => model.Enrollments)
-        </dt>
-        <dd>
-            <table class="table">
-                <tr>
-                    <th>Course Title</th>
-                    <th>Grade</th>
-                </tr>
-                @foreach (var item in Model.Enrollments)
-                {
-                    <tr>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Course.Title)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Grade)
-                        </td>
-                    </tr>
-                }
-            </table>
-        </dd>
-```
+.. literalinclude::  intro/samples/cu/Views/Students/Details.cshtml
+  :language: c#
+  :start-after: snippet_Enrollments
+  :end-before:  snippet_Enrollments
 
 If code indentation is wrong after you paste the code, press CTRL-K-D to correct it.
 
-This code loops through the entities in the Enrollments navigation property. For each Enrollment entity in the property, it displays the course title and the grade. The course title is retrieved from the Course entity that's stored in the Course navigation property of the Enrollments entity. All of this data is retrieved from the database automatically when it's needed. (In other words, you are using lazy loading here. You did not specify eager loading for the Courses navigation property, so the enrollments were not retrieved in the same query that got the students. Instead, the first time you try to access the Enrollments navigation property, a new query is sent to the database to retrieve the data. You can read more about lazy loading and eager loading in the Reading Related Data tutorial later in this series.)
+This code loops through the entities in the ``Enrollments`` navigation property. For each Enrollment entity in the property, it displays the course title and the grade. The course title is retrieved from the Course entity that's stored in the ``Course`` navigation property of the Enrollments entity. 
 
-Run the page by selecting the Students tab and clicking a Details link for Alexander Carson. You see the list of courses and grades for the selected student:
+Run the application, select the Students tab, and click the Details link for a student. You see the list of courses and grades for the selected student:
 
-![Students details page](todo)
+.. image:: intro/_static/student-details.png
+   :alt: Student Details page
 
-## Update the Create Page
+Update the Create page
+----------------------
 
-In Controllers\StudentController.cs, replace the HttpPost Create action method with the following code to add a try-catch block and remove ID from the Bind attribute for the scaffolded method:
+In `Controllers\StudentController.cs`, replace the HttpPost Create action method with the following code to add a try-catch block and remove ID from the Bind attribute for the scaffolded method:
 
-```
-[HttpPost]
-[ValidateAntiForgeryToken]
-public async Task<IActionResult> Create(
-    [Bind("EnrollmentDate,FirstMidName,LastName")] Student student)
-{
-    try
-    {
-        if (ModelState.IsValid)
-        {
-            _context.Add(student);
-            await _context.SaveChangesAsync();
-            return RedirectToAction("Index");
-        }
-    }
-    catch (DbUpdateException /* dex */)
-    {
-        //Log the error (uncomment dex variable name and write a log.
-        ModelState.AddModelError("", "Unable to save changes. " + 
-            "Try again, and if the problem persists " + 
-            "see your system administrator.");
-    }
-    return View(student);
-}
-```
+.. literalinclude::  intro/samples/cu/Controllers/StudentsController.cs
+  :language: c#
+  :start-after: #region snippet_Create
+  :end-before:  #endregion
+  :emphasize-lines: 3,5-6,12-18
  
 This code adds the Student entity created by the ASP.NET MVC model binder to the Students entity set and then saves the changes to the database. (Model binder refers to the ASP.NET MVC functionality that makes it easier for you to work with data submitted by a form; a model binder converts posted form values to CLR types and passes them to the action method in parameters. In this case, the model binder instantiates a Student entity for you using property values from the Form collection.)
 
 You removed ID from the Bind attribute because ID is the primary key value which SQL Server will set automatically when the row is inserted. Input from the user does not set the ID value.
 
-**Security Note** todo start of sidebar
+Other than the Bind attribute, the try-catch block is the only change you've made to the scaffolded code. If an exception that derives from ``DbUpdateException`` is caught while the changes are being saved, a generic error message is displayed. ``DbUpdateException`` exceptions are sometimes caused by something external to the application rather than a programming error, so the user is advised to try again. Although not implemented in this sample, a production quality application would log the exception. For more information, see the **Log for insight** section in `Monitoring and Telemetry (Building Real-World Cloud Apps with Azure) <http://www.asp.net/aspnet/overview/developing-apps-with-windows-azure/building-real-world-cloud-apps-with-windows-azure/monitoring-and-telemetry>`__.
 
-The ValidateAntiForgeryToken attribute helps prevent cross-site request forgery attacks. The token is automatically injected into the view by the [FormTagHelper](https://github.com/aspnet/Mvc/blob/dev/src/Microsoft.AspNetCore.Mvc.TagHelpers/FormTagHelper.cs).
+Security Note
+^^^^^^^^^^^^^
 
-The Bind attribute that the scaffolded code includes on the Create method is one way to protect against overposting in create scenarios. For example, suppose the Student entity includes a Secret property that you don't want this web page to set.
+The ``ValidateAntiForgeryToken`` attribute helps prevent cross-site request forgery attacks. The token is automatically injected into the view by the `FormTagHelper <https://github.com/aspnet/Mvc/blob/dev/src/Microsoft.AspNetCore.Mvc.TagHelpers/FormTagHelper.cs>`__.
 
-   public class Student
-   {
-      public int ID { get; set; }
-      public string LastName { get; set; }
-      public string FirstMidName { get; set; }
-      public DateTime EnrollmentDate { get; set; }
-      public string Secret { get; set; }
+The Bind attribute that the scaffolded code includes on the Create method is one way to protect against overposting in create scenarios. For example, suppose the Student entity includes a ``Secret`` property that you don't want this web page to set.
 
-      public virtual ICollection<Enrollment> Enrollments { get; set; }
-   }
+.. code-block:: c#
 
-Even if you don't have a Secret field on the web page, a hacker could use a tool such as Fiddler, or write some JavaScript, to post a Secret form value. Without the Bind attribute limiting the fields that the model binder uses when it creates a Student instance, the model binder would pick up that Secret form value and use it to create the Student entity instance. Then whatever value the hacker specified for the Secret form field would be updated in your database. The following image shows the Fiddler tool adding the Secret field (with the value "OverPost") to the posted form values.
+public class Student
+{
+    public int ID { get; set; }
+    public string LastName { get; set; }
+    public string FirstMidName { get; set; }
+    public DateTime EnrollmentDate { get; set; }
+    public string Secret { get; set; }
 
-![Fiddler adding Secret field](todo)
+    public virtual ICollection<Enrollment> Enrollments { get; set; }
+}
 
-The value "OverPost" would then be successfully added to the Secret property of the inserted row, although you never intended that the web page be able to set that property.
+Even if you don't have a ``Secret`` field on the web page, a hacker could use a tool such as Fiddler, or write some JavaScript, to post a ``Secret`` form value. Without the Bind attribute limiting the fields that the model binder uses when it creates a Student instance, the model binder would pick up that Secret form value and use it to create the Student entity instance. Then whatever value the hacker specified for the ``Secret`` form field would be updated in your database. The following image shows the Fiddler tool adding the Secret field (with the value "OverPost") to the posted form values.
 
-It's a security best practice to use the Include parameter with the Bind attribute to whitelist fields. It's also possible to use the Exclude parameter to blacklist fields you want to exclude. The reason Include is more secure is that when you add a new property to the entity, the new field is not automatically protected by an Exclude list.
+.. image:: intro/_static/fiddler.png
+   :alt: Fiddler adding Secret field
 
-You can prevent overposting in edit scenarios  by reading the entity from the database first and then calling TryUpdateModel, passing in an explicit allowed properties list. That is the method used in these tutorials.
+The value "OverPost" would then be successfully added to the ``Secret`` property of the inserted row, although you never intended that the web page be able to set that property.
 
-An alternative way to prevent overposting that is preferrred by many developers is to use view models rather than entity classes with model binding. Include only the properties you want to update in the view model. Once the MVC model binder has finished, copy the view model properties to the entity instance, optionally using a tool such as AutoMapper. Use db.Entry on the entity instance to set its state to Unchanged, and then set Property("PropertyName").IsModified to true on each entity property that is included in the view model. This method works in both edit and create scenarios.
+It's a security best practice to use the ``Include`` parameter with the Bind attribute to whitelist fields. It's also possible to use the ``Exclude`` parameter to blacklist fields you want to exclude. The reason ``Include`` is more secure is that when you add a new property to the entity, the new field is not automatically protected by an ``Exclude`` list.
 
-todo end of sidebar
+You can prevent overposting in edit scenarios by reading the entity from the database first and then calling ``TryUpdateModel``, passing in an explicit allowed properties list. That is the method used in these tutorials.
 
-todo in following paragraph update data exception wording
+An alternative way to prevent overposting that is preferrred by many developers is to use view models rather than entity classes with model binding. Include only the properties you want to update in the view model. Once the MVC model binder has finished, copy the view model properties to the entity instance, optionally using a tool such as AutoMapper. Use _context.Entry on the entity instance to set its state to Unchanged, and then set Property("PropertyName").IsModified to true on each entity property that is included in the view model. This method works in both edit and create scenarios.
 
-Other than the Bind attribute, the try-catch block is the only change you've made to the scaffolded code. If an exception that derives from DataException is caught while the changes are being saved, a generic error message is displayed. DataException exceptions are sometimes caused by something external to the application rather than a programming error, so the user is advised to try again. Although not implemented in this sample, a production quality application would log the exception. For more information, see the Log for insight section in Monitoring and Telemetry (Building Real-World Cloud Apps with Azure).
+Modify the Create view
+^^^^^^^^^^^^^^^^^^^^^^
 
-The code in Views\Student\Create.cshtml uses label, input, and span (for validation messages) tag helpers for each field. 
+The code in `Views\Student\Create.cshtml` uses label, input, and span (for validation messages) tag helpers for each field. 
 
 To work around a bug in validation message rendering, convert the validation span tags from self-closing to explicit closing tags. (Remove the "/" before the closing angle bracket, and add `</span>`.) The changes are highlighted in the following example.
 
-```
-<div class="form-group">```
-    <label asp-for="EnrollmentDate" class="col-md-2 control-label"></label>
-    <div class="col-md-10">To work around a bug in validation message 
-        <input asp-for="EnrollmentDate" class="form-control" />
-        <span asp-validation-for="EnrollmentDate" class="text-danger"></span>
-    </div>
-</div>
-<div class="form-group">
-    <label asp-for="FirstMidName" class="col-md-2 control-label"></label>
-    <div class="col-md-10">
-        <input asp-for="FirstMidName" class="form-control" />
-        <span asp-validation-for="FirstMidName" class="text-danger"></span>
-    </div>
-</div>
-<div class="form-group">
-    <label asp-for="LastName" class="col-md-2 control-label"></label>
-    <div class="col-md-10">
-        <input asp-for="LastName" class="form-control" />
-        <span asp-validation-for="LastName" class="text-danger"></span>
-    </div>
-</div>
-```
+.. literalinclude::  intro/samples/cu/Views/Students/Create.cshtml
+  :language: c#
+  :start-after: snippet_Spans
+  :end-before:  snippet_Spans
+  :emphasize-lines: 5,12,19
 
 Run the page by selecting the Students tab and clicking Create New.
 
 Enter names and an invalid date and click Create to see the error message.
 
-![Date validation error](todo)
+.. image:: intro/_static/date-error.png
+   :alt: Date validation error
 
 This is server-side validation that you get by default; in a later tutorial you'll see how to add attributes that will generate code for client-side validation also. The following highlighted code shows the model validation check in the Create method.
 
-```
-if (ModelState.IsValid)
-{
-    _context.Add(student);
-    await _context.SaveChangesAsync();
-    return RedirectToAction("Index");
-}
-return View(student);
-```
+.. literalinclude::  intro/samples/cu/Controllers/StudentsController.cs
+  :language: c#
+  :start-after: #region snippet_Create
+  :end-before:  #endregion
+  :emphasize-lines: 7-11
 
 Change the date to a valid value and click Create to see the new student appear in the Index page.
 
-![New student in Students Index page](todo)
-
-## Update the Edit HttpPost Method
+Update the Edit HttpPost method
+-------------------------------
 
 In Controllers\StudentController.cs, the HttpGet Edit method (the one without the HttpPost attribute) uses the SingleOrDefaultAsync method to retrieve the selected Student entity, as you saw in the Details method. You don't need to change this method.
 

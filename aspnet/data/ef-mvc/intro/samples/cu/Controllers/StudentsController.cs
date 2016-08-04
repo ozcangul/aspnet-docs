@@ -143,6 +143,7 @@ namespace ContosoUniversity.Controllers
 #endif
 
         // GET: Students/Details/5
+        #region snippet_Details
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -158,6 +159,7 @@ namespace ContosoUniversity.Controllers
 
             return View(student);
         }
+        #endregion
 
         // GET: Students/Create
         public IActionResult Create()
@@ -166,6 +168,7 @@ namespace ContosoUniversity.Controllers
         }
 
         // POST: Students/Create
+        #region snippet_Create
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(
@@ -189,6 +192,7 @@ namespace ContosoUniversity.Controllers
             }
             return View(student);
         }
+        #endregion
 
         // GET: Students/Edit/5
         public async Task<IActionResult> Edit(int? id)

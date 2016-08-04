@@ -10,12 +10,14 @@
     <h4>Student</h4>
     <hr />
     <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.EnrollmentDate)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.EnrollmentDate)
-        </dd>
+        @*<snippet_Date>*@
+            <dt>
+                @Html.DisplayNameFor(model => model.EnrollmentDate)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.EnrollmentDate)
+            </dd>
+        @*</snippet_Date>*@
         <dt>
             @Html.DisplayNameFor(model => model.FirstMidName)
         </dt>
@@ -28,6 +30,7 @@
         <dd>
             @Html.DisplayFor(model => model.LastName)
         </dd>
+        @*<snippet_Enrollments>*@
         <dt>
             @Html.DisplayNameFor(model => model.Enrollments)
         </dt>
@@ -50,6 +53,7 @@
                 }
             </table>
         </dd>
+        @*</snippet_Enrollments>*@
     </dl>
 </div>
 <div>

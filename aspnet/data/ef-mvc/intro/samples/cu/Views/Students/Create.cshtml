@@ -11,6 +11,7 @@
         <h4>Student</h4>
         <hr />
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        @*<snippet_Spans>*@
         <div class="form-group">
             <label asp-for="EnrollmentDate" class="col-md-2 control-label"></label>
             <div class="col-md-10">
@@ -32,6 +33,7 @@
                 <span asp-validation-for="LastName" class="text-danger"></span>
             </div>
         </div>
+        @*</snippet_Spans>*@
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
                 <input type="submit" value="Create" class="btn btn-default" />

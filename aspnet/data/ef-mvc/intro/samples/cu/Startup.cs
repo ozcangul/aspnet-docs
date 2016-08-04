@@ -90,12 +90,14 @@ namespace ContosoUniversity
 
             // Add external authentication middleware below. To configure them please see http://go.microsoft.com/fwlink/?LinkID=532715
 
+            #region snippet_Route
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
+            #endregion
             #region snippet_CallSeed
 
             DbInitializer.Initialize(app.ApplicationServices);
