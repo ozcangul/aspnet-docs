@@ -47,30 +47,31 @@ Route data is data that the model binder found in a URL segment specified in the
   :language: c#
   :start-after: #region snippet_Route
   :end-before:  #endregion
+  :emphasize-lines: 5
 
 In the following URL, the default route maps Instructor as the controller, Index as the action, and 1 as the id; these are route data values.
 
-.. code-block::
+.. code-block:: html
 
-http://localhost:1230/Instructor/Index/1?courseID=2021
+  http://localhost:1230/Instructor/Index/1?courseID=2021
 
 "?courseID=2021" is a query string value. The model binder will also work if you pass the id as a query string value:
 
-.. code-block::
+.. code-block:: html
 
-http://localhost:1230/Instructor/Index?id=1&CourseID=2021
+  http://localhost:1230/Instructor/Index?id=1&CourseID=2021
 
 The URLs are created by tag helper statements in the Razor view. In the following Razor code, the id parameter matches the default route, so id is added to the route data.
 
-.. code-block::
+.. code-block:: html
 
-<a asp-action="Edit" asp-route-id="@item.ID">Edit</a>
+  <a asp-action="Edit" asp-route-id="@item.ID">Edit</a>
 
 In the following Razor code, studentID doesn't match a parameter in the default route, so it's added as a query string.
 
-.. code-block::
+.. code-block:: html
 
-<a asp-action="Edit" asp-route-studentID="@item.ID">Edit</a>
+  <a asp-action="Edit" asp-route-studentID="@item.ID">Edit</a>
 
 Add enrollments to the Details view
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -101,13 +102,13 @@ Run the application, select the Students tab, and click the Details link for a s
 Update the Create page
 ----------------------
 
-In `Controllers\StudentController.cs`, replace the HttpPost Create action method with the following code to add a try-catch block and remove ID from the Bind attribute for the scaffolded method:
+In *StudentController.cs*, replace the HttpPost Create action method with the following code to add a try-catch block and remove ID from the Bind attribute for the scaffolded method:
 
 .. literalinclude::  intro/samples/cu/Controllers/StudentsController.cs
   :language: c#
   :start-after: #region snippet_Create
   :end-before:  #endregion
-  :emphasize-lines: 3,5-6,12-18
+  :emphasize-lines: 4,6-7,14-21
  
 This code adds the Student entity created by the ASP.NET MVC model binder to the Students entity set and then saves the changes to the database. (Model binder refers to the ASP.NET MVC functionality that makes it easier for you to work with data submitted by a form; a model binder converts posted form values to CLR types and passes them to the action method in parameters. In this case, the model binder instantiates a Student entity for you using property values from the Form collection.)
 
@@ -123,17 +124,18 @@ The ``ValidateAntiForgeryToken`` attribute helps prevent cross-site request forg
 The Bind attribute that the scaffolded code includes on the Create method is one way to protect against overposting in create scenarios. For example, suppose the Student entity includes a ``Secret`` property that you don't want this web page to set.
 
 .. code-block:: c#
+  :emphasize-lines: 7
 
-public class Student
-{
-    public int ID { get; set; }
-    public string LastName { get; set; }
-    public string FirstMidName { get; set; }
-    public DateTime EnrollmentDate { get; set; }
-    public string Secret { get; set; }
+  public class Student
+  {
+      public int ID { get; set; }
+      public string LastName { get; set; }
+      public string FirstMidName { get; set; }
+      public DateTime EnrollmentDate { get; set; }
+      public string Secret { get; set; }
 
-    public virtual ICollection<Enrollment> Enrollments { get; set; }
-}
+      public virtual ICollection<Enrollment> Enrollments { get; set; }
+  }
 
 Even if you don't have a ``Secret`` field on the web page, a hacker could use a tool such as Fiddler, or write some JavaScript, to post a ``Secret`` form value. Without the Bind attribute limiting the fields that the model binder uses when it creates a Student instance, the model binder would pick up that Secret form value and use it to create the Student entity instance. Then whatever value the hacker specified for the ``Secret`` form field would be updated in your database. The following image shows the Fiddler tool adding the Secret field (with the value "OverPost") to the posted form values.
 
@@ -174,14 +176,14 @@ This is server-side validation that you get by default; in a later tutorial you'
   :language: c#
   :start-after: #region snippet_Create
   :end-before:  #endregion
-  :emphasize-lines: 7-11
+  :emphasize-lines: 8
 
 Change the date to a valid value and click Create to see the new student appear in the Index page.
 
 Update the Edit HttpPost method
 -------------------------------
 
-In Controllers\StudentController.cs, the HttpGet Edit method (the one without the HttpPost attribute) uses the SingleOrDefaultAsync method to retrieve the selected Student entity, as you saw in the Details method. You don't need to change this method.
+In *StudentController.cs*, the HttpGet Edit method (the one without the HttpPost attribute) uses the SingleOrDefaultAsync method to retrieve the selected Student entity, as you saw in the Details method. You don't need to change this method.
 
 However, replace the HttpPost Edit action method with the following code:
 
