@@ -1,10 +1,6 @@
 #define SortFilterPage //or ScaffoldedIndex or SortOnly or SortFilterOnly
-
-//#define AttachCreatedEntity
-#define ReadEntityFirst
-
-//#define DeleteWithoutReadFirst
-#define DeleteWithReadFirst
+#define ReadFirst //or CreateAndAttach
+#define DeleteWithReadFirst // or DeleteWithoutReadFirst
 
 using System.Linq;
 using System.Threading.Tasks;
@@ -211,7 +207,8 @@ namespace ContosoUniversity.Controllers
         }
 
         // POST: Students/Edit/5
-#if (AttachCreatedEntity)
+#if (CreateAndAttach)
+        #region snippet_CreateAndAttach
         public async Task<IActionResult> Edit(int id, [Bind("ID,EnrollmentDate,FirstMidName,LastName")] Student student)
         {
             if (id != student.ID)
@@ -236,7 +233,9 @@ namespace ContosoUniversity.Controllers
             }
             return View(student);
         }
-#elif (ReadEntityFirst)
+        #endregion  
+#elif (ReadFirst)
+        #region snippet_ReadFirst
         [HttpPost, ActionName("Edit")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditPost(int? id)
@@ -267,9 +266,11 @@ namespace ContosoUniversity.Controllers
             }
             return View(studentToUpdate);
         }
+        #endregion
 #endif
 
         // GET: Students/Delete/5
+        #region snippet_DeleteGet
         public async Task<IActionResult> Delete(int? id, bool? saveChangesError = false)
         {
             if (id == null)
@@ -292,9 +293,10 @@ namespace ContosoUniversity.Controllers
 
             return View(student);
         }
-
+        #endregion
         // POST: Students/Delete/5
 #if (DeleteWithReadFirst)
+        #region snippet_DeleteWithReadFirst
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
@@ -317,7 +319,9 @@ namespace ContosoUniversity.Controllers
                 return RedirectToAction("Delete", new { id = id, saveChangesError = true });
             }
         }
+        #endregion
 #elif (DeleteWithoutReadFirst)
+        #region snippet_DeleteWithoutReadFirst
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
@@ -335,6 +339,7 @@ namespace ContosoUniversity.Controllers
                 return RedirectToAction("Delete", new { id = id, saveChangesError = true });
             }
         }
+        #endregion
 #endif
     }
 }

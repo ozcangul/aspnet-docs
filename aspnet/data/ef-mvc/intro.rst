@@ -218,6 +218,7 @@ Now you can use the ``AddDbContext`` method to register the context as a service
   :start-after: #region snippet_SchoolContext
   :end-before:  #endregion
   :emphasize-lines: 1-2
+  :dedent: 12
 
 SQL Server Express LocalDB
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -256,8 +257,9 @@ In *Startup.cs*, add a line at the end of the ``Configure`` method to call this 
 
 .. literalinclude::  intro/samples/cu/Startup.cs
   :language: c#
-  :start-after: #region snippet_CallSeed
+  :start-after: snippet_CallSeed
   :end-before:  #endregion
+  :dedent: 12
 
 Now the first time you run the application the database will be created and seeded with test data. Whenever you change your data model, you can delete the database, update your seed method, and start afresh with a new database the same way. In later tutorials you'll see how to modify the database when the data model changes, without deleting and re-creating it.
 
@@ -291,6 +293,7 @@ The controller contains an ``Index`` action method, which displays all students 
   :language: c#
   :start-after: #region snippet_ScaffoldedIndex
   :end-before:  #endregion
+  :dedent: 8
 
 You'll learn about the asynchronous programming elements in this code later in the tutorial.
 
@@ -349,16 +352,17 @@ Asynchronous code
 
 Asynchronous programming is the default mode for ASP.NET Core and EF Core. 
 
-A web server has a limited number of threads available, and in high load situations all of the available threads might be in use. When that happens, the server can’t process new requests until the threads are freed up. With synchronous code, many threads may be tied up while they aren’t actually doing any work because they’re waiting for I/O to complete. With asynchronous code, when a process is waiting for I/O to complete, its thread is freed up for the server to use for processing other requests. As a result, asynchronous code enables server resources to be use more efficiently, and the server is enabled to handle more traffic without delays.
+A web server has a limited number of threads available, and in high load situations all of the available threads might be in use. When that happens, the server can't process new requests until the threads are freed up. With synchronous code, many threads may be tied up while they aren't actually doing any work because they're waiting for I/O to complete. With asynchronous code, when a process is waiting for I/O to complete, its thread is freed up for the server to use for processing other requests. As a result, asynchronous code enables server resources to be use more efficiently, and the server is enabled to handle more traffic without delays.
 
 In versions of .NET Framework earlier than 4.5, writing and testing asynchronous code was complex, error prone, and hard to debug. In .NET Framework 4.5 and in .NET Core, writing, testing, and debugging asynchronous code is so much easier that you should generally write asynchronous code unless you have a reason not to. Asynchronous code does introduce a small amount of overhead at run time, but for low traffic situations the performance hit is negligible, while for high traffic situations, the potential performance improvement is substantial.
 
-In the following code, the ``async`` keyword, ``Task`` return value, ``await`` keyword, and ``ToListAsync`` method call make the method execute asynchronously.
+In the following code, the ``async`` keyword, ``Task`` return value, ``await`` keyword, and ``ToListAsync`` method make the code execute asynchronously.
 
 .. literalinclude::  intro/samples/cu/Controllers/StudentsController.cs
   :language: c#
-  :start-after: #region snippet_Context
+  :start-after: snippet_ScaffoldedIndex
   :end-before:  #endregion
+  :dedent: 8
 
 * The method is marked with the ``async`` keyword, which tells the compiler to generate callbacks for parts of the method body and to automatically create the ``Task<ActionResult>`` object that is returned.
 * The return type is ``Task<IActionResult>`` rather than ``IActionResult``. The ``Task<T>`` return type represents ongoing work with a result of type ``T``.

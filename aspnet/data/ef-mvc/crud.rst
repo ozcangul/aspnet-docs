@@ -35,6 +35,7 @@ In `Controllers\StudentController.cs`, the action method for the Details view us
   :start-after: #region snippet_Details
   :end-before:  #endregion
   :emphasize-lines: 8
+  :dedent: 8
 
 The key value is passed to the method as the ``id`` parameter and comes from route data in the Details hyperlink on the Index page.
 
@@ -48,6 +49,7 @@ Route data is data that the model binder found in a URL segment specified in the
   :start-after: #region snippet_Route
   :end-before:  #endregion
   :emphasize-lines: 5
+  :dedent: 12
 
 In the following URL, the default route maps Instructor as the controller, Index as the action, and 1 as the id; these are route data values.
 
@@ -79,16 +81,18 @@ Add enrollments to the Details view
 Open `Views\Student\Details.cshtml`. Each field is displayed using a DisplayFor helper, as shown in the following example:
 
 .. literalinclude::  intro/samples/cu/Views/Students/Details.cshtml
-  :language: c#
+  :language: html
   :start-after: snippet_Date
   :end-before:  snippet_Date
+  :dedent: 12
 
 After the last field and immediately before the closing </dl> tag, add the following code to display a list of enrollments:
 
 .. literalinclude::  intro/samples/cu/Views/Students/Details.cshtml
-  :language: c#
+  :language: html
   :start-after: snippet_Enrollments
   :end-before:  snippet_Enrollments
+  :dedent: 8
 
 If code indentation is wrong after you paste the code, press CTRL-K-D to correct it.
 
@@ -109,6 +113,7 @@ In *StudentController.cs*, replace the HttpPost Create action method with the fo
   :start-after: #region snippet_Create
   :end-before:  #endregion
   :emphasize-lines: 4,6-7,14-21
+  :dedent: 8
  
 This code adds the Student entity created by the ASP.NET MVC model binder to the Students entity set and then saves the changes to the database. (Model binder refers to the ASP.NET MVC functionality that makes it easier for you to work with data submitted by a form; a model binder converts posted form values to CLR types and passes them to the action method in parameters. In this case, the model binder instantiates a Student entity for you using property values from the Form collection.)
 
@@ -162,6 +167,7 @@ To work around a bug in validation message rendering, convert the validation spa
   :start-after: snippet_Spans
   :end-before:  snippet_Spans
   :emphasize-lines: 5,12,19
+  :dedent: 8
 
 Run the page by selecting the Students tab and clicking Create New.
 
@@ -177,66 +183,84 @@ This is server-side validation that you get by default; in a later tutorial you'
   :start-after: #region snippet_Create
   :end-before:  #endregion
   :emphasize-lines: 8
+  :dedent: 8
 
 Change the date to a valid value and click Create to see the new student appear in the Index page.
 
-Update the Edit HttpPost method
+Update the Edit page
 -------------------------------
 
-In *StudentController.cs*, the HttpGet Edit method (the one without the HttpPost attribute) uses the SingleOrDefaultAsync method to retrieve the selected Student entity, as you saw in the Details method. You don't need to change this method.
+In *StudentController.cs*, the HttpGet Edit method (the one without the HttpPost attribute) uses the ``SingleOrDefaultAsync`` method to retrieve the selected Student entity, as you saw in the Details method. You don't need to change this method.
 
-However, replace the HttpPost Edit action method with the following code:
+Recommended HttpPost Edit code: Read and update
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-todo edit post code block, update before and after text
+Replace the HttpPost Edit action method with the following code. The changes are highlighted.
 
-todo:  read first advantages -- fields with prior values, only changed columns get updated
-  disadvantages -- extra db read, more complex code for concurrency
-  show alternative.
+.. literalinclude::  intro/samples/cu/Controllers/StudentsController.cs
+  :language: c#
+  :start-after: snippet_ReadFirst
+  :end-before:  #endregion
+  :emphasize-lines: 10-14,20-27
 
+These changes implement a security best practice to prevent overposting. The scaffolder generated a ``Bind`` attribute and added the entity created by the model binder to the entity set with a ``Modified`` flag. That code is not recommended for many scenarios because the ``Bind`` attribute clears out any pre-existing data in fields not listed in the ``Include`` parameter. 
 
-These changes implement a security best practice to prevent overposting. The scaffolder generated a Bind attribute and added the entity created by the model binder to the entity set with a Modified flag. That code is not recommended for many scenarios because the Bind attribute clears out any pre-existing data in fields not listed in the Include parameter. 
+The new code reads the existing entity and calls ``TryUpdateModel`` to update fields from user input in the posted form data. The Entity Framework's automatic change tracking sets the ``Modified`` flag on the fields that are changed by form input. When the ``SaveChanges`` method is called, the Entity Framework creates SQL statements to update the database row. Concurrency conflicts are ignored, and only the table columns that were updated by the user are updated in the database. (A later tutorial shows how to handle concurrency conflicts.)
 
-The new code reads the existing entity and calls TryUpdateModel to update fields from user input in the posted form data. The Entity Framework's automatic change tracking sets the Modified flag on the fields that are changed by form input. When the SaveChanges method is called, the the Entity Framework creates SQL statements to update the database row. Concurrency conflicts are ignored, and only the table columns that were updated by the user are updated in the database. (A later tutorial shows how to handle concurrency conflicts.)
-
-As a best practice to prevent overposting, the fields that you want to be updateable by the Edit page are whitelisted in the TryUpdateModel parameters. Currently there are no extra fields that you're protecting, but listing the fields that you want the model binder to bind ensures that if you add fields to the data model in the future, they're automatically protected until you explicitly add them here.
+As a best practice to prevent overposting, the fields that you want to be updateable by the Edit page are whitelisted in the ``TryUpdateModel`` parameters. Currently there are no extra fields that you're protecting, but listing the fields that you want the model binder to bind ensures that if you add fields to the data model in the future, they're automatically protected until you explicitly add them here.
 
 As a result of these changes, the method signature of the HttpPost Edit method is the same as the HttpGet edit method; therefore you've renamed the method EditPost. 
 
-todo begin sidebar
+Alternative HttpPost Edit code: Create and attach
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Entity States and the Attach and SaveChanges Methods
+The recommended HttpPost edit code ensures that only changed columns get updated and preserves data in properties that you don't want included for model binding. However, the read-first approach requires an extra database read, and can result in more complex code for handling concurrency conflicts. An alternative is to use the approach adopted by the MVC controller scaffolding engine. The following code shows how to implement code for an HttpPost Edit method that attaches an entity created by the model binder to the EF context and marks it as modified. (Don't update your project with this code, it's only shown to illustrate an optional approach.)
 
-The database context keeps track of whether entities in memory are in sync with their corresponding rows in the database, and this information determines what happens when you call the SaveChanges method. For example, when you pass a new entity to the Add method, that entity's state is set to Added. Then when you call the SaveChanges method, the database context issues a SQL INSERT command.
+.. literalinclude::  intro/samples/cu/Controllers/StudentsController.cs
+  :language: c#
+  :start-after: snippet_CreateAndAttach
+  :end-before:  #endregion
+  :emphasize-lines: 1,7,11
+
+This approach is viable when the web page UI includes all of the fields in the entity and can update any of them.
+
+Entity States
+^^^^^^^^^^^^^
+
+The database context keeps track of whether entities in memory are in sync with their corresponding rows in the database, and this information determines what happens when you call the ``SaveChanges`` method. For example, when you pass a new entity to the ``Add`` method, that entity's state is set to ``Added``. Then when you call the ``SaveChanges`` method, the database context issues a SQL INSERT command.
 
 An entity may be in one of the following states:
 
-* Added. The entity does not yet exist in the database. The SaveChanges method must issue an INSERT statement.
-* Unchanged. Nothing needs to be done with this entity by the SaveChanges method. When you read an entity from the database, the entity starts out with this status.
-* Modified. Some or all of the entity's property values have been modified. The SaveChanges method must issue an UPDATE statement.
-* Deleted. The entity has been marked for deletion. The SaveChanges method must issue a DELETE statement.
-* Detached. The entity isn't being tracked by the database context.
+* ``Added``. The entity does not yet exist in the database. The ``SaveChanges`` method must issue an INSERT statement.
+* ``Unchanged``. Nothing needs to be done with this entity by the ``SaveChanges`` method. When you read an entity from the database, the entity starts out with this status.
+* ``Modified``. Some or all of the entity's property values have been modified. The ``SaveChanges`` method must issue an UPDATE statement.
+* ``Deleted``. The entity has been marked for deletion. The ``SaveChanges`` method must issue a DELETE statement.
+* ``Detached``. The entity isn't being tracked by the database context.
 
-In a desktop application, state changes are typically set automatically. In a desktop type of application, you read an entity and make changes to some of its property values. This causes its entity state to automatically be changed to Modified. Then when you call SaveChanges, the Entity Framework generates a SQL UPDATE statement that updates only the actual properties that you changed.
+In a desktop application, state changes are typically set automatically. You read an entity and make changes to some of its property values. This causes its entity state to automatically be changed to ``Modified``. Then when you call ``SaveChanges``, the Entity Framework generates a SQL UPDATE statement that updates only the actual properties that you changed. 
 
-The disconnected nature of web apps doesn't allow for this continuous sequence. The DbContext that reads an entity is disposed after a page is rendered. When the HttpPost Edit action method is called,  a new request is made and you have a new instance of the DbContext, so you have to manually set the entity state to Modified. Then when you call SaveChanges, the Entity Framework updates all columns of the database row, because the context has no way to know which properties you changed.
+In a web app, the ``DbContext`` that initially reads an entity and displays its data to be edited is disposed after a page is rendered. When the HttpPost Edit action method is called,  a new web request is made and you have a new instance of the ``DbContext``. If you re-read the entity in that new context, you simulate desktop processing.
 
-If you want the SQL Update statement to update only the fields that the user actually changed, you can save the original values in some way (such as hidden fields) so that they are available when the HttpPost Edit method is called. Then you can create a Student entity using the original values, call the Attach method with that original version of the entity, update the entity's values to the new values, and then call SaveChanges.
+ But if you don't want to do the extra read operation, you have to use the entity object created by the model binder.  The simplest way to do this is to manually set the entity state to Modified. Then when you call ``SaveChanges``, the Entity Framework updates all columns of the database row, because the context has no way to know which properties you changed.
 
-todo end of sidebar
+If you want to avoid the read-first approach, but you also want the SQL Update statement to update only the fields that the user actually changed, the code is more complex. You have to save the original values in some way (such as hidden fields) so that they are available when the HttpPost Edit method is called. Then you can create a Student entity using the original values, call the Attach method with that original version of the entity, update the entity's values to the new values, and then call ``SaveChanges``.
 
-The HTML and Razor code in Views\Student\Edit.cshtml is similar to what you saw in Create.cshtml, and no changes are required.
+Test the Edit page
+^^^^^^^^^^^^^^^^^^
 
-Run the page by selecting the Students tab and then clicking an Edit hyperlink.
+The HTML and Razor code in *Views/Students/Edit.cshtml* is similar to what you saw in *Create.cshtml*, and no changes are required.
 
-![Students edit page](todo)
+Run the page by selecting the **Students** tab and then clicking an **Edit** hyperlink.
 
-Change some of the data and click Save. You see the changed data in the Index page.
+.. image:: intro/_static/students-edit.png
+   :alt: Students edit page
 
-![Students index page after edit](todo)
+Change some of the data and click Save. The Index page opens and you see the changed data.
 
-## Updating the Delete Page
+Update the Delete page
+----------------------
 
-In Controllers\StudentController.cs, the template code for the HttpGet Delete method uses the SingleOrDefaultAsync method to retrieve the selected Student entity, as you saw in the Details and Edit methods. However, to implement a custom error message when the call to SaveChanges fails, you'll add some functionality to this method and its corresponding view.
+In *StudentController.cs*, the template code for the HttpGet Delete method uses the ``SingleOrDefaultAsync`` method to retrieve the selected Student entity, as you saw in the Details and Edit methods. However, to implement a custom error message when the call to SaveChanges fails, you'll add some functionality to this method and its corresponding view.
 
 As you saw for update and create operations, delete operations require two action methods. The method that is called in response to a GET request displays a view that gives the user a chance to approve or cancel the delete operation. If the user approves it, a POST request is created. When that happens, the HttpPost Delete method is called and then that method actually performs the delete operation.
 
@@ -244,84 +268,72 @@ You'll add a try-catch block to the HttpPost Delete method to handle any errors 
 
 Replace the HttpGet Delete action method with the following code, which manages error reporting:
 
-```
-public async Task<IActionResult> Delete(int? id, bool? saveChangesError=false)
-{
-    if (id == null)
-    {
-        return NotFound();
-    }
-
-    if (saveChangesError.GetValueOrDefault())
-    {
-        ViewBag.ErrorMessage = 
-            "Delete failed. Try again, and if the problem persists " +
-            "see your system administrator.";
-    }
-
-    var student = await _context.Students.SingleOrDefaultAsync(m => m.ID == id);
-    if (student == null)
-    {
-        return NotFound();
-    }
-
-    return View(student);
-}
-```
+.. literalinclude::  intro/samples/cu/Controllers/StudentsController.cs
+  :language: c#
+  :start-after: snippet_DeleteGet
+  :end-before:  #endregion
+  :emphasize-lines: 1,14-19
+  :dedent: 8
 
 This code accepts an optional parameter that indicates whether the method was called after a failure to save changes. This parameter is false when the HttpGet Delete method is called without a previous failure. When it is called by the HttpPost Delete method in response to a database update error, the parameter is true and an error message is passed to the view.
 
+The read-first approach to HttpPost Delete
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
 Replace the HttpPost Delete action method (named DeleteConfirmed) with the following code, which performs the actual delete operation and catches any database update errors.
 
-```
-public async Task<IActionResult> DeleteConfirmed(int id)
-{
-    var student = await _context.Students.SingleOrDefaultAsync(m => m.ID == id);
-    _context.Students.Remove(student);
-    await _context.SaveChangesAsync();
-    return RedirectToAction("Index");
-}
-```
+.. literalinclude::  intro/samples/cu/Controllers/StudentsController.cs
+  :language: c#
+  :start-after: snippet_DeleteWithReadFirst
+  :end-before:  #endregion
+  :emphasize-lines: 6-9,11-12,16-21
+  :dedent: 8
 
-This code retrieves the selected entity, then calls the Remove method to set the entity's status to Deleted. When SaveChanges is called, a SQL DELETE command is generated. You have also changed the action method name from DeleteConfirmed to Delete. The scaffolded code named the HttpPost Delete method DeleteConfirmed to give the HttpPost  method a unique signature. ( The CLR requires overloaded methods to have different method parameters.) Now that the signatures are unique, you can stick with the MVC convention and use the same name for the HttpPost and HttpGet delete methods.
+This code retrieves the selected entity, then calls the Remove method to set the entity's status to Deleted. When SaveChanges is called, a SQL DELETE command is generated. 
 
-If improving performance in a high-volume application is a priority, you could avoid an unnecessary SQL query to retrieve the row by replacing the lines of code that call the Find and Remove methods with the following code:
+The create-and-attach approach to HttpPost Delete
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-```
-Student studentToDelete = new Student() { ID = id };
-db.Entry(studentToDelete).State = EntityState.Deleted;
-```
+If improving performance in a high-volume application is a priority, you could avoid an unnecessary SQL query by instantiating a Student entity using only the primary key value and then setting the entity state to Deleted. That's all that the Entity Framework needs in order to delete the entity. (It's not necessary to put this code in your project; it's here just to illustrate an alternative.)
 
-This code instantiates a Student entity using only the primary key value and then sets the entity state to Deleted. That's all that the Entity Framework needs in order to delete the entity.
+.. literalinclude::  intro/samples/cu/Controllers/StudentsController.cs
+  :language: c#
+  :start-after: snippet_DeleteWithoutReadFirst
+  :end-before:  #endregion
+  :emphasize-lines: 7-8
+  :dedent: 8
 
-As noted, the HttpGet Delete method doesn't delete the data. Performing a delete operation in response to a GET request (or for that matter, performing any edit operation, create operation, or any other operation that changes data) creates a security risk. For more information, see ASP.NET MVC Tip #46 — Don't use Delete Links because they create Security Holes on Stephen Walther's blog.
+Update the Delete view
+^^^^^^^^^^^^^^^^^^^^^^
 
-In Views\Student\Delete.cshtml, add an error message between the h2 heading and the h3 heading, as shown in the following example:
+In *Views/Student/Delete.cshtml*, add an error message between the h2 heading and the h3 heading, as shown in the following example:
 
-```
-<h2>Delete</h2>
-<p class="text-danger">@ViewBag.ErrorMessage</p>
-<h3>Are you sure you want to delete this?</h3>
-```
+.. literalinclude::  intro/samples/cu/Views/Students/Delete.cshtml
+  :language: c#
+  :start-after: snippet_ErrorMessage
+  :end-before:  snippet_ErrorMessage
+  :emphasize-lines: 2
 
 Run the page by selecting the Students tab and clicking a Delete hyperlink:
 
-![Delete confirmation page](todo)
+.. image:: intro/_static/delete-confirmation.png
+   :alt: Delete confirmation page
 
 Click Delete. The Index page is displayed without the deleted student. (You'll see an example of the error handling code in action in the concurrency tutorial.)
 
-## Closing Database Connections
+Closing database connections
+----------------------------
 
-To close database connections and free up the resources they hold as soon as possible, the context instance must be disposed when you are done with it. The ASP.NET Core built-in dependency injection takes care of that task for you.
+To close database connections and free up the resources they hold as soon as possible, the context instance must be disposed when you are done with it. The ASP.NET Core built-in :doc:`dependency injection </fundamentals/dependency-injection>` takes care of that task for you.
 
-todo - explain the DI code that does this.
+In Startup.cs you call the `AddDbContext extension method <https://github.com/aspnet/EntityFramework/blob/03bcb5122e3f577a84498545fcf130ba79a3d987/src/Microsoft.EntityFrameworkCore/EntityFrameworkServiceCollectionExtensions.cs>`__ to provision the DbContext class in the ASP.NET DI container. That method sets the service lifetime to ``Scoped`` by default. ``Scoped`` means the context object lifetime coincides with the web request life time, and the ``Dispose`` method will be called automatically at the end of the web request.
 
-## Handling Transactions
+Handling Transactions
+---------------------
 
-By default the Entity Framework implicitly implements transactions. In scenarios where you make changes to multiple rows or tables and then call SaveChanges, the Entity Framework automatically makes sure that either all of your changes succeed or all fail. If some changes are done first and then an error happens, those changes are automatically rolled back. For scenarios where you need more control -- for example, if you want to include operations done outside of Entity Framework in a transaction -- see Working with Transactions on MSDN.
+By default the Entity Framework implicitly implements transactions. In scenarios where you make changes to multiple rows or tables and then call SaveChanges, the Entity Framework automatically makes sure that either all of your changes succeed or all fail. If some changes are done first and then an error happens, those changes are automatically rolled back. For scenarios where you need more control -- for example, if you want to include operations done outside of Entity Framework in a transaction -- see `Transactions <http://ef.readthedocs.io/en/latest/saving/transactions.html>`__.
 
-## Summary
+Summary
+-------
 
-You now have a complete set of pages that perform simple CRUD operations for Student entities. You used MVC tag helpers to generate UI elements for data fields. For more information about MVC tag helpers, see [Tag Helpers](todo).
-
-In the next tutorial you'll expand the functionality of the Index page by adding sorting and paging.
+You now have a complete set of pages that perform simple CRUD operations for Student entities. In the next tutorial you'll expand the functionality of the Index page by adding sorting, filtering, and paging.
