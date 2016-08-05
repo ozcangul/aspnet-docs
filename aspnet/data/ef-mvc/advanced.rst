@@ -318,6 +318,22 @@ When the tutorial was originally produced for EF 4.1, we provided both C# and VB
 
 ## Common errors, and solutions or workarounds for them
 
+The equivalent to customErrors mode = off in Core is to set ASPNETCORE_ENVIRONMENT environment variable to “Development”.
+ 
+Error page is enabled by the default new project template code:
+
+            if (env.IsDevelopment())
+            {
+                app.UseDeveloperExceptionPage();
+                app.UseBrowserLink();
+            }
+            else
+            {
+                app.UseExceptionHandler("/Home/Error");
+            }
+
+https://docs.asp.net/en/latest/fundamentals/error-handling.html
+
 todo validate these are still issues
 
 ### Cannot create/shadow copy

@@ -11,16 +11,16 @@ In the previous tutorial you created an MVC application that stores and displays
 
 In this tutorial, you'll work with the following web pages:
 
-.. image:: intro/_static/student-details.png
+.. image:: crud/_static/student-details.png
    :alt: Student Details page
 
-.. image:: intro/_static/student-create.png
+.. image:: crud/_static/student-create.png
    :alt: Student Create page
 
-.. image:: intro/_static/student-edit.png
+.. image:: crud/_static/student-edit.png
    :alt: Student Edit page
 
-.. image:: intro/_static/student-delete.png
+.. image:: crud/_static/student-delete.png
    :alt: Student Delete page
 
 Customize the Details page
@@ -100,7 +100,7 @@ This code loops through the entities in the ``Enrollments`` navigation property.
 
 Run the application, select the Students tab, and click the Details link for a student. You see the list of courses and grades for the selected student:
 
-.. image:: intro/_static/student-details.png
+.. image:: crud/_static/student-details.png
    :alt: Student Details page
 
 Update the Create page
@@ -144,7 +144,7 @@ The Bind attribute that the scaffolded code includes on the Create method is one
 
 Even if you don't have a ``Secret`` field on the web page, a hacker could use a tool such as Fiddler, or write some JavaScript, to post a ``Secret`` form value. Without the Bind attribute limiting the fields that the model binder uses when it creates a Student instance, the model binder would pick up that Secret form value and use it to create the Student entity instance. Then whatever value the hacker specified for the ``Secret`` form field would be updated in your database. The following image shows the Fiddler tool adding the Secret field (with the value "OverPost") to the posted form values.
 
-.. image:: intro/_static/fiddler.png
+.. image:: crud/_static/fiddler.png
    :alt: Fiddler adding Secret field
 
 The value "OverPost" would then be successfully added to the ``Secret`` property of the inserted row, although you never intended that the web page be able to set that property.
@@ -173,7 +173,7 @@ Run the page by selecting the Students tab and clicking Create New.
 
 Enter names and an invalid date and click Create to see the error message.
 
-.. image:: intro/_static/date-error.png
+.. image:: crud/_static/date-error.png
    :alt: Date validation error
 
 This is server-side validation that you get by default; in a later tutorial you'll see how to add attributes that will generate code for client-side validation also. The following highlighted code shows the model validation check in the Create method.
@@ -252,7 +252,7 @@ The HTML and Razor code in *Views/Students/Edit.cshtml* is similar to what you s
 
 Run the page by selecting the **Students** tab and then clicking an **Edit** hyperlink.
 
-.. image:: intro/_static/students-edit.png
+.. image:: crud/_static/students-edit.png
    :alt: Students edit page
 
 Change some of the data and click Save. The Index page opens and you see the changed data.
@@ -316,7 +316,7 @@ In *Views/Student/Delete.cshtml*, add an error message between the h2 heading an
 
 Run the page by selecting the Students tab and clicking a Delete hyperlink:
 
-.. image:: intro/_static/delete-confirmation.png
+.. image:: crud/_static/delete-confirmation.png
    :alt: Delete confirmation page
 
 Click Delete. The Index page is displayed without the deleted student. (You'll see an example of the error handling code in action in the concurrency tutorial.)

@@ -35,6 +35,7 @@ namespace ContosoUniversity.Controllers
         }
         #endregion
 #elif (SortOnly)
+        #region snippet_SortOnly
         public async Task<IActionResult> Index(string sortOrder)
         {
             ViewData["NameSortParm"] = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
@@ -58,6 +59,7 @@ namespace ContosoUniversity.Controllers
             }
             return View(await students.ToListAsync());
         }
+        #endregion
 #elif (SortFilterOnly)
         public async Task<IActionResult> Index(string sortOrder, string searchString)
         {
@@ -139,7 +141,7 @@ namespace ContosoUniversity.Controllers
 #endif
 
         // GET: Students/Details/5
-        #region snippet_Details
+#region snippet_Details
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -155,7 +157,7 @@ namespace ContosoUniversity.Controllers
 
             return View(student);
         }
-        #endregion
+#endregion
 
         // GET: Students/Create
         public IActionResult Create()
@@ -164,7 +166,7 @@ namespace ContosoUniversity.Controllers
         }
 
         // POST: Students/Create
-        #region snippet_Create
+#region snippet_Create
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(
@@ -188,7 +190,7 @@ namespace ContosoUniversity.Controllers
             }
             return View(student);
         }
-        #endregion
+#endregion
 
         // GET: Students/Edit/5
         public async Task<IActionResult> Edit(int? id)
@@ -208,7 +210,7 @@ namespace ContosoUniversity.Controllers
 
         // POST: Students/Edit/5
 #if (CreateAndAttach)
-        #region snippet_CreateAndAttach
+#region snippet_CreateAndAttach
         public async Task<IActionResult> Edit(int id, [Bind("ID,EnrollmentDate,FirstMidName,LastName")] Student student)
         {
             if (id != student.ID)
@@ -233,9 +235,9 @@ namespace ContosoUniversity.Controllers
             }
             return View(student);
         }
-        #endregion  
+#endregion
 #elif (ReadFirst)
-        #region snippet_ReadFirst
+#region snippet_ReadFirst
         [HttpPost, ActionName("Edit")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditPost(int? id)
@@ -266,11 +268,11 @@ namespace ContosoUniversity.Controllers
             }
             return View(studentToUpdate);
         }
-        #endregion
+#endregion
 #endif
 
         // GET: Students/Delete/5
-        #region snippet_DeleteGet
+#region snippet_DeleteGet
         public async Task<IActionResult> Delete(int? id, bool? saveChangesError = false)
         {
             if (id == null)
@@ -293,10 +295,10 @@ namespace ContosoUniversity.Controllers
 
             return View(student);
         }
-        #endregion
+#endregion
         // POST: Students/Delete/5
 #if (DeleteWithReadFirst)
-        #region snippet_DeleteWithReadFirst
+#region snippet_DeleteWithReadFirst
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
@@ -319,9 +321,9 @@ namespace ContosoUniversity.Controllers
                 return RedirectToAction("Delete", new { id = id, saveChangesError = true });
             }
         }
-        #endregion
+#endregion
 #elif (DeleteWithoutReadFirst)
-        #region snippet_DeleteWithoutReadFirst
+#region snippet_DeleteWithoutReadFirst
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
@@ -339,7 +341,7 @@ namespace ContosoUniversity.Controllers
                 return RedirectToAction("Delete", new { id = id, saveChangesError = true });
             }
         }
-        #endregion
+#endregion
 #endif
     }
 }

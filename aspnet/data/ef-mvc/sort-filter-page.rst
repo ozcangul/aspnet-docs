@@ -1,180 +1,124 @@
 Sorting, filtering, paging, and grouping
 ========================================
 
-The Contoso University sample web application demonstrates how to create ASP.NET Core 1.0 MVC web applications using Entity Framework Core 1.0 and Visual Studio 2015. For information about the tutorial series, see [the first tutorial in the series](todo).
+By `Tom Dykstra`_
+
+The Contoso University sample web application demonstrates how to create ASP.NET Core 1.0 MVC web applications using Entity Framework Core 1.0 and Visual Studio 2015. For information about the tutorial series, see :doc:`the first tutorial in the series </data/ef-mvc/intro>`.
 
 In the previous tutorial you implemented a set of web pages for basic CRUD operations for Student entities. In this tutorial you'll add sorting, filtering, and paging functionality to the Students Index page. You'll also create a page that does simple grouping.
 
 The following illustration shows what the page will look like when you're done. The column headings are links that the user can click to sort by that column. Clicking a column heading repeatedly toggles between ascending and descending sort order.
 
-![Students index page](todo)
+.. image:: sort-filter-page/_static/paging.png
+   :alt: Students index page
 
-## Add Column Sort Links to the Students Index Page
+Add Column Sort Links to the Students Index Page
+------------------------------------------------
 
 To add sorting to the Student Index page, you'll change the Index method of the Student controller and add code to the Student Index view.
 
-### Add Sorting Functionality to the Index Method
+Add Sorting Functionality to the Index Method
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-In Controllers\StudentController.cs, replace the Index method with the following code:
+In *StudentController.cs*, replace the Index method with the following code:
 
-```
-public async Task<IActionResult> Index(string sortOrder)
-{
-    ViewBag.NameSortParm = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
-    ViewBag.DateSortParm = sortOrder == "Date" ? "date_desc" : "Date";
-    var students = from s in _context.Students
-                   select s;
-    switch (sortOrder)
-    {
-        case "name_desc":
-            students = students.OrderByDescending(s => s.LastName);
-            break;
-        case "Date":
-            students = students.OrderBy(s => s.EnrollmentDate);
-            break;
-        case "date_desc":
-            students = students.OrderByDescending(s => s.EnrollmentDate);
-            break;
-        default:
-            students = students.OrderBy(s => s.LastName);
-            break;
-    }
-    return View(await _context.Students.ToListAsync());
-}
-```
+.. literalinclude::  intro/samples/cu/Controllers/StudentsController.cs
+  :language: c#
+  :linenos:
+  :start-after: snippet_SortOnly
+  :end-before:  #endregion
+  :emphasize-lines: 8
+  :dedent: 8
 
-This code receives a sortOrder parameter from the query string in the URL. The query string value is provided by ASP.NET MVC as a parameter to the action method. The parameter will be a string that's either "Name" or "Date", optionally followed by an underscore and the string "desc" to specify descending order. The default sort order is ascending.
+This code receives a sortOrder parameter from the query string in the URL. The query string value is provided by ASP.NET Core MVC as a parameter to the action method. The parameter will be a string that's either "Name" or "Date", optionally followed by an underscore and the string "desc" to specify descending order. The default sort order is ascending.
 
 The first time the Index page is requested, there's no query string. The students are displayed in ascending order by LastName, which is the default as established by the fall-through case in the switch statement. When the user clicks a column heading hyperlink, the appropriate sortOrder value is provided in the query string.
 
-The two ViewBag variables are used so that the view can configure the column heading hyperlinks with the appropriate query string values
+The two ViewData elements (NameSortParm and DateSortParm) are used so that the view can configure the column heading hyperlinks with the appropriate query string values.
 
-```
-ViewBag.NameSortParm = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
-ViewBag.DateSortParm = sortOrder == "Date" ? "date_desc" : "Date";
-```
+.. code-block:: c#
 
-These are ternary statements. The first one specifies that if the sortOrder parameter is null or empty, ViewBag.NameSortParm should be set to "name_desc"; otherwise, it should be set to an empty string. These two statements enable the view to set the column heading hyperlinks as follows:
+  ViewData["NameSortParm"] = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
+  ViewData["DateSortParm"] = sortOrder == "Date" ? "date_desc" : "Date";
 
-todo format table
-Current sort order	Last Name Hyperlink	Date Hyperlink
-Last Name ascending	descending	ascending
-Last Name descending	ascending	ascending
-Date ascending	ascending	descending
-Date descending	ascending	ascending
+These are ternary statements. The first one specifies that if the sortOrder parameter is null or empty, NameSortParm should be set to "name_desc"; otherwise, it should be set to an empty string. These two statements enable the view to set the column heading hyperlinks as follows:
 
-The method uses LINQ to Entities to specify the column to sort by. The code creates an IQueryable variable before the switch statement, modifies it in the switch statement, and calls the ToList method after the switch statement. When you create and modify IQueryable variables, no query is sent to the database. The query is not executed until you convert the IQueryable object into a collection by calling a method such as ToList. Therefore, this code results in a single query that is not executed until the return View statement.
+====================  ===================  ==============
+Current sort order	 Last Name Hyperlink   Date Hyperlink
+====================  ===================  ==============
+Last Name ascending	  descending           ascending
+Last Name descending  ascending	           ascending
+Date ascending        ascending            descending
+Date descending       ascending	           ascending
+====================  ===================  ==============
 
-### Add Column Heading Hyperlinks to the Student Index View
+The method uses LINQ to Entities to specify the column to sort by. The code creates an IQueryable variable before the switch statement, modifies it in the switch statement, and calls the ToListAsync method after the switch statement. When you create and modify IQueryable variables, no query is sent to the database. The query is not executed until you convert the IQueryable object into a collection by calling a method such as ToListAsync. Therefore, this code results in a single query that is not executed until the ``return View`` statement.
 
-In Views\Student\Index.cshtml, replace everything between the `<thead>` and `</thead>` elements for the heading row with the following code:
+Add Column Heading Hyperlinks to the Student Index View
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-```
-        <tr>
-            <th>
-                <a asp-action="Index" asp-route-sortOrder="@ViewBag.DateSortParm">@Html.DisplayNameFor(model => model.EnrollmentDate)</a>
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.FirstMidName)
-            </th>
-            <th>
-                <a asp-action="Index" asp-route-sortOrder="@ViewBag.NameSortParm">@Html.DisplayNameFor(model => model.LastName)</a>
-            </th>
-            <th></th>
-        </tr>
-```
+Replace the code in *Views/Student/Index.cshtml*, with the following code to rearrange the column order and add column heading hyperlinks. The new column headings are highlighted.
 
-This code uses the information in the ViewBag properties to set up hyperlinks with the appropriate query string values.
+.. literalinclude::  intro/samples/cu/Views/Students/Index2.cshtml
+  :language: c#
+  :linenos:
+  :emphasize-lines: 16,22
+  :dedent: 8
 
-todo change column order
+This code uses the information in ViewData properties to set up hyperlinks with the appropriate query string values.
 
-Run the page and click the Last Name and Enrollment Date column headings to verify that sorting works.
+Run the page and click the **Last Name** and **Enrollment Date** column headings to verify that sorting works.
 
-![Students index page in name order](todo)
+.. image:: sort-filter-page/_static/name-order.png
+   :alt: Students index page in name order
 
-After you click the Last Name heading, students are displayed in descending last name order.
-
-![Students index page in descending name order](todo)
-
-## Add a Search Box to the Students Index Page
+Add a Search Box to the Students Index page
+-------------------------------------------
 
 To add filtering to the Students Index page, you'll add a text box and a submit button to the view and make corresponding changes in the Index method. The text box will let you enter a string to search for in the first name and last name fields.
 
-Add Filtering Functionality to the Index Method
+Add filtering functionality to the Index method
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-In Controllers\StudentController.cs, replace the Index method with the following code (the changes are highlighted):
+In *StudentController.cs*, replace the Index method with the following code (the changes are highlighted).
 
-```
-public async Task<IActionResult> Index(string sortOrder, string searchString)
-{
-    ViewBag.NameSortParm = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
-    ViewBag.DateSortParm = sortOrder == "Date" ? "date_desc" : "Date";
-    var students = from s in _context.Students
-                   select s;
-    if (!String.IsNullOrEmpty(searchString))
-    {
-        students = students.Where(s => s.LastName.Contains(searchString)
-                               || s.FirstMidName.Contains(searchString));
-    }
-    switch (sortOrder)
-    {
-        case "name_desc":
-            students = students.OrderByDescending(s => s.LastName);
-            break;
-        case "Date":
-            students = students.OrderBy(s => s.EnrollmentDate);
-            break;
-        case "date_desc":
-            students = students.OrderByDescending(s => s.EnrollmentDate);
-            break;
-        default:
-            students = students.OrderBy(s => s.LastName);
-            break;
-    }
-    return View(await students.ToListAsync());
-}
-```
+.. literalinclude::  intro/samples/cu/Controllers/StudentsController.cs
+  :language: c#
+  :linenos:
+  :start-after: snippet_SortFilter
+  :end-before:  #endregion
+  :emphasize-lines: 8
+  :dedent: 8
 
-You've added a searchString parameter to the Index method. The search string value is received from a text box that you'll add to the Index view. You've also added to the LINQ statement a where clause that selects only students whose first name or last name contains the search string. The statement that adds the where clause is executed only if there's a value to search for.
+You've added a ``searchString`` parameter to the Index method. The search string value is received from a text box that you'll add to the Index view. You've also added to the LINQ statement a where clause that selects only students whose first name or last name contains the search string. The statement that adds the where clause is executed only if there's a value to search for.
 
-todo beginning of note
+.. note:: In many cases you can call the same method either on an Entity Framework entity set or as an extension method on an in-memory collection. The results are normally the same but in some cases may be different.
 
-Note In many cases you can call the same method either on an Entity Framework entity set or as an extension method on an in-memory collection. The results are normally the same but in some cases may be different.
+  An example is variations in whether comparisons are case-insensitive. The .NET Framework implementation of the Contains method performs a case-sensitive comparison by default. But in SQL Server this is determined by the collation setting of the SQL Server instance, which defaults to case-insensitive. You could call the ToUpper method to make the test explicitly case-insensitive to ensure that results stay the same if you change the code later to use a repository which returns an IEnumerable collection instead of an IQueryable object. (When you call the Contains method on an IEnumerable collection, you get the .NET Framework implementation; when you call it on an IQueryable object, you get the database provider implementation.) However, there is a performance penalty for this solution. The code `Where(s => s.LastName.ToUpper().Contains(searchString.ToUpper())` would put a function in the WHERE clause of the TSQL SELECT statement. That would prevent the optimiser from using an index. Given that SQL is mostly installed as Case Insensitive, it's best to avoid the ToUpper code until you migrate to a case sensitive repository.
 
-An example is variations in whether comparisons are case-insensitive. The .NET Framework implementation of the Contains method performs a case-sensitive comparison by default. But in SQL Server this is determined by the collation setting of the SQL Server instance, which defaults to case-insensitive. You could call the ToUpper method to make the test explicitly case-insensitive to ensure that results stay the same if you change the code later to use a repository which returns an IEnumerable collection instead of an IQueryable object. (When you call the Contains method on an IEnumerable collection, you get the .NET Framework implementation; when you call it on an IQueryable object, you get the database provider implementation.) However, there is a performance penalty for this solution. The code `Where(s => s.LastName.ToUpper().Contains(searchString.ToUpper())` would put a function in the WHERE clause of the TSQL SELECT statement. That would prevent the optimiser from using an index. Given that SQL is mostly installed as Case Insensitive, it's best to avoid the ToUpper code until you migrate to a case sensitive repository.
+  Null handling may also be different for different database providers or when you use an IQueryable object compared to when you use an IEnumerable collection. For example, in some scenarios a Where condition such as table.Column != 0 may not return columns that have null as the value. For more information, see Incorrect handling of null variables in 'where' clause.
 
-Null handling may also be different for different database providers or when you use an IQueryable object compared to when you use an IEnumerable collection. For example, in some scenarios a Where condition such as table.Column != 0 may not return columns that have null as the value. For more information, see Incorrect handling of null variables in 'where' clause.
+Add a Search Box to the Student Index View
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-todo end of note
+In *Views/Student/Index.cshtml*, add the highlighted code immediately before the opening table tag in order to create a caption, a text box, and a Search button.
 
-## Add a Search Box to the Student Index View
+.. literalinclude::  intro/samples/cu/Views/Students/Index3.cshtml
+  :language: c#
+  :linenos:
+  :emphasize-lines: 5-13
+  :dedent: 8
 
-In Views\Student\Index.cshtml, add the highlighted code immediately before the opening table tag in order to create a caption, a text box, and a Search button.
-
-```
-<form asp-action="Index">
-    <div class="form-actions no-color">
-        <p>
-            Find by name: <input type="text" name="SearchString" />
-            <input type="submit" value="Search" class="btn btn-default" /> |
-            <a asp-action="Index">Back to List</a>
-        </p>
-    </div>
-</form>
-```
-
-todo uses a tag helper.  https://docs.asp.net/en/latest/mvc/views/tag-helpers/intro.html
-Tag Helpers are one of the most popular new features in ASP.NET Core. See Additional resources for more information.
-
-By default the form tag helper submits form data with a POST, which means that parameters are passed in the HTTP message body and not in the URL as query strings. When you specify HTTP GET, the form data is passed in the URL as query strings, which enables users to bookmark the URL. The W3C guidelines for the use of HTTP GET recommend that you should use GET when the action does not result in an update.
+This code uses the ``<form>`` `tag helper <https://docs.asp.net/en/latest/mvc/views/tag-helpers/intro.html>`__ to add the search text box and button. By default the form tag helper submits form data with a POST, which means that parameters are passed in the HTTP message body and not in the URL as query strings. When you specify HTTP GET, the form data is passed in the URL as query strings, which enables users to bookmark the URL. The W3C guidelines recommend that you should use GET when the action does not result in an update.
 
 Run the page, enter a search string, and click Search to verify that filtering is working.
 
-![Students index page with filtering](todo)
+.. image:: sort-filter-page/_static/filtering.png
+   :alt: Students index page with filtering
 
 Notice the URL contains the "an" search string, which means that if you bookmark this page, you'll get the filtered list when you use the bookmark. Adding `method="get"` to the form tag is what caused the query strings to be generated.
 
-## Add Paging to the Students Index Page
+??## Add Paging to the Students Index Page
 
 To add paging to the Students Index page, you'll create a PaginatedList class that uses Skip and Take statements to page through data instead of always retrieving all rows of the table. Then you'll make additional changes in the Index method and add paging links to the Index view. The following illustration shows the paging links.
 
