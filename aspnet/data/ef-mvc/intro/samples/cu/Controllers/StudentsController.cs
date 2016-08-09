@@ -1,4 +1,4 @@
-#define SortFilterPage //or ScaffoldedIndex or SortOnly or SortFilterOnly
+#define SortFilterPage //or ScaffoldedIndex or SortOnly or SortFilter
 #define ReadFirst //or CreateAndAttach
 #define DeleteWithReadFirst // or DeleteWithoutReadFirst
 
@@ -60,7 +60,8 @@ namespace ContosoUniversity.Controllers
             return View(await students.ToListAsync());
         }
         #endregion
-#elif (SortFilterOnly)
+#elif (SortFilter)
+        #region snippet_SortFilter
         public async Task<IActionResult> Index(string sortOrder, string searchString)
         {
             ViewData["NameSortParm"] = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
@@ -89,7 +90,9 @@ namespace ContosoUniversity.Controllers
             }
             return View(await students.ToListAsync());
         }
+        #endregion
 #elif (SortFilterPage)
+        #region snippet_SortFilterPage
         [Route("[controller]/Page/{page:int?}")]
         public async Task<IActionResult> Index(
             string sortOrder,
@@ -136,12 +139,13 @@ namespace ContosoUniversity.Controllers
             }
 
             int pageSize = 3;
-            return View(await PaginatedList<Student>.Create(students, page ?? 1, pageSize));
+            return View(await PaginatedList<Student>.CreateAsync(students, page ?? 1, pageSize));
         }
+        #endregion  
 #endif
 
         // GET: Students/Details/5
-#region snippet_Details
+        #region snippet_Details
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
