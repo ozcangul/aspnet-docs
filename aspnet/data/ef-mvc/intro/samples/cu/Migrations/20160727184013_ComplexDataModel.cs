@@ -88,22 +88,23 @@ namespace ContosoUniversity.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            #region snippet_DefaultDepartment
             migrationBuilder.Sql("INSERT INTO dbo.Departments (Name, Budget, StartDate) VALUES ('Temp', 0.00, GETDATE())");
             // Default value for FK points to department created above, with
             // defaultValue changed to 1 in following AddColumn statement.
 
             migrationBuilder.AddColumn<int>(
                 name: "DepartmentID",
-                table: "Courses",
+                table: "Course",
                 nullable: false,
                 defaultValue: 1);
 
             //migrationBuilder.AddColumn<int>(
             //    name: "DepartmentID",
-            //    table: "Courses",
+            //    table: "Course",
             //    nullable: false,
             //    defaultValue: 0);
-
+            #endregion
             migrationBuilder.AlterColumn<string>(
                 name: "LastName",
                 table: "Students",

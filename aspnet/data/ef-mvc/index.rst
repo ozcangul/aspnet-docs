@@ -7,8 +7,8 @@ Getting started with ASP.NET Core and Entity Framework Core using Visual Studio
    intro
    crud
    sort-filter-page
-   complex-data-model
    migrations
+   complex-data-model
    read-related-data
    update-related-data
    concurrency

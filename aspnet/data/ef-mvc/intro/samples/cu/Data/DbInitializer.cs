@@ -115,9 +115,9 @@ namespace ContosoUniversity.Models
 
                 //Make sure there is nothing left over from 
                 //earlier seeding.
-                context.Database.ExecuteSqlCommand("DELETE FROM Enrollments");
-                context.Database.ExecuteSqlCommand("DELETE FROM Courses");
-                context.Database.ExecuteSqlCommand("DELETE FROM Students");
+                context.Database.ExecuteSqlCommand("DELETE FROM Enrollment");
+                context.Database.ExecuteSqlCommand("DELETE FROM Course");
+                context.Database.ExecuteSqlCommand("DELETE FROM Student");
 
                 var students = new Student[]
                 {

@@ -35,7 +35,6 @@ namespace ContosoUniversity.Models
     }
 
     [Table(name: "Enrollment")]
-
     public class Enrollment
     {
         public int EnrollmentID { get; set; }

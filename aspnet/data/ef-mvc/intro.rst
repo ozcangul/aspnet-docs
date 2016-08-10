@@ -225,7 +225,7 @@ SQL Server Express LocalDB
 
 The name of the connection string is passed in to the context by calling a method on a ``DbContextOptionsBuilder`` object. For local development, the doc:`ASP.NET Core configuration system </fundamentals/configuration>` reads the connection string from the *appsettings.json* file. 
 
-.. literalinclude::  intro/samples/cu/appsettings.json
+.. literalinclude::  intro/samples/cu/appsettings2.json
   :language: json
   :end-before:  Logging
   :emphasize-lines: 5-6

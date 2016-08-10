@@ -7,7 +7,7 @@ namespace ContosoUniversity.Models
     public class OfficeAssignment
     {
         [Key]
-        [ForeignKey("Instructor")]
+        //[ForeignKey("Instructor")]
         public int InstructorID { get; set; }
         [StringLength(50)]
         [Display(Name = "Office Location")]
