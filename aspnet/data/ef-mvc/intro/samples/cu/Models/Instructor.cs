@@ -6,7 +6,6 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace ContosoUniversity.Models
 {
     [Table(name: "Instructor")]
-
     public class Instructor
     {
         public int ID { get; set; }

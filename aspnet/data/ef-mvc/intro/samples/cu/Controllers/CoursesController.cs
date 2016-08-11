@@ -30,11 +30,13 @@ namespace ContosoUniversity.Controllers
             return View(await schoolContext.ToListAsync());
         }
 #elif RevisedIndexMethod
+        #region snippet_RevisedIndexMethod
         public async Task<IActionResult> Index()
         {
             var courses = _context.Courses.Include(c => c.Department);
             return View(await courses.ToListAsync());
         }
+        #endregion
 #endif
         // GET: Courses/Details/5
         public async Task<IActionResult> Details(int? id)

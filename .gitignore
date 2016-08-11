@@ -201,3 +201,4 @@ project.lock.json
 **/sample/**/wwwroot/lib/
 **/samples/**/wwwroot/lib/
 __pycache__/
+/aspnet/data/ef-mvc/intro/samples/cu/ContosoUniversity.sln

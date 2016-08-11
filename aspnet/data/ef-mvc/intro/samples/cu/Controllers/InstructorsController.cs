@@ -1,9 +1,5 @@
-//#define ScaffoldedCode
-//#define EagerLoading
-#define ExplicitLoading
-
-//#define EditOfficeAssignment
-#define EditCourses
+#define ExplicitLoading // or EagerLoading or ScaffoldedCode
+#define EditCourses // or EditOfficeAssignment
 
 using System;
 using System.Collections.Generic;
@@ -14,7 +10,9 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ContosoUniversity.Data;
 using ContosoUniversity.Models;
+#region snippet_Using
 using ContosoUniversity.Models.SchoolViewModels;
+#endregion
 
 namespace ContosoUniversity.Controllers
 {
@@ -29,11 +27,14 @@ namespace ContosoUniversity.Controllers
 
         // GET: Instructors
 #if ScaffoldedCode
+        #region snippet_ScaffoldedCode
         public async Task<IActionResult> Index()
         {
             return View(await _context.Instructors.ToListAsync());
         }
+        #endregion
 #elif EagerLoading
+        #region snippet_EagerLoading
         public async Task<IActionResult> Index(int? id, int? courseID)
         {
             var viewModel = new InstructorIndexData();
@@ -65,7 +66,9 @@ namespace ContosoUniversity.Controllers
 
             return View(viewModel);
         }
+        #endregion
 #elif ExplicitLoading
+        #region snippet_ExplicitLoading
         public async Task<IActionResult> Index(int? id, int? courseID)
         {
             var viewModel = new InstructorIndexData();
@@ -98,7 +101,7 @@ namespace ContosoUniversity.Controllers
 
             return View(viewModel);
         }
-
+        #endregion
 #endif
         // GET: Instructors/Details/5
         public async Task<IActionResult> Details(int? id)

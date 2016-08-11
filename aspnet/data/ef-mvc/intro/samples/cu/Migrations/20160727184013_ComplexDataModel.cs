@@ -95,7 +95,7 @@ namespace ContosoUniversity.Migrations
 
             migrationBuilder.AddColumn<int>(
                 name: "DepartmentID",
-                table: "Course",
+                table: "Courses",
                 nullable: false,
                 defaultValue: 1);
 
