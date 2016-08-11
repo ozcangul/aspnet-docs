@@ -39,6 +39,7 @@ namespace ContosoUniversity.Controllers
         #endregion
 #endif
         // GET: Courses/Details/5
+        #region snippet_Details
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -54,15 +55,18 @@ namespace ContosoUniversity.Controllers
 
             return View(course);
         }
+        #endregion
 
         // GET: Courses/Create
+        #region snippet_CreateGet
         public IActionResult Create()
         {
             PopulateDepartmentsDropDownList();
             return View();
         }
-
+        #endregion
         // POST: Courses/Create
+        #region snippet_CreatePost
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("CourseID,Credits,DepartmentID,Title")] Course course)
@@ -76,8 +80,10 @@ namespace ContosoUniversity.Controllers
             PopulateDepartmentsDropDownList(course.DepartmentID);
             return View(course);
         }
+        #endregion
 
         // GET: Courses/Edit/5
+        #region snippet_EditGet
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -93,8 +99,11 @@ namespace ContosoUniversity.Controllers
             PopulateDepartmentsDropDownList(course.DepartmentID);
             return View(course);
         }
+        #endregion
+
 
         // POST: Courses/Edit/5
+        #region snippet_EditPost
         [HttpPost, ActionName("Edit")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditPost(int? id)
@@ -127,16 +136,20 @@ namespace ContosoUniversity.Controllers
             PopulateDepartmentsDropDownList(courseToUpdate.DepartmentID);
             return View(courseToUpdate);
         }
+        #endregion
 
+        #region snippet_Departments
         private void PopulateDepartmentsDropDownList(object selectedDepartment = null)
         {
             var departmentsQuery = from d in _context.Departments
                                    orderby d.Name
                                    select d;
-            ViewData["DepartmentID"] = new SelectList(departmentsQuery, "DepartmentID", "Name", selectedDepartment);
+            ViewBag.DepartmentID = new SelectList(departmentsQuery, "DepartmentID", "Name", selectedDepartment);
         }
-        
+        #endregion
+
         // GET: Courses/Delete/5
+        #region snippet_DeleteGet
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -152,6 +165,7 @@ namespace ContosoUniversity.Controllers
 
             return View(course);
         }
+        #endregion
 
         // POST: Courses/Delete/5
         [HttpPost, ActionName("Delete")]

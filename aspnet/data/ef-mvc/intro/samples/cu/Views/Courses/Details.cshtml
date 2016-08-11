@@ -9,6 +9,7 @@
 <div>
     <h4>Course</h4>
     <hr />
+    @* <snippet_CourseDepartment> *@
     <dl class="dl-horizontal">
         <dt>
             @Html.DisplayNameFor(model => model.CourseID)
@@ -35,6 +36,7 @@
             @Html.DisplayFor(model => model.Title)
         </dd>
     </dl>
+    @* </snippet_CourseDepartment> *@
 </div>
 <div>
     <a asp-action="Edit" asp-route-id="@Model.CourseID">Edit</a> |

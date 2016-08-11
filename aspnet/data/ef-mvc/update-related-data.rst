@@ -1,240 +1,165 @@
 Updating related data
 =====================
 
-The Contoso University sample web application demonstrates how to create ASP.NET Core 1.0 MVC web applications using Entity Framework Core 1.0 and Visual Studio 2015. For information about the tutorial series, see [the first tutorial in the series](todo).
+The Contoso University sample web application demonstrates how to create ASP.NET Core 1.0 MVC web applications using Entity Framework Core 1.0 and Visual Studio 2015. For information about the tutorial series, see :doc:`the first tutorial in the series </data/ef-mvc/intro>`.
 
-In the previous tutorial you displayed related data; in this tutorial you'll update related data. This can be done by updating either foreign key fields or navigation properties.
+In the previous tutorial you displayed related data; in this tutorial you'll update related data by updating foreign key fields and navigation properties.
 
 The following illustrations show some of the pages that you'll work with.
 
-![Course Create page](todo)
+.. image:: update-related-data/_static/course-edit.png
+   :alt: Course Edit page
 
-![Course Edit page](todo)
+.. image:: update-related-data/_static/instructor-edit.png
+   :alt: Instructor Edit page
 
-![Instructor Edit page](todo)
-
-## Customize the Create and Edit Pages for Courses
+Customize the Create and Edit Pages for Courses
+-----------------------------------------------
 
 When a new course entity is created, it must have a relationship to an existing department. To facilitate this, the scaffolded code includes controller methods and Create and Edit views that include a drop-down list for selecting the department. The drop-down list sets the Course.DepartmentID foreign key property, and that's all the Entity Framework needs in order to load the Department navigation property with the appropriate Department entity. You'll use the scaffolded code, but change it slightly to add error handling and sort the drop-down list.
 
-In CourseController.cs, delete the four Create and Edit methods and replace them with the following code:
+In *CoursesController.cs*, delete the four Create and Edit methods and replace them with the following code:
 
-```
-        // GET: Courses/Create
-        public IActionResult Create()
-        {
-            PopulateDepartmentsDropDownList();
-            return View();
-        }
+.. literalinclude::  intro/samples/cu/Controllers/CoursesController.cs
+  :language: c#
+  :start-after: snippet_CreateGet
+  :end-before:  #endregion
+  :dedent: 8
 
-        // POST: Courses/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("CourseID,Credits,DepartmentID,Title")] Course course)
-        {
-            if (ModelState.IsValid)
-            {
-                _context.Add(course);
-                await _context.SaveChangesAsync();
-                return RedirectToAction("Index");
-            }
-            PopulateDepartmentsDropDownList(course.DepartmentID);
-            return View(course);
-        }
+.. literalinclude::  intro/samples/cu/Controllers/CoursesController.cs
+  :language: c#
+  :start-after: snippet_CreatePost
+  :end-before:  #endregion
+  :dedent: 8
 
-        // GET: Courses/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
+.. literalinclude::  intro/samples/cu/Controllers/CoursesController.cs
+  :language: c#
+  :start-after: snippet_EditGet
+  :end-before:  #endregion
+  :dedent: 8
 
-            var course = await _context.Courses.SingleOrDefaultAsync(m => m.CourseID == id);
-            if (course == null)
-            {
-                return NotFound();
-            }
-            PopulateDepartmentsDropDownList(course.DepartmentID);
-            return View(course);
-        }
+.. literalinclude::  intro/samples/cu/Controllers/CoursesController.cs
+  :language: c#
+  :start-after: snippet_EditPost
+  :end-before:  #endregion
+  :dedent: 8
 
-        // POST: Courses/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost, ActionName("Edit")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditPost(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
+After the Edit HttpPost method, create a new method that loads department info for the drop-down list.
 
-            var courseToUpdate = await _context.Courses.SingleOrDefaultAsync(c => c.CourseID == id);
-            if (await TryUpdateModelAsync<Course>(courseToUpdate,
-                "",
-                c => c.Credits, c => c.DepartmentID, c => c.Title))
-            {
-                try
-                {
-                    await _context.SaveChangesAsync();
-                    return RedirectToAction("Index");
-                }
-                catch (DbUpdateException /* dex */)
-                {
-                    //Log the error (uncomment dex variable name and write a log.)
-                    ModelState.AddModelError("", "Unable to save changes. " +
-                        "Try again, and if the problem persists, " +
-                        "see your system administrator.");
-                }
-            }
-            PopulateDepartmentsDropDownList(courseToUpdate.DepartmentID);
-            return View(courseToUpdate);
-        }
-
-        private void PopulateDepartmentsDropDownList(object selectedDepartment = null)
-        {
-            var departmentsQuery = from d in _context.Departments
-                                   orderby d.Name
-                                   select d;
-            ViewData["DepartmentID"] = new SelectList(departmentsQuery, "DepartmentID", "Name", selectedDepartment);
-        }
-```
-
+.. literalinclude::  intro/samples/cu/Controllers/CoursesController.cs
+  :language: c#
+  :start-after: snippet_Departments
+  :end-before:  #endregion
+  :dedent: 8
 
 The PopulateDepartmentsDropDownList method gets a list of all departments sorted by name, creates a SelectList collection for a drop-down list, and passes the collection to the view in ViewData. The method accepts the optional selectedDepartment parameter that allows the calling code to specify the item that will be selected when the drop-down list is rendered. The view will pass the name DepartmentID to the DropDownList helper, and the helper then knows to look in the ViewData object for a SelectList named DepartmentID.
 
 The HttpGet Create method calls the PopulateDepartmentsDropDownList method without setting the selected item, because for a new course the department is not established yet:
 
-```
-public IActionResult Create()
-{
-    PopulateDepartmentsDropDownList();
-    return View();
-}
-```
+.. literalinclude::  intro/samples/cu/Controllers/CoursesController.cs
+  :language: c#
+  :start-after: snippet_CreateGet
+  :end-before:  #endregion
+  :dedent: 8
+  :emphasize-lines: 11
 
 The HttpGet Edit method sets the selected item, based on the ID of the department that is already assigned to the course being edited:
 
-```
-PopulateDepartmentsDropDownList(course.DepartmentID);
-```
+.. literalinclude::  intro/samples/cu/Controllers/CoursesController.cs
+  :language: c#
+  :start-after: snippet_EditGet
+  :end-before:  #endregion
+  :dedent: 8
+  :emphasize-lines: 13
 
 The HttpPost methods for both Create and Edit also include code that sets the selected item when they redisplay the page after an error. This ensures that when the page is redisplayed to show the error message, whatever department was selected stays selected.
 
 Change the code that reads a course in the Details and HttpGet Delete methods so that it loads the Department navigation property:
 
-```
-var course = await _context.Courses.Include(c => c.DepartmentID).SingleOrDefaultAsync(m => m.CourseID == id);
-```
+.. literalinclude::  intro/samples/cu/Controllers/CoursesController.cs
+  :language: c#
+  :start-after: snippet_Details
+  :end-before:  #endregion
+  :dedent: 8
+  :emphasize-lines: 8
 
-The Course views are already scaffolded with drop-down lists for the department field, but you don't want the DepartmentID caption for this field, so make the following highlighted change to the Views\Course\Create.cshtml and Views\Course\Edit.cshtml files to change the caption.
+.. literalinclude::  intro/samples/cu/Controllers/CoursesController.cs
+  :language: c#
+  :start-after: snippet_DeleteGet
+  :end-before:  #endregion
+  :dedent: 8
+  :emphasize-lines: 8
 
-```
-            <label asp-for="Department" class="control-label col-md-2"></label>
-            <div class="col-md-10">
-                <select asp-for="DepartmentID" class="form-control" asp-items="ViewBag.DepartmentID"></select>
-                <span asp-validation-for="DepartmentID" class="text-danger" />
-            </div>
-```
+Modify the Course views
+^^^^^^^^^^^^^^^^^^^^^^^
+
+In *Views/Course/Create.cshtml*, add a field for the course ID before the Credits field:
+
+.. literalinclude::  intro/samples/cu/Views/Courses/Create.cshtml
+  :language: html
+  :start-after: snippet_CourseID
+  :end-before:  snippet_CourseID
+  :emphasize-lines: 2
+  :dedent: 8
 
 The scaffolder doesn't scaffold a primary key because typically the key value is generated by the database and can't be changed and isn't a meaningful value to be displayed to users. For Course entities you do need a text box in the Create view for the CourseID field because the DatabaseGeneratedOption.None attribute means the user should be able enter the primary key value.
 
-In Views\Course\Create.cshtml, add a field for the course ID before the Credits field:
+In both *Views/Course/Create.cshtml* and *Views/Course/Edit.cshtml*, add a "Select Department" option to the Department drop-down list, and change the caption for the field from **DepartmentID** to **Department**. 
 
-```
-        <div class="form-group">
-            <label asp-for="CourseID" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <input asp-for="CourseID" class="form-control" />
-                <span asp-validation-for="CourseID" class="text-danger" />
-            </div>
-        </div>
-```
+.. literalinclude::  intro/samples/cu/Views/Courses/Create.cshtml
+  :language: html
+  :start-after: snippet_Department
+  :end-before:  snippet_Department
+  :emphasize-lines: 2,4-6
+  :dedent: 8
 
-Also in Create.cshtml, add a "Select Department" option to the Department drop-down list. 
+In *Views/Course/Edit.cshtml*, add a course number field before the Title field. Because it's the primary key, it's displayed, but it can't be changed.
 
-```
-        <div class="form-group">
-            <label asp-for="Department" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <select asp-for="DepartmentID" class ="form-control" asp-items="ViewBag.DepartmentID">
-                    <option value="">-- Select Department --</option>
-                </select>
-            </div>
-        </div>
-
-```
-
-In Views\Course\Edit.cshtml, add a course number field before the Title field. Because it's the primary key, it's displayed, but it can't be changed.
-
-```
-        <div class="form-group">
-            <label asp-for="CourseID" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                @Html.DisplayFor(model => model.Credits)
-            </div>
-        </div>
-```
+.. literalinclude::  intro/samples/cu/Views/Courses/Create.cshtml
+  :language: html
+  :start-after: snippet_CourseID
+  :end-before:  snippet_CourseID
+  :dedent: 8
 
 There's already a hidden field (Html.HiddenFor helper) for the course number in the Edit view. Adding an Html.LabelFor helper doesn't eliminate the need for the hidden field because it doesn't cause the course number to be included in the posted data when the user clicks Save on the Edit page.
 
-In Views\Course\Delete.cshtml and Views\Course\Details.cshtml, add a course number field at the top and a department name field before the title field.
+In *Views/Course/Delete.cshtml* and *Views/Course/Details.cshtml*, add a course number field at the top and a department name field before the title field.
 
-```
-        <dt>
-            @Html.DisplayNameFor(model => model.CourseID)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.CourseID)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Credits)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Credits)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Department)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Department.Name)
-        </dd>
-                <dt>
-            @Html.DisplayNameFor(model => model.Title)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Title)
-        </dd>
-```
-
+.. literalinclude::  intro/samples/cu/Views/Courses/Create.cshtml
+  :language: html
+  :start-after: snippet_CourseDepartment
+  :end-before:  snippet_CourseDepartment
+  :dedent: 4
+  :emphasize-lines: 2-7,14-19
 
 Run the Create page (display the Course Index page and click Create New) and enter data for a new course:
 
-![Course Create page](todo)
+.. image:: update-related-data/_static/course-create.png
+   :alt: Course Create page
 
-Click Create. The Course Index page is displayed with the new course added to the list. The department name in the Index page list comes from the navigation property, showing that the relationship was established correctly.
+Click Create. The Courses Index page is displayed with the new course added to the list. The department name in the Index page list comes from the navigation property, showing that the relationship was established correctly.
 
-![Course Index page](todo)
+.. image:: update-related-data/_static/courses-index.png
+   :alt: Courses Index page
 
 Run the Edit page (display the Course Index page and click Edit on a course).
 
-![Course Edit page](todo)
+.. image:: update-related-data/_static/course-edit.png
+   :alt: Course Edit page
 
-Change data on the page and click Save. The Course Index page is displayed with the updated course data.
+Change data on the page and click Save. The Courses Index page is displayed with the updated course data.
 
-## Adding an Edit Page for Instructors
+Adding an Edit Page for Instructors
+-----------------------------------
 
-When you edit an instructor record, you want to be able to update the instructor's office assignment. The Instructor entity has a one-to-zero-or-one relationship with the OfficeAssignment entity, which means you must handle the following situations:
+When you edit an instructor record, you want to be able to update the instructor's office assignment. The Instructor entity has a one-to-zero-or-one relationship with the OfficeAssignment entity, which means your code has to handle the following situations:
 
-* If the user clears the office assignment and it originally had a value, you must remove and delete the OfficeAssignment entity.
-* If the user enters an office assignment value and it originally was empty, you must create a new OfficeAssignment entity.
-* If the user changes the value of an office assignment, you must change the value in an existing OfficeAssignment entity.
+* If the user clears the office assignment and it originally had a value, delete the OfficeAssignment entity.
+* If the user enters an office assignment value and it originally was empty, create a new OfficeAssignment entity.
+* If the user changes the value of an office assignment, change the value in an existing OfficeAssignment entity.
 
-In InstructorController.cs, change the code in the HttpGet Edit method so that it loads the Instructor entity's OfficeAssignment navigation property:
+In *InstructorController.cs*, change the code in the HttpGet Edit method so that it loads the Instructor entity's OfficeAssignment navigation property:
+
 
 ```
 var instructor = await _context.Instructors.Include(i => i.OfficeAssignment).SingleOrDefaultAsync(m => m.ID == id);
