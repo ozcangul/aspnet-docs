@@ -11,6 +11,7 @@
 </p>
 <table class="table">
     <thead>
+        @* <snippet_AddCoursesHeading> *@
         <tr>
             <th>Last Name</th>
             <th>First Name</th>
@@ -19,6 +20,7 @@
             <th>Courses</th>
             <th></th>
         </tr>
+        @* </snippet_AddCoursesHeading> *@
     </thead>
     <tbody>
         @foreach (var item in Model.Instructors)
@@ -44,6 +46,7 @@
                         @item.OfficeAssignment.Location
                     }
                 </td>
+                @* <snippet_AddCoursesRow> *@
                 <td>
                     @{
                         foreach (var course in item.Courses)
@@ -58,10 +61,12 @@
                     <a asp-action="Details" asp-route-id="@item.ID">Details</a> |
                     <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
                 </td>
+                @* </snippet_AddCoursesRow> *@
             </tr>
         }
     </tbody>
 </table>
+
 
 @if (Model.Courses != null)
 {

@@ -121,6 +121,7 @@ namespace ContosoUniversity.Controllers
         }
 
         // GET: Instructors/Create
+        #region snippet_Create
         public IActionResult Create()
         {
             var instructor = new Instructor();
@@ -151,9 +152,11 @@ namespace ContosoUniversity.Controllers
             }
             return View(instructor);
         }
+        #endregion
 
         // GET: Instructors/Edit/5
 #if EditOfficeAssignment
+        #region snippet_EditGetOA
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -168,7 +171,9 @@ namespace ContosoUniversity.Controllers
             }
             return View(instructor);
         }
+        #endregion
 #elif EditCourses
+        #region snippet_EditGetCourses
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -204,12 +209,13 @@ namespace ContosoUniversity.Controllers
             }
             ViewData["Courses"] = viewModel;
         }
-
+        #endregion
 #endif
         // POST: Instructors/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
 #if EditOfficeAssignment
+        #region snippet_EditPostOA
         [HttpPost, ActionName("Edit")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditPost(int? id)
@@ -247,7 +253,10 @@ namespace ContosoUniversity.Controllers
             }
             return View(instructorToUpdate);
         }
+        #endregion
+
 #elif EditCourses
+        #region snippet_EditPostCourses
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int? id, string[] selectedCourses)
@@ -288,7 +297,9 @@ namespace ContosoUniversity.Controllers
             }
             return View(instructorToUpdate);
         }
+        #endregion
 
+        #region snippet_UpdateCourses
         private void UpdateInstructorCourses(string[] selectedCourses, Instructor instructorToUpdate)
         {
             if (selectedCourses == null)
@@ -320,6 +331,7 @@ namespace ContosoUniversity.Controllers
                 }
             }
         }
+        #endregion
 #endif
         // GET: Instructors/Delete/5
         public async Task<IActionResult> Delete(int? id)
@@ -338,6 +350,7 @@ namespace ContosoUniversity.Controllers
             return View(instructor);
         }
 
+        #region snippet_DeleteConfirmed
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
@@ -359,5 +372,6 @@ namespace ContosoUniversity.Controllers
             await _context.SaveChangesAsync();
             return RedirectToAction("Index");
         }
+        #endregion
     }
 }

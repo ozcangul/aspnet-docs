@@ -262,7 +262,6 @@ The new code drops the `.ThenInclude(i => i.Enrollments).ThenInclude(i => i.Stud
 
 .. literalinclude::  intro/samples/cu/Controllers/InstructorsController.cs
   :language: c#
-  :linenos:
   :lines: 92-102
   :emphasize-lines: 4-6
   :dedent: 12
