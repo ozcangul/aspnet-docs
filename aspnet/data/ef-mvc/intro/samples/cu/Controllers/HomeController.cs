@@ -3,8 +3,10 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+#region snippet-Usings2
 using System.Collections.Generic;
 using System.Data.Common;
+#endregion
 #region snippet_Usings
 using Microsoft.EntityFrameworkCore;
 using ContosoUniversity.Data;

@@ -47,6 +47,7 @@ namespace ContosoUniversity.Controllers
             return View(department);
         }
 #elif RawSQL
+        #region snippet_RawSQL
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -67,6 +68,7 @@ namespace ContosoUniversity.Controllers
 
             return View(department);
         }
+        #endregion
 #endif
 
         // GET: Departments/Create
