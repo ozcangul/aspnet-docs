@@ -87,7 +87,9 @@ namespace ContosoUniversity.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction("Index");
             }
+            #region snippet_Dropdown
             ViewData["InstructorID"] = new SelectList(_context.Instructors, "ID", "FullName", department.InstructorID);
+            #endregion
             return View(department);
         }
 
@@ -99,7 +101,11 @@ namespace ContosoUniversity.Controllers
                 return NotFound();
             }
 
-            var department = await _context.Departments.Include(i => i.Administrator).SingleOrDefaultAsync(m => m.DepartmentID == id);
+            #region snippet_EagerLoading
+            var department = await _context.Departments
+                .Include(i => i.Administrator)
+                .SingleOrDefaultAsync(m => m.DepartmentID == id);
+            #endregion
             if (department == null)
             {
                 return NotFound();
@@ -111,6 +117,7 @@ namespace ContosoUniversity.Controllers
         // POST: Departments/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        #region snippet_EditPost
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int? id, byte[] rowVersion)
@@ -149,7 +156,9 @@ namespace ContosoUniversity.Controllers
                     var exceptionEntry = ex.Entries.Single();
                     // Using a NoTracking query means we get the entity but it is not tracked by the context
                     // and will not be merged with existing entities in the context.
-                    var databaseEntity = await _context.Departments.AsNoTracking().SingleAsync(d => d.DepartmentID == ((Department)exceptionEntry.Entity).DepartmentID);
+                    var databaseEntity = await _context.Departments
+                        .AsNoTracking()
+                        .SingleAsync(d => d.DepartmentID == ((Department)exceptionEntry.Entity).DepartmentID);
                     var databaseEntry = _context.Entry(databaseEntity);
 
                     var databaseName = (string)databaseEntry.Property("Name").CurrentValue;
@@ -190,8 +199,10 @@ namespace ContosoUniversity.Controllers
             ViewData["InstructorID"] = new SelectList(_context.Instructors, "ID", "FullName", departmentToUpdate.InstructorID);
             return View(departmentToUpdate);
         }
+        #endregion
 
         // GET: Departments/Delete/5
+        #region snippet_DeleteGet
         public async Task<IActionResult> Delete(int? id, bool? concurrencyError)
         {
             if (id == null)
@@ -221,15 +232,17 @@ namespace ContosoUniversity.Controllers
 
             return View(department);
         }
+        #endregion
+
         // POST: Departments/Delete/5
+        #region snippet_DeletePost
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(Department department)
         {
             try
             {
-                department = await _context.Departments.SingleOrDefaultAsync(m => m.DepartmentID == department.DepartmentID);
-                if (department != null)
+                if (await _context.Departments.AnyAsync(m => m.DepartmentID == department.DepartmentID))
                 {
                     _context.Departments.Remove(department);
                     await _context.SaveChangesAsync();
@@ -242,5 +255,6 @@ namespace ContosoUniversity.Controllers
                 return RedirectToAction("Delete", new { concurrencyError = true, id = department.DepartmentID });
             }
         }
+        #endregion
     }
 }

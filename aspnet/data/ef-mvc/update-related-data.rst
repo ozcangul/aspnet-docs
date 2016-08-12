@@ -234,7 +234,7 @@ To provide data to the view for the list of check boxes, you'll use a view model
 
 Create *AssignedCourseData.cs* in the *SchoolViewModels* folder and replace the existing code with the following code:
 
-.. literalinclude::  intro/samples/cu/Models/SchoolViewMOdels/AssignedCourseData.cs
+.. literalinclude::  intro/samples/cu/Models/SchoolViewModels/AssignedCourseData.cs
   :language: c#
 
 In *InstructorController.cs*, replace the HttpGet Edit method with the following code. The changes are highlighted.
