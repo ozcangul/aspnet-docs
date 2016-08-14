@@ -7,7 +7,7 @@ The Contoso University sample web application demonstrates how to create ASP.NET
 
 The sample application is a web site for a fictional Contoso University. It includes functionality such as student admission, course creation, and instructor assignments. This tutorial series explains how to build the Contoso University sample application from scratch. You can `download the completed application <https://github.com/aspnet/Docs/tree/master/data/ef-mvc/intro/cu-final>`__.
 
-EF Core 1.0 is the latest version of EF but does not yet have all the features of EF 6.x. For information about how to choose between EF 6.x and EF Core 1.0, see `EF Core vs. EF6.x <https://ef.readthedocs.io/en/latest/efcore-vs-ef6/index.html>`___.  If you choose EF 6.x, see `the previous version of this tutorial series <https://www.asp.net/mvc/overview/getting-started/getting-started-with-ef-using-mvc/creating-an-entity-framework-data-model-for-an-asp-net-mvc-application>`__.
+EF Core 1.0 is the latest version of EF but does not yet have all the features of EF 6.x. For information about how to choose between EF 6.x and EF Core 1.0, see `EF Core vs. EF6.x <https://ef.readthedocs.io/en/latest/efcore-vs-ef6/index.html>`__.  If you choose EF 6.x, see `the previous version of this tutorial series <https://www.asp.net/mvc/overview/getting-started/getting-started-with-ef-using-mvc/creating-an-entity-framework-data-model-for-an-asp-net-mvc-application>`__.
 
 Prerequisites
 -------------
@@ -15,14 +15,12 @@ Prerequisites
 * `Visual Studio 2015 <https://www.visualstudio.com/products/vs-2015-product-editions>`__ with `Update 3 <https://www.visualstudio.com/news/releasenotes/vs2015-update3-vs>`__ or later.
 * `.NET Core 1.0 with Visual Studio tools <https://go.microsoft.com/fwlink/?LinkId=817245>`__.
 
-If you haven't worked with ASP.NET Core MVC in Visual Studio, see :doc:`/tutorials/first-mvc-app/start-mvc`.
-
 Entity Framework Core 1.0 is not a prerequisite because you install the EF NuGet package as part of the tutorial.
 
 Troubleshooting
 ---------------
 
-If you run into a problem you can't resolve, you can generally find the solution by comparing your code to the completed project that you can download. If you don't find what you need there, you can post questions to the `ASP.NET Entity Framework forum <http://forums.asp.net/1227.aspx>`__, the `Entity Framework and LINQ to Entities forum <http://social.msdn.microsoft.com/forums/en-US/adodotnetentityframework/threads/>`__, or StackOverflow.com for `ASP.NET Core <http://stackoverflow.com/questions/tagged/asp.net-core>`__ or `EF Core <http://stackoverflow.com/questions/tagged/entity-framework-core>`__.
+If you run into a problem you can't resolve, you can generally find the solution by comparing your code to the completed project that you can download. If you don't find what you need there, you can post questions to the `ASP.NET Entity Framework forum <http://forums.asp.net/1227.aspx>`__, the `Entity Framework forum <http://social.msdn.microsoft.com/forums/en-US/adodotnetentityframework/threads/>`__, or StackOverflow.com for `ASP.NET Core <http://stackoverflow.com/questions/tagged/asp.net-core>`__ or `EF Core <http://stackoverflow.com/questions/tagged/entity-framework-core>`__.
 
 The Contoso University Web Application
 --------------------------------------
@@ -44,27 +42,33 @@ Create an ASP.NET Core MVC web application
 
 Open Visual Studio 2015 and create a new ASP.NET Core C# web project named "ContosoUniversity".
 
-* Tap **File > New > Project...**.
+* From the **File** menu, select **New > Project**.
 * From the left pane, select **Templates > Visual C# > Web**.
 * Select the **ASP.NET Core Web Application (.NET Core)** project template.
 * Enter **ContosoUniversity** as the name and click **OK**.
+
+.. image:: intro/_static/new-project.png
+   :alt: New Project dialog
+
 * Wait for the **New ASP.NET Core Web Application (.NET Core)** dialog to appear
 * Select the **Web Application** template and ensure that **Authentication** is set to **Individual User Accounts**.
-
-	You won't be using authentication in this tutorial, but you need this setting because of a limitation of .NET Core Preview 2 Visual Studio tooling.  MVC controller and view scaffolding only works when Individual Accounts authentication is enabled.
-
 * Clear the **Host in the cloud** check box.
 * Click **OK**
+
+.. image:: intro/_static/new-aspnet.png
+   :alt: New ASP.NET Project dialog
+
+.. note:: Don't miss setting authentication to **Individual User Accounts**. You won't be using authentication in this tutorial, but you need to enable it because of a limitation of .NET Core Preview 2 Visual Studio tooling. Scaffolding for MVC controllers and views only works when **Individual User Accounts** authentication is enabled.
 
 Set up the site style
 ---------------------
 
 A few simple changes will set up the site menu, layout, and home page.
 
-Open *Views\Shared\_Layout.cshtml* and make the following changes:
+Open *Views/Shared/_Layout.cshtml* and make the following changes:
 
 * Change each occurrence of "ContosoUniversity" to "Contoso University". There are three occurrences.
-* Add menu entries for Students, Courses, Instructors, and Departments, and delete the Contact entry. 
+* Add menu entries for **Students**, **Courses**, **Instructors**, and **Departments**, and delete the **Contact** menu entry. 
 
 The changes are highlighted.
 
@@ -72,14 +76,14 @@ The changes are highlighted.
    :language: html
    :emphasize-lines: 6,30,36-39,49
 
-In `Views\Home\Index.cshtml`, replace the contents of the file with the following code to replace the text about ASP.NET and MVC with text about this application:
+In *Views/Home/Index.cshtml*, replace the contents of the file with the following code to replace the text about ASP.NET and MVC with text about this application:
 
-.. literalinclude::  intro/Views/Home/Index.cshtml
+.. literalinclude::  intro/samples/cu/Views/Home/Index.cshtml
    :language: html
 
 Press CTRL+F5 to run the project or choose **Debug > Start Without Debugging** from the menu. You see the home page with the main menu.
 
-.. image:: intro/_static/students-index.png
+.. image:: intro/_static/home-page.png
    :alt: Contoso University home page
 
 Install Entity Framework Core
@@ -87,26 +91,29 @@ Install Entity Framework Core
 
 To use EF Core, install the package for the database provider(s) you want to target. This tutorial uses SQL Server. For a list of available providers see `Database Providers <https://docs.efproject.net/en/latest/providers/index.html>`__.
 
-* Click **Tools > NuGet Package Manager > Package Manager Console**.
-* Run ``install-package Microsoft.EntityFrameworkCore.SqlServer``
+From the **Tools** menu, select **Tools > NuGet Package Manager > Package Manager Console**.
 
-	In ASP.NET Core projects, the `install-package` command completes quickly, and package installation occurs in the background. You will see **(Restoring...)** appear next to **References** in **Solution Explorer** while the installation is in process.
+In the **Package Manager Console** (PMC) window, run the following command.
 
-Later in this tutorial you'll also be using some Entity Framework commands to maintain the database, so install the commands package as well.
+.. code-block:: text
 
-* Run ``install-package Microsoft.EntityFrameworkCore.Tools -Pre``
-* Open *project.json*
-* Locate the ``tools`` section and add the ``ef`` command as shown below
+  install-package Microsoft.EntityFrameworkCore.SqlServer
 
-.. literalinclude::  intro/samples/cu/project.json
- +  :language: json
- +  :start-after:  "tools": {
- +  :end-before:  .IISIntegration.Tools
- 
+In ASP.NET Core projects, the ``install-package`` command completes quickly, and package installation occurs in the background. You see **(Restoring...)** appear next to **References** in **Solution Explorer** while the installation is in process.
+
+Later in this tutorial you'll also be using some Entity Framework commands to maintain the database, so install the commands package as well by running the following command.
+
+.. code-block:: text
+
+  install-package Microsoft.EntityFrameworkCore.Tools -Pre
+
+.. image:: intro/_static/install-sql.png
+   :alt: Install EF SQL Server package
+
 Create the data model
 ---------------------
 
-Next you'll create entity classes for the Contoso University application. You'll start with the following three entities:
+Next you'll create entity classes for the Contoso University application. You'll start with the following three entities.
 
 .. image:: intro/_static/data-model-diagram.png
    :alt: Course-Enrollment-Student data model diagram
@@ -121,18 +128,18 @@ The Student entity
 .. image:: intro/_static/student-entity.png
    :alt: Student entity diagram
 
-In the *Models* folder, create a class file named *Student.cs* and replace the template code with the following code:
+In the *Models* folder, create a class file named *Student.cs* and replace the template code with the following code. 
 
 .. literalinclude::  intro/samples/cu/Models/Student.cs
   :language: c#
   :start-after: #region snippet_Intro
   :end-before:  #endregion
 
-The ID property will become the primary key column of the database table that corresponds to this class. By default, the Entity Framework interprets a property that's named ID or classnameID as the primary key.
+The ``ID`` property will become the primary key column of the database table that corresponds to this class. By default, the Entity Framework interprets a property that's named ``ID`` or ``classnameID`` as the primary key.
 
-The ``Enrollments`` property is a navigation property. Navigation properties hold other entities that are related to this entity. In this case, the ``Enrollments`` property of a ``Student entity`` will hold all of the Enrollment entities that are related to that ``Student`` entity. In other words, if a given ``Student`` row in the database has two related ``Enrollment`` rows (rows that contain that student's primary key value in their ``StudentID`` foreign key column), that ``Student`` entity's ``Enrollments`` navigation property will contain those two ``Enrollment`` entities.
+The ``Enrollments`` property is a navigation property. Navigation properties hold other entities that are related to this entity. In this case, the ``Enrollments`` property of a ``Student entity`` will hold all of the ``Enrollment`` entities that are related to that ``Student`` entity. In other words, if a given Student row in the database has two related Enrollment rows (rows that contain that student's primary key value in their StudentID foreign key column), that ``Student`` entity's ``Enrollments`` navigation property will contain those two ``Enrollment`` entities.
 
-If a navigation property can hold multiple entities (as in many-to-many or one-to-many relationships), its type must be a list in which entries can be added, deleted, and updated, such as ``ICollection<T>``.  You can specify ICollection or a type such as ``List<T>`` or ``HashSet<T>``. If you specify ``ICollection<T>``, EF creates a ``HashSet<T>`` collection by default.
+If a navigation property can hold multiple entities (as in many-to-many or one-to-many relationships), its type must be a list in which entries can be added, deleted, and updated, such as ``ICollection<T>``.  You can specify ``ICollection<T>`` or a type such as ``List<T>`` or ``HashSet<T>``. If you specify ``ICollection<T>``, EF creates a ``HashSet<T>`` collection by default.
 
 The Enrollment entity
 ^^^^^^^^^^^^^^^^^^^^^
@@ -147,9 +154,9 @@ In the *Models* folder, create *Enrollment.cs* and replace the existing code wit
   :start-after: #region snippet_Intro
   :end-before:  #endregion
 
-The ``EnrollmentID`` property will be the primary key; this entity uses the classnameID pattern instead of ID by itself as you saw in the Student entity. Ordinarily you would choose one pattern and use it throughout your data model. Here, the variation illustrates that you can use either pattern. In a later tutorial, you'll see how using ID without classname makes it easier to implement inheritance in the data model.
+The ``EnrollmentID`` property will be the primary key; this entity uses the ``classnameID`` pattern instead of ``ID`` by itself as you saw in the ``Student`` entity. Ordinarily you would choose one pattern and use it throughout your data model. Here, the variation illustrates that you can use either pattern. In a later tutorial, you'll see how using ID without classname makes it easier to implement inheritance in the data model.
 
-The ``Grade`` property is an ``enum``. The question mark after the ``Grade`` type declaration indicates that the ``Grade`` property is nullable. A grade that's null is different from a zero grade — null means a grade isn't known or hasn't been assigned yet.
+The ``Grade`` property is an ``enum``. The question mark after the ``Grade`` type declaration indicates that the ``Grade`` property is nullable. A grade that's null is different from a zero grade -- null means a grade isn't known or hasn't been assigned yet.
 
 The ``StudentID`` property is a foreign key, and the corresponding navigation property is ``Student``. An ``Enrollment`` entity is associated with one ``Student`` entity, so the property can only hold a single ``Student`` entity (unlike the ``Student.Enrollments`` navigation property you saw earlier, which can hold multiple ``Enrollment`` entities).
 
@@ -190,28 +197,16 @@ This code creates a ``DbSet`` property for each entity set. In Entity Framework 
 
 You could have omitted the ``DbSet<Enrollment>`` and ``DbSet<Course>`` statements and it would work the same. The Entity Framework would include them implicitly because the ``Student`` entity references the ``Enrollment`` entity and the ``Enrollment`` entity references the ``Course`` entity.
 
-When the database is created, the table names will be the same as the DbSet property names. Property names for collections are typically plural, but developers disagree about whether table names should be pluralized or not. For this first tutorial you'll accept the default behavior.  In later tutorials you'll see how to specifying singular table names by adding attributes to the entity classes.
+When the database is created, the table names will be the same as the DbSet property names. Property names for collections are typically plural, but developers disagree about whether table names should be pluralized or not. For this first tutorial you'll accept the default behavior.  In later tutorials you'll see how to specify singular table names.
  
 Register the context with dependency injection
 ----------------------------------------------
 
-ASP.NET Core implements :doc:`dependency injection </fundamentals/dependency-injection>` by default. Services (such as EF database context objects) are registered with dependency injection during application startup. Components that require these services (such as MVC controllers) are provided these services via constructor parameters. You'll see the controller constructor code that gets a context instance later in this tutorial.
+ASP.NET Core implements :doc:`dependency injection </fundamentals/dependency-injection>` by default. Services (such as the EF database context) are registered with dependency injection during application startup. Components that require these services (such as MVC controllers) are provided these services via constructor parameters. You'll see the controller constructor code that gets a context instance later in this tutorial.
 
 So that ASP.NET Core can provide an instance of ``SchoolContext`` to your controllers, you'll register it as a service.
 
-* Open *Startup.cs*.
-* Add the highlighted ``using`` statements.
-
-.. literalinclude::  intro/samples/cu/Startup.cs
-  :language: c#
-  :start-after: #region snippet_Usings
-  :end-before:  #endregion
-  :emphasize-lines: 3, 8
-
-Now you can use the ``AddDbContext`` method to register the context as a service.
-
-* Locate the ``ConfigureServices`` method.
-* Add the lines that are highlighted in the following code.
+Open *Startup.cs*, and add the highlighted lines to the ``ConfigureServices`` method.
 
 .. literalinclude::  intro/samples/cu/Startup.cs
   :language: c#
@@ -220,21 +215,18 @@ Now you can use the ``AddDbContext`` method to register the context as a service
   :emphasize-lines: 1-2
   :dedent: 12
 
-SQL Server Express LocalDB
-^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-The name of the connection string is passed in to the context by calling a method on a ``DbContextOptionsBuilder`` object. For local development, the doc:`ASP.NET Core configuration system </fundamentals/configuration>` reads the connection string from the *appsettings.json* file. 
+The name of the connection string is passed in to the context by calling a method on a ``DbContextOptionsBuilder`` object. For local development, the :doc:`ASP.NET Core configuration system </fundamentals/configuration>` reads the connection string from the *appsettings.json* file. 
 
 .. literalinclude::  intro/samples/cu/appsettings2.json
   :language: json
-  :end-before:  Logging
-  :emphasize-lines: 5-6
+  :emphasize-lines: 2-3
 
 Your *appsettings.json* file created by the Visual Studio new-project template will have a generated database name with a suffix to guarantee uniqueness.
 
-The connection string specifies a SQL Server LocalDB database. LocalDB is a lightweight version of the SQL Server Express Database Engine and is intended for application development, not production use. LocalDB starts on demand and runs in user mode, so there is no complex configuration. By default, LocalDB creates *.mdf* database files in the `C:/Users/<user>` directory.
+SQL Server Express LocalDB
+^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-For more information, see :doc:`/fundamentals/dependency-injection` and .
+The connection string specifies a SQL Server LocalDB database. LocalDB is a lightweight version of the SQL Server Express Database Engine and is intended for application development, not production use. LocalDB starts on demand and runs in user mode, so there is no complex configuration. By default, LocalDB creates *.mdf* database files in the ``C:/Users/<user>`` directory.
 
 Add code to initialize the database with test data
 ---------------------------------------------------
@@ -251,7 +243,7 @@ following code, which causes a database to be created when needed and loads test
   :start-after: #region snippet_Intro
   :end-before:  #endregion
 
-The code uses arrays rather than ``List<T>`` collections to optimize performance. 
+The code checks if there are any students in the database, and if not, it assumes the database is new and needs to be seeded with test data.  It loads test data into arrays rather than ``List<T>`` collections to optimize performance. 
 
 In *Startup.cs*, add a line at the end of the ``Configure`` method to call this seed method on application startup.
 
@@ -266,7 +258,9 @@ Now the first time you run the application the database will be created and seed
 Create a controller and views
 -----------------------------
 
-Next, you'll use the scaffolding engine in Visual Studio to add an MVC controller and views that will use EF to query and save data. The automatic creation of CRUD action methods and views is known as scaffolding. Scaffolding differs from code generation in that the scaffolded code is a starting point that you can modify to suit your own requirements, whereas you don't modify generated code. When you need to customize generated code, you use partial classes or you regenerate the code when things change.
+Next, you'll use the scaffolding engine in Visual Studio to add an MVC controller and views that will use EF to query and save data. 
+
+The automatic creation of CRUD action methods and views is known as scaffolding. Scaffolding differs from code generation in that the scaffolded code is a starting point that you can modify to suit your own requirements, whereas you typically don't modify generated code. When you need to customize generated code, you use partial classes or you regenerate the code when things change.
 
 * Right-click the **Controllers** folder in **Solution Explorer** and select **Add > New Scaffolded Item...**.
 * In the **Add Scaffold** dialog box, **MVC controller with views, using Entity Framework**.
@@ -276,28 +270,35 @@ Next, you'll use the scaffolding engine in Visual Studio to add an MVC controlle
 * Accept the default **StudentsController.cs** as the name.
 * Click **Add**.
 
+.. image:: intro/_static/scaffold-student.png
+   :alt: Scaffold Student
+
 When you click **Add**, the Visual Studio scaffolding engine creates a *StudentsController.cs* file and a set of views (*.cshtml* files) that work with the controller. 
 
-In the future when you create projects that use Entity Framework you can take advantage of some additional functionality of the scaffolding engine:  just create your first model class, and then in the Add Controller box specify a new context class (click the plus sign to the right of **Data context class**).  Visual Studio will then create your ``DbContext`` class as well as the controller and views.
+(The scaffolding engine can also create the database context for you if you don't create it manually first as you did earlier for this tutorial. You can specify a new context class in the **Add Controller** box by clicking the plus sign to the right of **Data context class**.  Visual Studio will then create your ``DbContext`` class as well as the controller and views.)
 
-You'll notice that the controller takes a ``SchoolContext`` as a constructor parameter. ASP.NET dependency injection will take care of passing an instance of ``SchoolContext`` into the controller. You configured that in the Startup.cs file earlier.
+You'll notice that the controller takes a ``SchoolContext`` as a constructor parameter. 
 
 .. literalinclude::  intro/samples/cu/Controllers/StudentsController.cs
   :language: c#
   :start-after: #region snippet_Context
   :end-before:  #endregion
+  :emphasize-lines: 5,7,9
 
-The controller contains an ``Index`` action method, which displays all students in the database. The method gets a list of students from the Students entity set by reading the Students property of the database context instance:
+ASP.NET dependency injection will take care of passing an instance of ``SchoolContext`` into the controller. You configured that in the *Startup.cs* file earlier.
+
+The controller contains an ``Index`` action method, which displays all students in the database. The method gets a list of students from the Students entity set by reading the ``Students`` property of the database context instance:
 
 .. literalinclude::  intro/samples/cu/Controllers/StudentsController.cs
   :language: c#
   :start-after: #region snippet_ScaffoldedIndex
   :end-before:  #endregion
+  :emphasize-lines: 3
   :dedent: 8
 
 You'll learn about the asynchronous programming elements in this code later in the tutorial.
 
-The `Views\Students\Index.cshtml` view displays this list in a table:
+The *Views/Students/Index.cshtml* view displays this list in a table:
 
 .. literalinclude::  intro/samples/cu/Views/Students/Index1.cshtml
   :language: html
@@ -317,19 +318,21 @@ View the Database
 
 When you ran the Students page and the application tried to access the database, the ``EnsureCreated`` method saw that there was no database and so it created one, then the remainder of the ``Initialize`` method code populated the database with data. You can use **SQL Server Object Explorer** (SSOX) to view the database in Visual Studio. 
 
-Close the browser and stop the application. 
+Close the browser. 
 
-In SSOX, expand **Data Connections**, expand **School Context (ContosoUniversity)**, and then expand **Tables** to see the tables in your new database.
+If the SSOX window isn't already open, select it from the **View** menu in Visual Studio.
+
+In SSOX, click **(localdb)\\MSSQLLocalDB > Databases**, and then click the entry for the database name that is in the connection string in your appsettings.json file.
+
+Expand the **Tables** node to see the tables in your database.
 
 .. image:: intro/_static/ssox-tables.png
    :alt: Tables in SSOX
 
-Right-click the **Student** table and click **Show Table Data** to see the columns that were created and the rows that were inserted into the table. 
+Right-click the **Student** table and click **View Data** to see the columns that were created and the rows that were inserted into the table. 
 
 .. image:: intro/_static/ssox-student-table.png
    :alt: Student table in SSOX
-
-Close the SSOX connection.
 
 The *.mdf* and *.ldf* database files are in the `C:\Users\<yourusername>` folder.
 
@@ -380,4 +383,4 @@ For more information about asynchronous programming in .NET, see `Async Overview
 Summary
 -------
 
-You've now created a simple application that uses the Entity Framework Core and SQL Server Express LocalDB to store and display data. In the following tutorial you'll learn how to perform basic CRUD (create, read, update, delete) operations. 
+You've now created a simple application that uses the Entity Framework Core and SQL Server Express LocalDB to store and display data. In the following tutorial, you'll learn how to perform basic CRUD (create, read, update, delete) operations. 
