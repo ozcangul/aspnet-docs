@@ -26,9 +26,6 @@ namespace ContosoUniversity
             {
                 // For more details on using the user secret store see http://go.microsoft.com/fwlink/?LinkID=532709
                 builder.AddUserSecrets();
-
-                // This will push telemetry data through Application Insights pipeline faster, allowing you to view results immediately.
-                builder.AddApplicationInsightsSettings(developerMode: true);
             }
 
             builder.AddEnvironmentVariables();
@@ -41,7 +38,6 @@ namespace ContosoUniversity
         public void ConfigureServices(IServiceCollection services)
         {
             // Add framework services.
-            services.AddApplicationInsightsTelemetry(Configuration);
 
             #region snippet_SchoolContext
             services.AddDbContext<SchoolContext>(options =>
@@ -69,8 +65,6 @@ namespace ContosoUniversity
             loggerFactory.AddDebug();
             loggerFactory.AddTraceSource("defaultSwitch");
 
-            app.UseApplicationInsightsRequestTelemetry();
-
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -81,8 +75,6 @@ namespace ContosoUniversity
             {
                 app.UseExceptionHandler("/Home/Error");
             }
-
-            app.UseApplicationInsightsExceptionTelemetry();
 
             app.UseStaticFiles();
 
