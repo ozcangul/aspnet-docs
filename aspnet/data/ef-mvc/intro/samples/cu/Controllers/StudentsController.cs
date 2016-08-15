@@ -153,7 +153,11 @@ namespace ContosoUniversity.Controllers
                 return NotFound();
             }
 
-            var student = await _context.Students.Include(s => s.Enrollments).ThenInclude(e => e.Course).SingleOrDefaultAsync(m => m.ID == id);
+            var student = await _context.Students
+                .Include(s => s.Enrollments)
+                    .ThenInclude(e => e.Course)
+                .SingleOrDefaultAsync(m => m.ID == id);
+
             if (student == null)
             {
                 return NotFound();
@@ -303,7 +307,7 @@ namespace ContosoUniversity.Controllers
         // POST: Students/Delete/5
 #if (DeleteWithReadFirst)
         #region snippet_DeleteWithReadFirst
-        [HttpPost]
+        [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
