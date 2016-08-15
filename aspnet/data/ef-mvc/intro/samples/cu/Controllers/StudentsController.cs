@@ -66,6 +66,8 @@ namespace ContosoUniversity.Controllers
         {
             ViewData["NameSortParm"] = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
             ViewData["DateSortParm"] = sortOrder == "Date" ? "date_desc" : "Date";
+            ViewData["CurrentFilter"] = searchString;
+
             var students = from s in _context.Students
                            select s;
             if (!String.IsNullOrEmpty(searchString))
@@ -93,7 +95,6 @@ namespace ContosoUniversity.Controllers
         #endregion
 #elif (SortFilterPage)
         #region snippet_SortFilterPage
-        [Route("[controller]/Page/{page:int?}")]
         public async Task<IActionResult> Index(
             string sortOrder,
             string currentFilter,
