@@ -86,29 +86,14 @@ Press CTRL+F5 to run the project or choose **Debug > Start Without Debugging** f
 .. image:: intro/_static/home-page.png
    :alt: Contoso University home page
 
-Install Entity Framework Core
------------------------------
+Entity Framework Core NuGet packages
+------------------------------------
 
-To use EF Core, install the package for the database provider(s) you want to target. This tutorial uses SQL Server. For a list of available providers see `Database Providers <https://docs.efproject.net/en/latest/providers/index.html>`__.
+To use EF Core, you install the NuGet package for the database provider you want to target. This tutorial uses SQL Server, so it requires installation of the `Microsoft.EntityFrameworkCore.SqlServer <https://www.nuget.org/packages/Microsoft.EntityFrameworkCore.SqlServer/>`__ package. For a list of available providers see `Database Providers <https://docs.efproject.net/en/latest/providers/index.html>`__. 
 
-From the **Tools** menu, select **Tools > NuGet Package Manager > Package Manager Console**.
+There is also a NuGet package for the EF command-line tools that you use to manage the database:  `Microsoft.EntityFrameworkCore.Tools <https://www.nuget.org/packages/Microsoft.EntityFrameworkCore.Tools/1.0.0-preview2-final>`__. That package is a preview release, so when you install it you have to enable preview releases. After installing the package, you also have to add a reference to it in the ``tools`` collection in the *project.json* file.
 
-In the **Package Manager Console** (PMC) window, run the following command.
-
-.. code-block:: text
-
-  install-package Microsoft.EntityFrameworkCore.SqlServer
-
-In ASP.NET Core projects, the ``install-package`` command completes quickly, and package installation occurs in the background. You see **(Restoring...)** appear next to **References** in **Solution Explorer** while the installation is in process.
-
-Later in this tutorial you'll also be using some Entity Framework commands to maintain the database, so install the commands package as well by running the following command.
-
-.. code-block:: text
-
-  install-package Microsoft.EntityFrameworkCore.Tools -Pre
-
-.. image:: intro/_static/install-sql.png
-   :alt: Install EF SQL Server package
+Because you used the **Individual User Accounts** option when you created the project, and this option uses EF Core with SQL Server by default, the EF packages have already been installed for you and the *project.json* file has been updated.
 
 Create the data model
 ---------------------

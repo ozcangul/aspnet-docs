@@ -255,6 +255,17 @@ Rowan Miller, Diego Vega, and other members of the Entity Framework team assiste
 Common errors, and solutions or workarounds for them
 ------------------------------------------------------
 
+EF command not recognized in PMC
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Error message:
+
+The term 'use-dbcontext' is not recognized as the name of a cmdlet, function, script file, or operable program. Check the spelling of the name, or if a path was included, verify that the path is correct and try again.
+
+Solution:
+
+Close the project, close Visual Studio, and reopen Visual Studio.
+
 Error locating SQL Server instance
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 

@@ -88,7 +88,7 @@ namespace ContosoUniversity.Migrations
     }
 }
 #if Truncate
-#region snippet_Truncate
+    //#region snippet_Truncate
     public partial class InitialCreate : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -118,5 +118,5 @@ namespace ContosoUniversity.Migrations
             // Additional code not shown
         }
     }
-#endregion
+    //#endregion
 #endif
