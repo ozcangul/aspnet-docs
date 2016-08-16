@@ -255,6 +255,17 @@ Rowan Miller, Diego Vega, and other members of the Entity Framework team assiste
 Common errors, and solutions or workarounds for them
 ------------------------------------------------------
 
+ContosoUniversity.dll used by another process
+----------------------------------------------
+
+Error message:
+
+Cannot open 'C:\ContosoUniversity\src\ContosoUniversity\bin\Debug\netcoreapp1.0\ContosoUniversity.dll' for writing -- 'The process cannot access the file 'C:\ContosoUniversity\src\ContosoUniversity\bin\Debug\netcoreapp1.0\ContosoUniversity.dll' because it is being used by another process.
+
+Solution:
+
+Stop the site in IIS Express. Go to the Windows System Tray, find IIS Express and right-click its icon, select the Contoso University site, and then click **Stop Site**.
+
 EF command not recognized in PMC
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 

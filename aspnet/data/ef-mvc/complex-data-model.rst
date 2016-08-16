@@ -3,7 +3,7 @@ Creating a complex data model
 
 The Contoso University sample web application demonstrates how to create ASP.NET Core 1.0 MVC web applications using Entity Framework Core 1.0 and Visual Studio 2015. For information about the tutorial series, see :doc:`the first tutorial in the series </data/ef-mvc/intro>`.
 
-In the previous tutorials you worked with a simple data model that was composed of three entities. In this tutorial you'll add more entities and relationships and you'll customize the data model by specifying formatting, validation, and database mapping rules. You'll see two ways to customize the data model:  by adding attributes to entity classes and by adding code to the database context class.
+In the previous tutorials you worked with a simple data model that was composed of three entities. In this tutorial you'll add more entities and relationships and you'll customize the data model by specifying formatting, validation, and database mapping rules.
 
 When you're finished, the entity classes will make up the completed data model that's shown in the following illustration:
 
@@ -24,39 +24,38 @@ In *Models/Student.cs*, add a ``using`` statement for the ``System.ComponentMode
 
 .. literalinclude::  intro/samples/cu/Models/Student.cs
   :language: c#
-  :linenos:
   :start-after: snippet_DataType
   :end-before:  #endregion
   :emphasize-lines: 3, 12-13
 
-The ``DataType`` attribute is used to specify a data type that is more specific than the database intrinsic type. In this case we only want to keep track of the date, not the date and time. The  DataType Enumeration provides for many data types, such as Date, Time, PhoneNumber, Currency, EmailAddress, and more. The DataType attribute can also enable the application to automatically provide type-specific features. For example, a mailto: link can be created for DataType.EmailAddress, and a date selector can be provided for DataType.Date in browsers that support HTML5. The DataType attributes emits HTML 5 data- (pronounced data dash) attributes that HTML 5 browsers can understand. The DataType attributes do not provide any validation. 
+The ``DataType`` attribute is used to specify a data type that is more specific than the database intrinsic type. In this case we only want to keep track of the date, not the date and time. The  ``DataType`` Enumeration provides for many data types, such as Date, Time, PhoneNumber, Currency, EmailAddress, and more. The ``DataType`` attribute can also enable the application to automatically provide type-specific features. For example, a ``mailto:`` link can be created for ``DataType.EmailAddress``, and a date selector can be provided for ``DataType.Date`` in browsers that support HTML5. The ``DataType`` attribute emits HTML 5 ``data-`` (pronounced data dash) attributes that HTML 5 browsers can understand. The ``DataType`` attributes do not provide any validation. 
 
-DataType.Date does not specify the format of the date that is displayed. By default, the data field is displayed according to the default formats based on the server's CultureInfo.
+``DataType.Date`` does not specify the format of the date that is displayed. By default, the data field is displayed according to the default formats based on the server's CultureInfo.
 
-The DisplayFormat attribute is used to explicitly specify the date format:
+The ``DisplayFormat`` attribute is used to explicitly specify the date format:
 
 .. code-block:: c#
 
  [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
 
-The ApplyFormatInEditMode setting specifies that the specified formatting should also be applied when the value is displayed in a text box for editing. (You might not want that for some fields — for example, for currency values, you might not want the currency symbol in the text box for editing.)
+The ``ApplyFormatInEditMode`` setting specifies that the formatting should also be applied when the value is displayed in a text box for editing. (You might not want that for some fields — for example, for currency values, you might not want the currency symbol in the text box for editing.)
 
-You can use the DisplayFormat attribute by itself, but it's generally a good idea to use the DataType attribute also. The DataType attribute conveys the semantics of the data as opposed to how to render it on a screen, and provides the following benefits that you don't get with DisplayFormat:
+You can use the ``DisplayFormat`` attribute by itself, but it's generally a good idea to use the ``DataType`` attribute also. The ``DataType`` attribute conveys the semantics of the data as opposed to how to render it on a screen, and provides the following benefits that you don't get with ``DisplayFormat``:
 
 * The browser can enable HTML5 features (for example to show a calendar control, the locale-appropriate currency symbol, email links, some client-side input validation, etc.).
 * By default, the browser will render data using the correct format based on your locale.
 
-Run the Student Index page again and notice that times are no longer displayed for the enrollment dates. The same will be true for any view that uses the Student model.
+Run the Students Index page again and notice that times are no longer displayed for the enrollment dates. The same will be true for any view that uses the Student model.
 
 .. image:: complex-data-model/_static/dates-no-times.png
    :alt: Students index page showing dates without times
 
-The StringLengthAttribute
-^^^^^^^^^^^^^^^^^^^^^^^^^
+The StringLength attribute
+^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-You can also specify data validation rules and validation error messages using attributes. The StringLength attribute sets the maximum length  in the database and provides client side and server side validation for ASP.NET MVC. You can also specify the minimum string length in this attribute, but the minimum value has no impact on the database schema.
+You can also specify data validation rules and validation error messages using attributes. The ``StringLength`` attribute sets the maximum length  in the database and provides client side and server side validation for ASP.NET MVC. You can also specify the minimum string length in this attribute, but the minimum value has no impact on the database schema.
 
-Suppose you want to ensure that users don't enter more than 50 characters for a name. To add this limitation, add StringLength attributes to the LastName and FirstMidName properties, as shown in the following example:
+Suppose you want to ensure that users don't enter more than 50 characters for a name. To add this limitation, add ``StringLength`` attributes to the ``LastName`` and ``FirstMidName`` properties, as shown in the following example:
 
 .. literalinclude::  intro/samples/cu/Models/Student.cs
   :language: c#
@@ -66,47 +65,40 @@ Suppose you want to ensure that users don't enter more than 50 characters for a 
   :emphasize-lines: 4, 6
   :dedent: 4
 
-The StringLength attribute won't prevent a user from entering white space for a name. You can use the RegularExpression attribute to apply restrictions to the input. For example the following code requires the first character to be upper case and the remaining characters to be alphabetical:
+The ``StringLength`` attribute won't prevent a user from entering white space for a name. You can use the ``RegularExpression`` attribute to apply restrictions to the input. For example the following code requires the first character to be upper case and the remaining characters to be alphabetical:
 
 .. code-block:: c#
 
   [RegularExpression(@"^[A-Z]+[a-zA-Z''-'\s]*$")]
 
-The MaxLength attribute provides similar functionality to the StringLength attribute but doesn't provide client side validation.
+The ``MaxLength`` attribute provides functionality similar to the ``StringLength`` attribute but doesn't provide client side validation.
 
-Run the application and click the Students tab. You get the following error:
+The database model has now changed in a way that requires a change in the database schema. You'll use migrations to update the schema without losing any data that you may have added to the database by using the application UI.
 
-    There are pending model changes for SchoolContext
-    In Visual Studio, use the Package Manager Console to scaffold a new migration for these changes and apply them to the database ...
-
-The database model  has changed in a way that requires a change in the database schema. You'll use migrations to update the schema without losing any data that you added to the database by using the application UI.
-
-In the Package Manager Console (PMC), enter the following commands:
+In the command window, enter the following commands:
 
 .. code-block:: text
 
-  add-migration MaxLengthOnNames
-  update-database
+  dotnet ef migrations add MaxLengthOnNames -c SchoolContext
+  dotnet ef database update -c SchoolContext
 
-(If you've closed and reopened Visual Studio since the last time you ran PMC commands, you'll have to rerun the ``use-dbcontext SchoolContext`` command first, or include ``-context SchoolContext`` with each command.)
+The ``migrations add`` command creates a file named `<timeStamp>_MaxLengthOnNames.cs`. This file contains code in the ``Up`` method that will update the database to match the current data model. The ``database update`` command ran that code.
 
-The add-migration command creates a file named `<timeStamp>_MaxLengthOnNames.cs`. This file contains code in the Up method that will update the database to match the current data model. The update-database command ran that code.
-
-The timestamp prepended to the migrations file name is used by Entity Framework to order the migrations. You can create multiple migrations before running the update-database command, and then all of the migrations are applied in the order in which they were created.
+The timestamp prefixed to the migrations file name is used by Entity Framework to order the migrations. You can create multiple migrations before running the update-database command, and then all of the migrations are applied in the order in which they were created.
 
 Run the Create page, and enter either name longer than 50 characters. When you click Create, client side validation shows an error message.
 
 .. image:: complex-data-model/_static/string-length-errors.png
    :alt: Students index page showing string length errors
 
-The Column Attribute
+The Column attribute
 ^^^^^^^^^^^^^^^^^^^^
 
-You can also use attributes to control how your classes and properties are mapped to the database. Suppose you had used the name FirstMidName for the first-name field because the field might also contain a middle name. But you want the database column to be named FirstName, because users who will be writing ad-hoc queries against the database are accustomed to that name. To make this mapping, you can use the Column attribute.
+You can also use attributes to control how your classes and properties are mapped to the database. Suppose you had used the name ``FirstMidName`` for the first-name field because the field might also contain a middle name. But you want the database column to be named ``FirstName``, because users who will be writing ad-hoc queries against the database are accustomed to that name. To make this mapping, you can use the ``Column`` attribute.
 
-The Column attribute specifies that when the database is created, the column of the Student table that maps to the FirstMidName property will be named FirstName. In other words, when your code refers to Student.FirstMidName, the data will come from or be updated in the FirstName column of the Student table. If you don't specify column names, they are given the same name as the property name.
+The ``Column`` attribute specifies that when the database is created, the column of the ``Student`` table that maps to the ``FirstMidName`` property will be named ``FirstName``. In other words, when your code refers to ``Student.FirstMidName``, the data will come from or be updated in the ``FirstName`` column of the ``Student`` table. If you don't specify column names, they are given the same name as the property name.
 
-In the Student.cs file, add a using statement for System.ComponentModel.DataAnnotations.Schema and add the column name attribute to the FirstMidName property, as shown in the following highlighted code:
+In the *Student.cs* file, add a ``using`` statement for ``System.ComponentModel.DataAnnotations.Schema`` and add the column name attribute to the ``FirstMidName`` property, as shown in the following highlighted code:
 
 .. literalinclude::  intro/samples/cu/Models/Student.cs
   :language: c#
@@ -115,31 +107,28 @@ In the Student.cs file, add a using statement for System.ComponentModel.DataAnno
   :end-before:  #endregion
   :emphasize-lines: 4, 14
 
-The addition of the Column attribute changes the model backing the SchoolContext, so it won't match the database. Enter the following commands in the PMC to create another migration:
+Save your changes and build the project.
+
+The addition of the ``Column`` attribute changes the model backing the ``SchoolContext``, so it won't match the database. Enter the following commands in the command window to create another migration:
 
 .. code-block:: text
 
-  add-migration ColumnFirstName
-  update-database
+  dotnet ef migrations add ColummFirstName -c SchoolContext
+  dotnet ef database update -c SchoolContext
 
-In **SQL Server Object Explorer**, open the Student table designer by double-clicking the Student table.
+In **SQL Server Object Explorer**, open the Student table designer by double-clicking the **Student** table.
 
 .. image:: complex-data-model/_static/ssox-after-migration.png
    :alt: Students table in SSOX after migrations
 
-The following image shows the original column name as it was before you applied the first two migrations. In addition to the column name changing from FirstMidName to FirstName, the two name columns have changed from MAX length to 50 characters.
-
-.. image:: complex-data-model/_static/ssox-before-migration.png
-   :alt: Students table in SSOX before migrations
-
-You can also make database mapping changes using the Fluent API, as you'll see later in this tutorial.
+Before you applied the first two migrations, the name columns were of type nvarchar(MAX). They are now nvarchar(50) and the column name has changed from FirstMidName to FirstName.
 
 .. note:: If you try to compile before you finish creating all of the entity classes in the following sections, you might get compiler errors.
 
 Final changes to the Student entity
 --------------------------------------
 
-.. image:: complex-data-model/_static/student.png
+.. image:: complex-data-model/_static/student-entity.png
    :alt: Student entity
 
 In *Models/Student.cs*, replace the code you added earlier with the following code. The changes are highlighted.
@@ -153,13 +142,13 @@ In *Models/Student.cs*, replace the code you added earlier with the following co
 The Table attribute
 ^^^^^^^^^^^^^^^^^^^
 
-As you saw in the first tutorial, by default tables are named after the DbSet property name.  The property name is for a collection, so it is typically plural ("Students"), but many developers and DBAs prefer to use the singular form ("Student") for table names. This attribute specifies the name that EF will use for the table in the database that stores Student entities.
+As you saw in the first tutorial, by default tables are named after the ``DbSet`` property name.  The property name is for a collection, so it is typically plural ("Students"), but many developers and DBAs prefer to use the singular form ("Student") for table names. This attribute specifies the name that EF will use for the table in the database that stores Student entities.
 
 The Required attribute
 ^^^^^^^^^^^^^^^^^^^^^^
-The Required attribute makes the name properties required fields. The Required attribute is not needed for non-nullable types such as value types (DateTime, int, double, float, etc.). Types that can't be null are automatically treated as required fields. 
+The ``Required`` attribute makes the name properties required fields. The ``Required`` attribute is not needed for non-nullable types such as value types (DateTime, int, double, float, etc.). Types that can't be null are automatically treated as required fields. 
 
-You could remove the Required attribute and replace it with a minimum length parameter for the StringLength attribute:
+You could remove the ``Required`` attribute and replace it with a minimum length parameter for the ``StringLength`` attribute:
 
 .. code-block:: c#
 
@@ -167,30 +156,30 @@ You could remove the Required attribute and replace it with a minimum length par
   [StringLength(50, MinimumLength=1)]
   public string LastName { get; set; }
 
-The Display Attribute
+The Display attribute
 ^^^^^^^^^^^^^^^^^^^^^
 
-The Display attribute specifies that the caption for the text boxes should be "First Name", "Last Name", "Full Name", and "Enrollment Date" instead of the property name in each instance (which has no space dividing the words).
+The ``Display`` attribute specifies that the caption for the text boxes should be "First Name", "Last Name", "Full Name", and "Enrollment Date" instead of the property name in each instance (which has no space dividing the words).
 
 The FullName calculated property
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-FullName is a calculated property that returns a value that's created by concatenating two other properties. Therefore it has only a get accessor, and no FullName column will be generated in the database. 
+``FullName`` is a calculated property that returns a value that's created by concatenating two other properties. Therefore it has only a get accessor, and no ``FullName`` column will be generated in the database. 
 
 Create the Instructor Entity
 ----------------------------
 
-.. image:: complex-data-model/_static/instructor.png
+.. image:: complex-data-model/_static/instructor-entity.png
    :alt: Instructor entity
 
-Create Models\Instructor.cs, replacing the template code with the following code:
+Create *Models/Instructor.cs*, replacing the template code with the following code:
 
 .. literalinclude::  intro/samples/cu/Models/Instructor.cs
   :language: c#
 
-Notice that several properties are the same in the Student and Instructor entities. In the Implementing Inheritance tutorial later in this series, you'll refactor this code to eliminate the redundancy.
+Notice that several properties are the same in the Student and Instructor entities. In the :doc:`Implementing Inheritance </data/ef-mvc/inheritance>` tutorial later in this series, you'll refactor this code to eliminate the redundancy.
 
-You can put multiple attributes on one line, so you could also write the HireDate attributes as follows:
+You can put multiple attributes on one line, so you could also write the ``HireDate`` attributes as follows:
 
 .. code-block:: c#
 
@@ -199,19 +188,19 @@ You can put multiple attributes on one line, so you could also write the HireDat
 The Courses and OfficeAssignment navigation properties
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-The Courses and OfficeAssignment properties are navigation properties. 
+The ``Courses`` and ``OfficeAssignment`` properties are navigation properties. 
 
-An instructor can teach any number of courses, so Courses is defined as a collection. 
+An instructor can teach any number of courses, so ``Courses`` is defined as a collection. 
 
 .. code-block:: c#
 
   public ICollection<InstructorCourse> Courses { get; set; }
 
-If a navigation property can hold multiple entities, its type must be a list in which entries can be added, deleted, and updated, such as ``ICollection<T>``.  You can specify ``ICollection<T>`` or a type such as ``List<T>`` or ``HashSet<T>``. If you specify ``ICollection<T>``, EF creates a ``HashSet<T>`` collection by default.
+If a navigation property can hold multiple entities, its type must be a list in which entries can be added, deleted, and updated.  You can specify ``ICollection<T>`` or a type such as ``List<T>`` or ``HashSet<T>``. If you specify ``ICollection<T>``, EF creates a ``HashSet<T>`` collection by default.
 
-The reason why these are InstructorCourse entities is explained below in the section about many-to-many relationships. 
+The reason why these are ``InstructorCourse`` entities is explained below in the section about many-to-many relationships. 
 
-Contoso University business rules state that an instructor can only have at most one office, so OfficeAssignment is defined as a single OfficeAssignment entity (which may be null if no office is assigned).
+Contoso University business rules state that an instructor can only have at most one office, so the ``OfficeAssignment`` property holds a single OfficeAssignment entity (which may be null if no office is assigned).
 
 .. code-block:: c#
 
@@ -220,7 +209,7 @@ Contoso University business rules state that an instructor can only have at most
 Create the OfficeAssignment entity
 ----------------------------------
 
-.. image:: complex-data-model/_static/officeassignment.png
+.. image:: complex-data-model/_static/officeassignment-entity.png
    :alt: OfficeAssignment entity
 
 Create *Models/OfficeAssignment.cs* with the following code:
@@ -231,7 +220,7 @@ Create *Models/OfficeAssignment.cs* with the following code:
 The Key attribute
 ^^^^^^^^^^^^^^^^^
 
-There's a one-to-zero-or-one relationship  between the Instructor and the OfficeAssignment entities. An office assignment only exists in relation to the instructor it's assigned to, and therefore its primary key is also its foreign key to the Instructor entity. But the Entity Framework can't automatically recognize InstructorID as the primary key of this entity because its name doesn't follow the ID or classnameID naming convention. Therefore, the Key attribute is used to identify it as the key:
+There's a one-to-zero-or-one relationship  between the Instructor and the OfficeAssignment entities. An office assignment only exists in relation to the instructor it's assigned to, and therefore its primary key is also its foreign key to the Instructor entity. But the Entity Framework can't automatically recognize InstructorID as the primary key of this entity because its name doesn't follow the ID or classnameID naming convention. Therefore, the ``Key`` attribute is used to identify it as the key:
 
 .. code-block:: c#
 
@@ -239,43 +228,44 @@ There's a one-to-zero-or-one relationship  between the Instructor and the Office
   [ForeignKey("Instructor")]
   public int InstructorID { get; set; }
 
-You can also use the Key attribute if the entity does have its own primary key but you want to name the property something other than classnameID or ID. By default EF treats the key as non-database-generated because the column is for an identifying relationship.
+You can also use the ``Key`` attribute if the entity does have its own primary key but you want to name the property something other than classnameID or ID. 
+
+By default EF treats the key as non-database-generated because the column is for an identifying relationship.
 
 The ForeignKey attribute
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
-When there is a one-to-zero-or-one relationship or a one-to-one relationship between two entities (such as between OfficeAssignment and Instructor), EF might not be able to work out which end of the relationship is the principal and which end is dependent.  One-to-one relationships have a reference navigation property in each class to the other class. The ForeignKey attribute can be applied to the dependent class to establish the relationship.
+When there is a one-to-zero-or-one relationship or a one-to-one relationship between two entities (such as between OfficeAssignment and Instructor), EF might not be able to work out which end of the relationship is the principal and which end is dependent.  One-to-one relationships have a reference navigation property in each class to the other class. The ``ForeignKey`` attribute can be applied to the dependent class to establish the relationship.
 
 The Instructor navigation property
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-The Instructor entity has a nullable OfficeAssignment navigation property (because an instructor might not have an office assignment), and the OfficeAssignment entity has a non-nullable Instructor navigation property (because an office assignment can't exist without an instructor -- InstructorID is non-nullable). When an Instructor entity has a related OfficeAssignment entity, each entity will have a reference to the other one in its navigation property.
+The Instructor entity has a nullable ``OfficeAssignment`` navigation property (because an instructor might not have an office assignment), and the OfficeAssignment entity has a non-nullable ``Instructor`` navigation property (because an office assignment can't exist without an instructor -- ``InstructorID`` is non-nullable). When an Instructor entity has a related OfficeAssignment entity, each entity will have a reference to the other one in its navigation property.
 
-You could put a [Required] attribute on the Instructor navigation property to specify that there must be a related instructor, but you don't have to do that because the InstructorID foreign key (which is also the key to this table) is non-nullable.
+You could put a ``[Required]`` attribute on the Instructor navigation property to specify that there must be a related instructor, but you don't have to do that because the ``InstructorID`` foreign key (which is also the key to this table) is non-nullable.
 
 Modify the Course Entity
 ------------------------
 
-.. image:: complex-data-model/_static/course.png
+.. image:: complex-data-model/_static/course-entity.png
    :alt: Course entity
 
 In *Models/Course.cs*, replace the code you added earlier with the following code:
 
 .. literalinclude::  intro/samples/cu/Models/Course.cs
   :language: c#
-  :linenos:
   :start-after: snippet_Final
   :end-before:  #endregion
   :emphasize-lines: 2,3,7,11,17,24
 
-The course entity has a foreign key property DepartmentID which points to the related Department entity and it has a Department navigation property. The Entity Framework doesn't require you to add a foreign key property to your data model when you have a navigation property for a related entity.  EF automatically creates foreign keys in the database wherever they are needed and creates `shadow properties <https://ef.readthedocs.io/en/latest/modeling/shadow-properties.html>`__ for them.
+The course entity has a foreign key property ``DepartmentID`` which points to the related Department entity and it has a ``Department`` navigation property. 
 
-But having the foreign key in the data model can make updates simpler and more efficient. For example, when you fetch a course entity to edit, the  Department entity is null if you don't load it, so when you update the course entity, you would have to first fetch the Department entity. When the foreign key property DepartmentID is included in the data model, you don't need to fetch the Department entity before you update.
+The Entity Framework doesn't require you to add a foreign key property to your data model when you have a navigation property for a related entity.  EF automatically creates foreign keys in the database wherever they are needed and creates `shadow properties <https://ef.readthedocs.io/en/latest/modeling/shadow-properties.html>`__ for them. But having the foreign key in the data model can make updates simpler and more efficient. For example, when you fetch a course entity to edit, the  Department entity is null if you don't load it, so when you update the course entity, you would have to first fetch the Department entity. When the foreign key property ``DepartmentID`` is included in the data model, you don't need to fetch the Department entity before you update.
 
 The DatabaseGenerated attribute
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-The DatabaseGenerated attribute with the None parameter on the CourseID property specifies that primary key values are provided by the user rather than generated by the database.
+The ``DatabaseGenerated`` attribute with the ``None`` parameter on the ``CourseID`` property specifies that primary key values are provided by the user rather than generated by the database.
 
 .. code-block:: c#
 
@@ -285,28 +275,27 @@ The DatabaseGenerated attribute with the None parameter on the CourseID property
 
 By default, the Entity Framework assumes that primary key values are generated by the database. That's what you want in most scenarios. However, for Course entities, you'll use a user-specified course number such as a 1000 series for one department, a 2000 series for another department, and so on.
 
-The DatabaseGenerated attribute can also be used to generate default values, as in the case of database columns used to record the date a row was created or updated.  For more information, see `Generated Properties <https://ef.readthedocs.io/en/latest/modeling/generated-properties.html>`__.
+The ``DatabaseGenerated`` attribute can also be used to generate default values, as in the case of database columns used to record the date a row was created or updated.  For more information, see `Generated Properties <https://ef.readthedocs.io/en/latest/modeling/generated-properties.html>`__.
 
 Foreign key and navigation properties
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 The foreign key properties and navigation properties in the Course entity reflect the following relationships:
 
-A course is assigned to one department, so there's a DepartmentID foreign key and a Department navigation property for the reasons mentioned above.
+A course is assigned to one department, so there's a ``DepartmentID`` foreign key and a ``Department`` navigation property for the reasons mentioned above.
 
 .. code-block:: c#
 
   public int DepartmentID { get; set; }
   public Department Department { get; set; }
 
-
-A course can have any number of students enrolled in it, so the Enrollments navigation property is a collection:
+A course can have any number of students enrolled in it, so the ``Enrollments`` navigation property is a collection:
 
 .. code-block:: c#
 
   public ICollection<Enrollment> Enrollments { get; set; }
 
-A course may be taught by multiple instructors, so the Instructors navigation property is a collection:
+A course may be taught by multiple instructors, so the ``Instructors`` navigation property is a collection:
 
 .. code-block:: c#
 
@@ -315,7 +304,7 @@ A course may be taught by multiple instructors, so the Instructors navigation pr
 Create the Department entity
 ----------------------------
 
-.. image:: complex-data-model/_static/department.png
+.. image:: complex-data-model/_static/department-entity.png
    :alt: Department entity 
 
 Create *Models/Department.cs* with the following code:
@@ -329,21 +318,21 @@ Create *Models/Department.cs* with the following code:
 The Column attribute
 ^^^^^^^^^^^^^^^^^^^^
 
-Earlier you used the Column attribute to change column name mapping. In the code for the Department entity, the Column attribute is being used to change SQL data type mapping so that the column will be defined using the SQL Server money type in the database:
+Earlier you used the ``Column`` attribute to change column name mapping. In the code for the Department entity, the ``Column`` attribute is being used to change SQL data type mapping so that the column will be defined using the SQL Server money type in the database:
 
 .. code-block:: c#
 
   [Column(TypeName="money")]
   public decimal Budget { get; set; }
 
-Column mapping is generally not required, because the Entity Framework usually chooses the appropriate SQL Server data type based on the CLR type that you define for the property. The CLR decimal type maps to a SQL Server decimal type. But in this case you know that the column will be holding currency amounts, and the money data type is more appropriate for that.
+Column mapping is generally not required, because the Entity Framework chooses the appropriate SQL Server data type based on the CLR type that you define for the property. The CLR ``decimal`` type maps to a SQL Server ``decimal`` type. But in this case you know that the column will be holding currency amounts, and the money data type is more appropriate for that.
 
 Foreign key and navigation properties
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 The foreign key and navigation properties reflect the following relationships:
 
-A department may or may not have an administrator, and an administrator is always an instructor. Therefore the InstructorID property is included as the foreign key to the Instructor entity, and a question mark is added after the int type designation to mark the property as nullable. The navigation property is named Administrator but holds an Instructor entity:
+A department may or may not have an administrator, and an administrator is always an instructor. Therefore the ``InstructorID`` property is included as the foreign key to the Instructor entity, and a question mark is added after the ``int`` type designation to mark the property as nullable. The navigation property is named ``Administrator`` but holds an Instructor entity:
 
 .. code-block:: c#
 
@@ -367,14 +356,13 @@ A department may have many courses, so there's a Courses navigation property:
 Modify the Enrollment entity
 ----------------------------
 
-.. image:: complex-data-model/_static/enrollment.png
+.. image:: complex-data-model/_static/enrollment-entity.png
    :alt: Enrollment entity 
 
 In *Models/Enrollment.cs*, replace the code you added earlier with the following code:
 
 .. literalinclude::  intro/samples/cu/Models/Enrollment.cs
   :language: c#
-  :linenos:
   :start-after: snippet_Final
   :end-before:  #endregion
   :emphasize-lines: 1-2,11,18
@@ -384,14 +372,14 @@ Foreign key and navigation properties
 
 The foreign key properties and navigation properties reflect the following relationships:
 
-An enrollment record is for a single course, so there's a CourseID foreign key property and a Course navigation property:
+An enrollment record is for a single course, so there's a ``CourseID`` foreign key property and a ``Course`` navigation property:
 
 .. code-block:: c#
 
   public int CourseID { get; set; }
   public Course Course { get; set; }
 
-An enrollment record is for a single student, so there's a StudentID foreign key property and a Student navigation property:
+An enrollment record is for a single student, so there's a ``StudentID`` foreign key property and a ``Student`` navigation property:
 
 .. code-block:: c#
 
@@ -401,7 +389,7 @@ An enrollment record is for a single student, so there's a StudentID foreign key
 Many-to-Many Relationships
 --------------------------
 
-There's a many-to-many relationship between the Student and Course entities, and the Enrollment entity functions as a many-to-many join table with payload in the database. "With payload" means that the Enrollment table contains additional data besides foreign keys for the joined tables (in this case, a primary key and a Grade property).
+There's a many-to-many relationship between the Student and Course entities, and the Enrollment entity functions as a many-to-many join table *with payload* in the database. "With payload" means that the Enrollment table contains additional data besides foreign keys for the joined tables (in this case, a primary key and a Grade property).
 
 The following illustration shows what these relationships look like in an entity diagram. (This diagram was generated using the Entity Framework Power Tools for EF 6.x; creating the diagram isn't part of the tutorial, it's just being used here as an illustration.)
 
@@ -410,15 +398,15 @@ The following illustration shows what these relationships look like in an entity
 
 Each relationship line has a 1 at one end and an asterisk (*) at the other, indicating a one-to-many relationship.
 
-If the Enrollment table didn't include grade information, it would only need to contain the two foreign keys CourseID and StudentID. In that case, it would correspond to a many-to-many join table without payload (or a pure join table) in the database. The Instructor and Course entities have that kind of many-to-many relationship, and your next step is to create an entity class to function as a join table without payload. 
+If the Enrollment table didn't include grade information, it would only need to contain the two foreign keys CourseID and StudentID. In that case, it would be a many-to-many join table without payload (or a pure join table) in the database. The Instructor and Course entities have that kind of many-to-many relationship, and your next step is to create an entity class to function as a join table without payload. 
 
 The CourseInstructor entity
 ---------------------------
 
-A join table is required in the database for the Instructor-Courses many-to-many relationship, and CourseInstructor is the entity that represents that table.
+A join table is required in the database for the Instructor-to-Courses many-to-many relationship, and ``CourseInstructor`` is the entity that represents that table.
 
-.. image:: complex-data-model/_static/courseinstructor.png
-   :alt: Instructor-Course many to many relationship
+.. image:: complex-data-model/_static/courseinstructor-entity.png
+   :alt: CourseInstructor entity
 
 Create *Models/CourseInstructor.cs* with the following code:
 
@@ -428,7 +416,9 @@ Create *Models/CourseInstructor.cs* with the following code:
 Use the fluent API to customize the data model
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Since the foreign keys are not nullable and together uniquely identify each row of the table, there is no need for a separate primary key, the InstructorID and CourseID properties should function as a composite primary key. The only way to identify composite primary keys to EF is by using the fluent API (it can't be done by using attributes), so add the following code to *Data/SchoolContext.cs*, immediately after the last DbSet property.
+Since the foreign keys are not nullable and together uniquely identify each row of the table, there is no need for a separate primary key. The `InstructorID` and `CourseID` properties should function as a composite primary key. The only way to identify composite primary keys to EF is by using the *fluent API* (it can't be done by using attributes).
+
+To configure the CourseInstructor entity's primary key, add the following code to *Data/SchoolContext.cs*, immediately after the last ``DbSet`` property.
 
 .. literalinclude::  intro/samples/cu/Data/SchoolContext.cs
   :language: c#
@@ -438,14 +428,16 @@ Since the foreign keys are not nullable and together uniquely identify each row 
 
 The API is "fluent" because it's often used by stringing a series of method calls together into a single statement, as in the preceding code example.
 
-In this tutorial you're using the fluent API only for database mapping that you can't do with attributes. However, you can also use the fluent API to specify most of the formatting, validation, and mapping rules that you can do by using attributes. Some attributes such as MinimumLength can't be applied with the fluent API. As mentioned previously, MinimumLength doesn't change the schema, it only applies a client and server side validation rule.
+In this tutorial you're using the fluent API only for database mapping that you can't do with attributes. However, you can also use the fluent API to specify most of the formatting, validation, and mapping rules that you can do by using attributes. Some attributes such as ``MinimumLength`` can't be applied with the fluent API. As mentioned previously, ``MinimumLength`` doesn't change the schema, it only applies a client and server side validation rule.
 
 Some developers prefer to use the fluent API exclusively so that they can keep their entity classes "clean." You can mix attributes and fluent API if you want, and there are a few customizations that can only be done by using fluent API, but in general the recommended practice is to choose one of these two approaches and use that consistently as much as possible. If you do use both, note that wherever there is a conflict, Fluent API overrides attributes.
+
+For more information about attributes vs. fluent API, see `Methods of configuration <https://ef.readthedocs.io/en/latest/modeling/index.html#methods-of-configuration>`__.
 
 Add the new entities to the data model 
 --------------------------------------
 
-Add the following DbSet properties to *Data/SchoolContext.cs*:
+Add the following ``DbSet`` properties to *Data/SchoolContext.cs*:
 
 .. literalinclude::  intro/samples/cu/Data/SchoolContext.cs
   :language: c#
@@ -478,34 +470,63 @@ As you saw in the first tutorial, most of this code simply creates new entity ob
 Add a migration and update the database
 ---------------------------------------
 
-From the PMC, enter the add-migration command (don't do the update-database command yet):
+Save your changes and build the project.
+
+From the command window, enter the ``migrations add`` command (don't do the update-database command yet):
 
 .. code-block:: text
 
-  add-Migration ComplexDataModel
+  dotnet ef migrations add ComplexDataModel -c SchoolContext
 
-If you tried to run the update-database command at this point (don't do it yet), you would get the following error:
+You get a warning about possible data loss.
 
-    The ALTER TABLE statement conflicted with the FOREIGN KEY constraint "FK_dbo.Course_dbo.Department_DepartmentID". The conflict occurred in database "ContosoUniversity", table "dbo.Department", column 'DepartmentID'.
+.. code-block:: text
 
-Sometimes when you execute migrations with existing data, you need to insert stub data into the database to satisfy foreign key constraints, and that's what you have to do now. The generated code in the ComplexDataModel Up method adds a non-nullable DepartmentID foreign key to the Course table. Because there are already rows in the Course table when the code runs, the AddColumn operation will fail because SQL Server doesn't know what value to put in the column that can't be null. Therefore you have to change the code to give the new column a default value, and create a stub department named "Temp" to act as the default department. As a result, existing Course rows will all be related to the "Temp" department after the Up method runs.  You can relate them to the correct departments in the Seed method.
+  C:\ContosoUniversity\src\ContosoUniversity>dotnet ef migrations add ComplexDataModel -c SchoolContext
+  Project ContosoUniversity (.NETCoreApp,Version=v1.0) will be compiled because Input items removed from last build
+  Compiling ContosoUniversity for .NETCoreApp,Version=v1.0
+  Compilation succeeded.
+      0 Warning(s)
+      0 Error(s)
+  Time elapsed 00:00:02.9907258
 
-Edit the `<timestamp>_ComplexDataModel.cs` file, comment out the line of code that adds the DepartmentID column to the Course table, and add before it the following code (the commented line is also shown):
+  An operation was scaffolded that may result in the loss of data. Please review the migration for accuracy.
+  Done. To undo this action, use 'dotnet ef migrations remove'
+
+If you tried to run the ``database update`` command at this point (don't do it yet), you would get the following error:
+
+  The ALTER TABLE statement conflicted with the FOREIGN KEY constraint "FK_dbo.Course_dbo.Department_DepartmentID". The conflict occurred in database "ContosoUniversity", table "dbo.Department", column 'DepartmentID'.
+
+Sometimes when you execute migrations with existing data, you need to insert stub data into the database to satisfy foreign key constraints, and that's what you have to do now. The generated code in the ComplexDataModel ``Up`` method adds a non-nullable DepartmentID foreign key to the Course table. Because there are already rows in the Course table when the code runs, the ``AddColumn`` operation will fail because SQL Server doesn't know what value to put in the column that can't be null. Therefore you have to change the code to give the new column a default value, and create a stub department named "Temp" to act as the default department. As a result, existing Course rows will all be related to the "Temp" department after the ``Up`` method runs.  You can relate them to the correct departments in the ``Seed`` method.
+
+Open the `<timestamp>_ComplexDataModel.cs` file. Comment out the line of code that adds the DepartmentID column to the Course table, and add before it the following code (the commented line is also shown):
 
 .. literalinclude::  intro/samples/cu/Migrations/20160727184013_ComplexDataModel.cs
   :language: c#
   :start-after: snippet_DefaultDepartment
   :end-before:  #endregion
+  :dedent: 12
 
 When the ``DbInitializer.Initialize`` method runs, it will insert rows in the Department table and it will relate Course rows to the new Department rows. You will then no longer need the "Temp" department or the default value on the Course.DepartmentID column.
 
-After you have finished editing the `<timestamp>_ComplexDataModel.cs` file, build the project, and then enter the update-database command in the PMC to execute the migration.
+Make one more change to the `<timestamp>_ComplexDataModel.cs` file. Move the block of code that creates the CourseInstructor table so that it is located immediately before the two blocks of code that create indexes for that table. The code that creates the table is highlighted below.
+
+.. literalinclude::  intro/samples/cu/Migrations/20160727184013_ComplexDataModel.cs
+  :language: c#
+  :start-after: snippet_CourseInstructor
+  :end-before:  #endregion
+  :emphasize-lines: 1-23
+  :dedent: 12
+
+This change is required because the scaffolded code drops the primary key of the Course table, creates the CourseInstructor table, and re-creates the primary key of the Course table in that order.  That results in an error when creating the CourseInstructor table because there is no primary key for the CourseID foreign key to point to.
+
+After you have finished editing the `<timestamp>_ComplexDataModel.cs` file, build the project, and then enter the ``database update`` command in the command window to execute the migration.
 
 .. code-block:: text
 
-  update-database
+  dotnet ef database update ComplexDataModel -c SchoolContext
 
-.. note:: It's possible to get other errors when migrating data and making schema changes. If you get migration errors you can't resolve, you can either change the database name in the connection string or delete the database. The simplest approach is to rename the database in appsettings.json. 
+.. note:: It's possible to get other errors when migrating data and making schema changes. If you get migration errors you can't resolve, you can either change the database name in the connection string or delete the database. The simplest approach is to rename the database in appsettings.json. The next time you run ``database update``, a new database will be created.
 
   With a new database, there is no data to migrate, and the update-database command is much more likely to complete without errors. To delete a database, right-click the database in SSOX, click Delete, and then in the **Delete Database** dialog box select **Close existing connections**.
 
@@ -513,12 +534,14 @@ After you have finished editing the `<timestamp>_ComplexDataModel.cs` file, buil
 
 Run the app to cause the ``DbInitializer.Initialize`` method to run and populate the new database.
 
-Open the database in SSOX as you did earlier, and expand the Tables node to see that all of the tables have been created. (If you still have SSOX open from the earlier time, click the Refresh button.)
+Open the database in SSOX as you did earlier, and expand the **Tables** node to see that all of the tables have been created. (If you still have SSOX open from the earlier time, click the Refresh button.)
 
-.. image:: complex-data-model/_static/ssox-new-tables.png
+.. image:: complex-data-model/_static/ssox-tables.png
    :alt: Tables in SSOX
 
-Right-click the CourseInstructors table and select Show Table Data to verify that it has data in it.
+Run the application to trigger the initializer code that seeds the database.
+
+Right-click the **CourseInstructors** table and select **View Data** to verify that it has data in it.
 
 .. image:: complex-data-model/_static/ssox-ci-data.png
    :alt: CourseInstructor data in SSOX
@@ -526,5 +549,5 @@ Right-click the CourseInstructors table and select Show Table Data to verify tha
 Summary
 -------
 
-You now have a more complex data model and corresponding database. In the following tutorial you'll learn more about different ways to access related data.
+You now have a more complex data model and corresponding database. In the following tutorial, you'll learn more about how to access related data.
 
