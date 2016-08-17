@@ -5,19 +5,19 @@ The Contoso University sample web application demonstrates how to create ASP.NET
 
 In the previous tutorial you handled concurrency exceptions. This tutorial will show you how to implement inheritance in the data model.
 
-In object-oriented programming, you can use inheritance to facilitate code reuse. In this tutorial, you'll change the Instructor and Student classes so that they derive from a Person base class which contains properties such as LastName that are common to both instructors and students. You won't add or change any web pages, but you'll change some of the code and those changes will be automatically reflected in the database.
+In object-oriented programming, you can use inheritance to facilitate code reuse. In this tutorial, you'll change the ``Instructor`` and ``Student`` classes so that they derive from a ``Person`` base class which contains properties such as ``LastName`` that are common to both instructors and students. You won't add or change any web pages, but you'll change some of the code and those changes will be automatically reflected in the database.
 
 Options for mapping inheritance to database tables
 --------------------------------------------------
 
-The Instructor and Student classes in the School data model have several properties that are identical:
+The ``Instructor`` and ``Student`` classes in the School data model have several properties that are identical:
 
-.. image:: inheritance/_static/student-instructor.png
+.. image:: inheritance/_static/no-inheritance.png
    :alt: Student and Instructor classes
 
-Suppose you want to eliminate the redundant code for the properties that are shared by the Instructor and Student entities. Or you want to write a service that can format names without caring whether the name came from an instructor or a student. You could create a Person base class which contains only those shared properties, then make the Instructor and Student entities inherit from that base class, as shown in the following illustration:
+Suppose you want to eliminate the redundant code for the properties that are shared by the ``Instructor`` and ``Student`` entities. Or you want to write a service that can format names without caring whether the name came from an instructor or a student. You could create a ``Person`` base class that contains only those shared properties, then make the ``Instructor`` and ``Student`` classes inherit from that base class, as shown in the following illustration:
 
-.. image:: inheritance/_static/student-instructor-person.png
+.. image:: inheritance/_static/inheritance.png
    :alt: Student and Instructor classes deriving from Person class
 
 There are several ways this inheritance structure could be represented in the database. You could have a Person table that includes information about both students and instructors in a single table. Some of the columns could apply only to instructors (HireDate), some only to students (EnrollmentDate), some to both (LastName, FirstName). Typically, you'd have a discriminator column to indicate which type each row represents. For example, the discriminator column might have "Instructor" for instructors and "Student" for students.
@@ -38,13 +38,14 @@ Yet another option is to map all non-abstract types to individual tables. All pr
 
 TPC and TPH inheritance patterns generally deliver better performance than TPT inheritance patterns, because TPT patterns can result in complex join queries.  
 
-This tutorial demonstrates how to implement TPH inheritance. TPH is the only inheritance pattern that the Entity Framework Core supports.  What you'll do is create a Person class, change the Instructor and Student classes to derive from Person, add the new class to the DbContext, and create a migration.
+This tutorial demonstrates how to implement TPH inheritance. TPH is the only inheritance pattern that the Entity Framework Core supports.  What you'll do is create a ``Person`` class, change the ``Instructor`` and ``Student`` classes to derive from ``Person``, add the new class to the ``DbContext``, and create a migration.
 
-## Create the Person class
+Create the Person class
+-----------------------
 
 In the Models folder, create Person.cs and replace the template code with the following code:
 
-.. literalinclude::  intro/samples/cu-final/Models/Person.cs
+.. literalinclude:: intro/samples/cu-final/Models/Person.cs
   :language: c#
 
 Make Student and Instructor classes inherit from Person
@@ -52,12 +53,12 @@ Make Student and Instructor classes inherit from Person
 
 In *Instructor.cs*, derive the Instructor class from the Person class and remove the key and name fields. The code will look like the following example:
 
-.. literalinclude::  intro/samples/cu-final/Models/Instructor.cs
+.. literalinclude:: intro/samples/cu-final/Models/Instructor.cs
   :language: c#
 
 Make the same changes in *Student.cs*.
 
-.. literalinclude::  intro/samples/cu-final/Models/Student.cs
+.. literalinclude:: intro/samples/cu-final/Models/Student.cs
   :language: c#
 
 Add the Person entity type to the data model
@@ -65,7 +66,7 @@ Add the Person entity type to the data model
 
 In *SchoolContext.cs*, add a DbSet property for the Person entity type:
 
-.. literalinclude::  intro/samples/cu-final/Data/SchoolContext.cs
+.. literalinclude:: intro/samples/cu-final/Data/SchoolContext.cs
   :language: c#
   :start-after: snippet_Person
   :end-before:  #endregion
@@ -76,26 +77,27 @@ This is all that the Entity Framework needs in order to configure table-per-hier
 Create and customize migration code
 -----------------------------------
 
-In the Package Manager Console (PMC),  enter the following commands:
+Save your changes and build the project.
+
+In the command window, enter the following command:
 
 .. code-block:: text
 
-  Use-DbContext SchoolContext
-  Add-Migration Inheritance
+  dotnet ef migrations add Inheritance -c SchoolContext 
 
-Run the Update-Database command in the PMC.
+Run the ``database update`` command:.
 
 .. code-block:: text
 
-  Update-Database
+  dotnet ef database update -c SchoolContext
 
-The command will fail at this point because we have existing data that migrations doesn't know how to handle. You get an error message like the following one:
+The command will fail at this point because you have existing data that migrations doesn't know how to handle. You get an error message like the following one:
 
 	Could not drop object 'dbo.Instructor' because it is referenced by a FOREIGN KEY constraint.
 
-Open `Migrations\<timestamp>_Inheritance.cs` and replace the Up method with the following code:
+Open `Migrations\<timestamp>_Inheritance.cs` and replace the ``Up`` method with the following code:
 
-.. literalinclude::  intro/samples/cu-final/Migrations/20160729120525_Inheritance.cs
+.. literalinclude::  intro/samples/cu-final/Migrations/20160817215858_Inheritance.cs
   :language: c#
   :start-after: snippet_Up
   :end-before:  #endregion
@@ -114,24 +116,28 @@ This code takes care of the following database update tasks:
 * Re-creates foreign key constraints and indexes, now pointing them to the Person table.
 (If you had used GUID instead of integer as the primary key type, the student primary key values wouldn't have to change, and several of these steps could have been omitted.)
 
-Run the update-database command again.
+Run the ``database update`` command again:
 
 .. code-block:: text
 
-  Update-Database
+  dotnet ef database update -c SchoolContext
 
-(In a production system you would make corresponding changes to the Down method in case you ever had to use that to go back to the previous database version. For this tutorial you won't be using the Down method.) 
+(In a production system you would make corresponding changes to the ``Down`` method in case you ever had to use that to go back to the previous database version. For this tutorial you won't be using the ``Down`` method.) 
 
-.. note:: It's possible to get other errors when migrating data and making schema changes. If you get migration errors you can't resolve, you can continue with the tutorial by changing the connection string in the Web.config file or by deleting the database. The simplest approach is to rename the database in the appsettings.json file. For example, change the database name to ContosoUniversity3. With a new database, there is no data to migrate, and the update-database command is much more likely to complete without errors. To delete the database, use SSOX and be sure to select the **Close existing connections** check box. If you want to troubleshoot a migrations error, the best resource is one of the Entity Framework forums or StackOverflow.com.
+.. note:: It's possible to get other errors when migrating data and making schema changes. If you get migration errors you can't resolve, you can either change the database name in the connection string or delete the database. The simplest approach is to rename the database in appsettings.json. The next time you run ``database update``, a new database will be created.
+
+  With a new database, there is no data to migrate, and the update-database command is much more likely to complete without errors. To delete a database, right-click the database in SSOX, click Delete, and then in the **Delete Database** dialog box select **Close existing connections**.
+
+  If that fails, another thing you can try is re-initialize the database by entering the following command in the PMC:   ``update-database -Migration:0``
 
 Test with inheritance implemented
 ---------------------------------
 
 Run the site and try various pages. Everything works the same as it did before.
 
-In **SQL Server Object Explorer**, expand **Data Connections/SchoolContext** and then **Tables**, and you see that the Student and Instructor tables have been replaced by a Person table. Expand the Person table and you see that it has all of the columns that used to be in the Student and Instructor tables.
+In **SQL Server Object Explorer**, expand **Data Connections/SchoolContext** and then **Tables**, and you see that the Student and Instructor tables have been replaced by a Person table. Open the Person table designer and you see that it has all of the columns that used to be in the Student and Instructor tables.
 
-.. image:: inheritance/_static/ssox-person-tables.png
+.. image:: inheritance/_static/ssox-person-table.png
    :alt: Person table in SSOX
 
 Right-click the Person table, and then click Show Table Data to see the discriminator column.
@@ -139,12 +145,7 @@ Right-click the Person table, and then click Show Table Data to see the discrimi
 .. image:: inheritance/_static/ssox-person-data.png
    :alt: Person table in SSOX - table data
 
-The following diagram illustrates the structure of the new School database:
-
-.. image:: inheritance/_static/data-model.png
-   :alt: Data model diagram
-
 Summary
 -------
 
-You've implemented table-per-hierarchy inheritance for the Person, Student, and Instructor classes. For more information about inheritance in Entity Framework Core, see `Inheritance <https://ef.readthedocs.io/en/latest/modeling/inheritance.html>`__. In the next tutorial you'll see how to handle a variety of relatively advanced Entity Framework scenarios.
+You've implemented table-per-hierarchy inheritance for the ``Person``, ``Student``, and ``Instructor`` classes. For more information about inheritance in Entity Framework Core, see `Inheritance <https://ef.readthedocs.io/en/latest/modeling/inheritance.html>`__. In the next tutorial you'll see how to handle a variety of relatively advanced Entity Framework scenarios.
