@@ -71,18 +71,6 @@ namespace ContosoUniversity.Controllers
         // GET: Students/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            List<string> courseList = new List<string>();
-            var departments = _context.Departments;
-            foreach (Department d in departments)
-            {
-                _context.Courses.Where(c => c.DepartmentID == d.DepartmentID).Load();
-                foreach (Course c in d.Courses)
-                {
-                    courseList.Add(d.Name + c.Title);
-                }
-            }
-
-
             if (id == null)
             {
                 return NotFound();
