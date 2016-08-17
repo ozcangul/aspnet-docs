@@ -45,7 +45,7 @@ Create the Person class
 
 In the Models folder, create Person.cs and replace the template code with the following code:
 
-.. literalinclude:: intro/samples/cu-final/Models/Person.cs
+.. literalinclude::  intro/samples/cu-final/Models/Person.cs
   :language: c#
 
 Make Student and Instructor classes inherit from Person
@@ -53,7 +53,7 @@ Make Student and Instructor classes inherit from Person
 
 In *Instructor.cs*, derive the Instructor class from the Person class and remove the key and name fields. The code will look like the following example:
 
-.. literalinclude:: intro/samples/cu-final/Models/Instructor.cs
+.. literalinclude::  intro/samples/cu-final/Models/Instructor.cs
   :language: c#
 
 Make the same changes in *Student.cs*.
@@ -64,13 +64,13 @@ Make the same changes in *Student.cs*.
 Add the Person entity type to the data model
 --------------------------------------------
 
-In *SchoolContext.cs*, add a DbSet property for the Person entity type:
+In *SchoolContext.cs*, add a ``DbSet`` property for the Person entity type:
 
-.. literalinclude:: intro/samples/cu-final/Data/SchoolContext.cs
+.. literalinclude::  intro/samples/cu-final/Data/SchoolContext.cs
   :language: c#
   :start-after: snippet_Person
   :end-before:  #endregion
-  :dedent: 12
+  :dedent: 8
 
 This is all that the Entity Framework needs in order to configure table-per-hierarchy inheritance. As you'll see, when the database is updated, it will have a Person table in place of the Student and Instructor tables.
 

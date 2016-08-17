@@ -1,9 +1,9 @@
-﻿#define UseRawSQL // or UseDbSet
+﻿#define UseDbSet // or UseRawSQL
 
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-#region snippet-Usings2
+#region snippet_Usings2
 using System.Collections.Generic;
 using System.Data.Common;
 #endregion
@@ -46,7 +46,7 @@ namespace ContosoUniversity.Controllers
         }
         #endregion
 #elif UseRawSQL
-        #region UseRawSQL
+        #region snippet_UseRawSQL
         public async Task<ActionResult> About()
         {
             List<EnrollmentDateGroup> groups = new List<EnrollmentDateGroup>();
@@ -56,7 +56,8 @@ namespace ContosoUniversity.Controllers
                 using (var command = conn.CreateCommand())
                 {
                     string query = "SELECT EnrollmentDate, COUNT(*) AS StudentCount "
-                        + "FROM Students "
+                        + "FROM Person "
+                        + "WHERE Discriminator = 'Student' "
                         + "GROUP BY EnrollmentDate";
                     command.CommandText = query;
                     DbDataReader reader = await command.ExecuteReaderAsync();

@@ -196,7 +196,7 @@ namespace ContosoUniversity.Controllers
             {
                 ViewData["RowsAffected"] = 
                     await _context.Database.ExecuteSqlCommandAsync(
-                        "UPDATE Courses SET Credits = Credits * {0}",
+                        "UPDATE Course SET Credits = Credits * {0}",
                         parameters: multiplier);
             }
             return View();
