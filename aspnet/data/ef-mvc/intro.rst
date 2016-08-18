@@ -20,7 +20,7 @@ Entity Framework Core 1.0 is not a prerequisite because you install the EF NuGet
 Troubleshooting
 ---------------
 
-If you run into a problem you can't resolve, you can generally find the solution by comparing your code to the completed project that you can download. If you don't find what you need there, you can post questions to the `ASP.NET Entity Framework forum <http://forums.asp.net/1227.aspx>`__, the `Entity Framework forum <http://social.msdn.microsoft.com/forums/en-US/adodotnetentityframework/threads/>`__, or StackOverflow.com for `ASP.NET Core <http://stackoverflow.com/questions/tagged/asp.net-core>`__ or `EF Core <http://stackoverflow.com/questions/tagged/entity-framework-core>`__.
+If you run into a problem you can't resolve, you can generally find the solution by comparing your code to the completed project that you can download. For some common errors and how to solve them, see `the Troubleshooting section of the last tutorial in the series <https://docs.asp.net/en/latest/data/ef-mvc/advanced.html#common-errors>`__. If you don't find what you need there, you can post questions to the `ASP.NET Entity Framework forum <http://forums.asp.net/1227.aspx>`__, the `Entity Framework forum <http://social.msdn.microsoft.com/forums/en-US/adodotnetentityframework/threads/>`__, or StackOverflow.com for `ASP.NET Core <http://stackoverflow.com/questions/tagged/asp.net-core>`__ or `EF Core <http://stackoverflow.com/questions/tagged/entity-framework-core>`__.
 
 The Contoso University Web Application
 --------------------------------------

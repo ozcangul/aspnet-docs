@@ -45,6 +45,8 @@ You can use the ``DisplayFormat`` attribute by itself, but it's generally a good
 * The browser can enable HTML5 features (for example to show a calendar control, the locale-appropriate currency symbol, email links, some client-side input validation, etc.).
 * By default, the browser will render data using the correct format based on your locale.
 
+For more information, see the `<input> tag helper documentation <https://docs.asp.net/en/latest/mvc/views/working-with-forms.html#the-input-tag-helper>`__.
+
 Run the Students Index page again and notice that times are no longer displayed for the enrollment dates. The same will be true for any view that uses the Student model.
 
 .. image:: complex-data-model/_static/dates-no-times.png

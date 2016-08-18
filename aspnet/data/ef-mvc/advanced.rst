@@ -252,8 +252,8 @@ Acknowledgments
 Tom Dykstra and Rick Anderson (twitter @RickAndMSFT) wrote this tutorial.
 Rowan Miller, Diego Vega, and other members of the Entity Framework team assisted with code reviews and helped debug issues that arose while we were writing code for the tutorials.
 
-Common errors, and solutions or workarounds for them
-------------------------------------------------------
+Common errors
+-------------
 
 ContosoUniversity.dll used by another process
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
