@@ -39,43 +39,40 @@ In `Controllers\StudentController.cs`, the action method for the Details view us
 
 The ``Include`` method causes the context to load the ``Student.Enrollments`` navigation property, and within each enrollment the ``Enrollment.Course`` navigation property.  You'll learn more about the ``Include`` method in the :doc:`reading related data </data/ef-mvc/read-related-data>` tutorial.
 
-Route data
-^^^^^^^^^^
+.. note::  The key value that is is passed to the ``Details`` method comes from *route data*.
 
-The key value is passed to the ``Details`` method as the ``id`` parameter and comes from route data in the Details hyperlink on the Index page.
+  Route data is data that the model binder found in a segment of the URL. For example, the default route specifies controller, action, and id segments:
 
-Route data is data that the model binder found in a segment of the URL. For example, the default route specifies controller, action, and id segments:
+  .. literalinclude::  intro/samples/cu/Startup.cs
+    :language: c#
+    :start-after: #region snippet_Route
+    :end-before:  #endregion
+    :emphasize-lines: 5
+    :dedent: 12
 
-.. literalinclude::  intro/samples/cu/Startup.cs
-  :language: c#
-  :start-after: #region snippet_Route
-  :end-before:  #endregion
-  :emphasize-lines: 5
-  :dedent: 12
+  In the following URL, the default route maps Instructor as the controller, Index as the action, and 1 as the id; these are route data values.
 
-In the following URL, the default route maps Instructor as the controller, Index as the action, and 1 as the id; these are route data values.
+  .. code-block:: html
 
-.. code-block:: html
+    http://localhost:1230/Instructor/Index/1?courseID=2021
 
-  http://localhost:1230/Instructor/Index/1?courseID=2021
+  The last part of the URL ("?courseID=2021") is a query string value. The model binder will also pass the ID value to the ``Details`` method ``id`` parameter if you pass it as a query string value:
 
-The last part of the URL ("?courseID=2021") is a query string value. The model binder will also pass the ID value to the ``Details`` method ``id`` parameter if you pass it as a query string value:
+  .. code-block:: html
 
-.. code-block:: html
+    http://localhost:1230/Instructor/Index?id=1&CourseID=2021
 
-  http://localhost:1230/Instructor/Index?id=1&CourseID=2021
+  In the Index page, hyperlink URLs are created by tag helper statements in the Razor view. In the following Razor code, the id parameter matches the default route, so ``id`` is added to the route data.
 
-In the Index page, hyperlink URLs are created by tag helper statements in the Razor view. In the following Razor code, the id parameter matches the default route, so id is added to the route data.
+  .. code-block:: html
 
-.. code-block:: html
+    <a asp-action="Edit" asp-route-id="@item.ID">Edit</a>
 
-  <a asp-action="Edit" asp-route-id="@item.ID">Edit</a>
+  In the following Razor code, ``studentID`` doesn't match a parameter in the default route, so it's added as a query string.
 
-In the following Razor code, studentID doesn't match a parameter in the default route, so it's added as a query string.
+  .. code-block:: html
 
-.. code-block:: html
-
-  <a asp-action="Edit" asp-route-studentID="@item.ID">Edit</a>
+    <a asp-action="Edit" asp-route-studentID="@item.ID">Edit</a>
 
 Add enrollments to the Details view
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

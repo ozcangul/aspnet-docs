@@ -10,13 +10,13 @@ namespace ContosoUniversity.Migrations
         {
             migrationBuilder.AlterColumn<string>(
                 name: "LastName",
-                table: "Students",
+                table: "Student",
                 maxLength: 50,
                 nullable: true);
 
             migrationBuilder.AlterColumn<string>(
                 name: "FirstMidName",
-                table: "Students",
+                table: "Student",
                 maxLength: 50,
                 nullable: true);
         }
@@ -25,12 +25,12 @@ namespace ContosoUniversity.Migrations
         {
             migrationBuilder.AlterColumn<string>(
                 name: "LastName",
-                table: "Students",
+                table: "Student",
                 nullable: true);
 
             migrationBuilder.AlterColumn<string>(
                 name: "FirstMidName",
-                table: "Students",
+                table: "Student",
                 nullable: true);
         }
     }

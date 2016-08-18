@@ -3,7 +3,6 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ContosoUniversity.Models
 {
-    [Table(name:"Person")]
     public abstract class Person
     {
         public int ID { get; set; }

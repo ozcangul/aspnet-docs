@@ -9,8 +9,6 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ContosoUniversity.Models
 {
-    [Table(name: "Department")]
-
     public class Department
     {
         public int DepartmentID { get; set; }
@@ -45,8 +43,6 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ContosoUniversity.Models
 {
-    [Table(name: "Department")]
-
     public class Department
     {
         public int DepartmentID { get; set; }

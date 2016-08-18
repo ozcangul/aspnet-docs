@@ -1,4 +1,4 @@
-﻿#define Final // or Intro or StringLength or DataType
+﻿#define AfterInheritance // or Intro or StringLength or DataType or BeforeInheritance
 
 #if Intro
 #region snippet_Intro
@@ -92,8 +92,8 @@ namespace ContosoUniversity.Models
 #endregion
 
 
-#elif Final
-#region snippet_Final
+#elif BeforeInheritance
+#region snippet_BeforeInheritance
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -101,7 +101,6 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ContosoUniversity.Models
 {
-    [Table(name: "Student")]
     public class Student
     {
         public int ID { get; set; }
@@ -126,6 +125,28 @@ namespace ContosoUniversity.Models
                 return LastName + ", " + FirstMidName;
             }
         }
+
+        public ICollection<Enrollment> Enrollments { get; set; }
+    }
+}
+#endregion
+#elif AfterInheritance
+#region snippet_AfterInheritance
+using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace ContosoUniversity.Models
+{
+    [Table(name: "Student")]
+    public class Student : Person
+    {
+        [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
+        [Display(Name = "Enrollment Date")]
+        public DateTime EnrollmentDate { get; set; }
+
 
         public ICollection<Enrollment> Enrollments { get; set; }
     }

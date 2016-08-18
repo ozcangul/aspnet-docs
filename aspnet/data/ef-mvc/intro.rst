@@ -182,7 +182,13 @@ This code creates a ``DbSet`` property for each entity set. In Entity Framework 
 
 You could have omitted the ``DbSet<Enrollment>`` and ``DbSet<Course>`` statements and it would work the same. The Entity Framework would include them implicitly because the ``Student`` entity references the ``Enrollment`` entity and the ``Enrollment`` entity references the ``Course`` entity.
 
-When the database is created, the table names will be the same as the DbSet property names. Property names for collections are typically plural, but developers disagree about whether table names should be pluralized or not. For this first tutorial you'll accept the default behavior.  In later tutorials you'll see how to specify singular table names.
+When the database is created, Ef creates table that have names the same as the ``DbSet`` property names. Property names for collections are typically plural (Students rather than Student), but developers disagree about whether table names should be pluralized or not. For these tutorials you'll override the default behavior by specifying singular table names in the DbContext. To do that, add the following highlighted code after the last DbSet property.
+
+.. literalinclude::  intro/samples/cu/Data/SchoolContext.cs
+  :language: c#
+  :start-after: #region snippet_TableNames
+  :end-before:  #endregion
+  :emphasize-lines: 16-21
  
 Register the context with dependency injection
 ----------------------------------------------
@@ -202,11 +208,11 @@ Open *Startup.cs*, and add the highlighted lines to the ``ConfigureServices`` me
 
 The name of the connection string is passed in to the context by calling a method on a ``DbContextOptionsBuilder`` object. For local development, the :doc:`ASP.NET Core configuration system </fundamentals/configuration>` reads the connection string from the *appsettings.json* file. 
 
-.. literalinclude::  intro/samples/cu/appsettings2.json
+.. literalinclude::  intro/samples/cu/appsettings1.json
   :language: json
   :emphasize-lines: 2-3
 
-Your *appsettings.json* file created by the Visual Studio new-project template will have a generated database name with a suffix to guarantee uniqueness.
+Your *appsettings.json* file created by the Visual Studio new-project template will have a generated database name with a numeric suffix to guarantee uniqueness.
 
 SQL Server Express LocalDB
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -333,12 +339,12 @@ The amount of code you had to write in order for the Entity Framework to be able
 * Entity properties that are named ID or classnameID are recognized as primary key properties. 
 * A property is interpreted as a foreign key property if it's named `<navigation property name><primary key property name>` (for example, ``StudentID`` for the ``Student`` navigation property since the ``Student`` entity's primary key is ``ID``). Foreign key properties can also be named simply `<primary key property name>` (for example, ``EnrollmentID`` since the ``Enrollment`` entity's primary key is ``EnrollmentID``).
 
-Conventional behavior can be overridden. For example, you can explicitly specify table names and column names, and you can explicitly mark a property as a foreign key property. You'll see examples of each of these in a later tutorial.
+Conventional behavior can be overridden. For example, you can explicitly specify table names, as you saw earlier in this tutorial. And you can set column names and set any property as primary key or foreign key, as you'll see in a later tutorial in this series.
 
 Asynchronous code
 -----------------
 
-Asynchronous programming is the default mode for ASP.NET Core and EF Core. 
+Asynchronous programming is the default mode for ASP.NET Core and EF Core.
 
 A web server has a limited number of threads available, and in high load situations all of the available threads might be in use. When that happens, the server can't process new requests until the threads are freed up. With synchronous code, many threads may be tied up while they aren't actually doing any work because they're waiting for I/O to complete. With asynchronous code, when a process is waiting for I/O to complete, its thread is freed up for the server to use for processing other requests. As a result, asynchronous code enables server resources to be use more efficiently, and the server is enabled to handle more traffic without delays.
 

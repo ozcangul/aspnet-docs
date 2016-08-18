@@ -10,7 +10,7 @@ namespace ContosoUniversity.Migrations
         {
             migrationBuilder.RenameColumn(
                 name: "FirstMidName",
-                table: "Students",
+                table: "Student",
                 newName: "FirstName");
         }
 
@@ -18,7 +18,7 @@ namespace ContosoUniversity.Migrations
         {
             migrationBuilder.RenameColumn(
                 name: "FirstName",
-                table: "Students",
+                table: "Student",
                 newName: "FirstMidName");
         }
     }

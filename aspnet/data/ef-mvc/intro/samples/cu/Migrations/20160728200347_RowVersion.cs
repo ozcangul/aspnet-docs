@@ -10,7 +10,7 @@ namespace ContosoUniversity.Migrations
         {
             migrationBuilder.AddColumn<byte[]>(
                 name: "RowVersion",
-                table: "Departments",
+                table: "Department",
                 rowVersion: true,
                 nullable: true);
         }
@@ -19,7 +19,7 @@ namespace ContosoUniversity.Migrations
         {
             migrationBuilder.DropColumn(
                 name: "RowVersion",
-                table: "Departments");
+                table: "Department");
         }
     }
 }

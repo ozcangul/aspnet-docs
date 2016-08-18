@@ -17,7 +17,7 @@ Change the connection string
 
 In the *appsettings.json* file, change the name of the database in the connection string to ContosoUniversity2 or some other name that you haven't used on the computer you're using.
 
-.. literalinclude::  intro/samples/cu/appsettings3.json
+.. literalinclude::  intro/samples/cu/appsettings2.json
   :language: json
   :end-before:  Logging
   :emphasize-lines: 6
@@ -27,7 +27,7 @@ This change sets up the project so that the first migration will create a new da
 Create an initial migration
 ---------------------------
 
-Open a command window and navigate to the project folder. Here's a quick way to do that:
+Save your changes and build the project. Then open a command window and navigate to the project folder. Here's a quick way to do that:
 
 * In **Solution Explorer**, right-click the project and choose **Open in File Explorer** from the context menu.
 

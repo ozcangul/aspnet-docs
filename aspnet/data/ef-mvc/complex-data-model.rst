@@ -75,7 +75,7 @@ The ``MaxLength`` attribute provides functionality similar to the ``StringLength
 
 The database model has now changed in a way that requires a change in the database schema. You'll use migrations to update the schema without losing any data that you may have added to the database by using the application UI.
 
-In the command window, enter the following commands:
+Save your changes and build the project. Then open the command window in the project folder and enter the following commands:
 
 .. code-block:: text
 
@@ -109,7 +109,9 @@ In the *Student.cs* file, add a ``using`` statement for ``System.ComponentModel.
 
 Save your changes and build the project.
 
-The addition of the ``Column`` attribute changes the model backing the ``SchoolContext``, so it won't match the database. Enter the following commands in the command window to create another migration:
+The addition of the ``Column`` attribute changes the model backing the ``SchoolContext``, so it won't match the database. 
+
+Save your changes and build the project. Then open the command window in the project folder and enter the following commands to create another migration:
 
 .. code-block:: text
 
@@ -135,9 +137,9 @@ In *Models/Student.cs*, replace the code you added earlier with the following co
 
 .. literalinclude::  intro/samples/cu/Models/Student.cs
   :language: c#
-  :start-after: snippet_Final
+  :start-after: snippet_BeforeInheritance
   :end-before:  #endregion
-  :emphasize-lines: 8, 12, 14, 16, 19, 23, 26-32
+  :emphasize-lines: 11, 13, 15, 18, 22, 25-31
 
 The Table attribute
 ^^^^^^^^^^^^^^^^^^^
@@ -175,6 +177,8 @@ Create the Instructor Entity
 Create *Models/Instructor.cs*, replacing the template code with the following code:
 
 .. literalinclude::  intro/samples/cu/Models/Instructor.cs
+  :start-after: snippet_BeforeInheritance
+  :end-before: #endregion
   :language: c#
 
 Notice that several properties are the same in the Student and Instructor entities. In the :doc:`Implementing Inheritance </data/ef-mvc/inheritance>` tutorial later in this series, you'll refactor this code to eliminate the redundancy.
@@ -256,7 +260,7 @@ In *Models/Course.cs*, replace the code you added earlier with the following cod
   :language: c#
   :start-after: snippet_Final
   :end-before:  #endregion
-  :emphasize-lines: 2,3,7,11,17,24
+  :emphasize-lines: 2,3,10,16,23
 
 The course entity has a foreign key property ``DepartmentID`` which points to the related Department entity and it has a ``Department`` navigation property. 
 
@@ -345,13 +349,14 @@ A department may have many courses, so there's a Courses navigation property:
 
   public ICollection<Course> Courses { get; set; }
 
-.. notes:  By convention, the Entity Framework enables cascade delete for non-nullable foreign keys and for many-to-many relationships. This can result in circular cascade delete rules, which will cause an exception when you try to add a migration. For example, if you didn't define the Department.InstructorID property as nullable, EF would configure a cascade delete rule to delete the instructor when you delete the department, which is not what you want to have happen. If your business rules required InstructorID property to be non-nullable, you would have to use the following fluent API statement to disable cascade delete on the relationship:
+.. note::  By convention, the Entity Framework enables cascade delete for non-nullable foreign keys and for many-to-many relationships. This can result in circular cascade delete rules, which will cause an exception when you try to add a migration. For example, if you didn't define the Department.InstructorID property as nullable, EF would configure a cascade delete rule to delete the instructor when you delete the department, which is not what you want to have happen. If your business rules required the ```InstructorID`` property to be non-nullable, you would have to use the following fluent API statement to disable cascade delete on the relationship:
 
-.. code-block:: c# 
-  modelBuilder.Entity<Department>()
+  .. code-block:: c# 
+
+    modelBuilder.Entity<Department>()
       .HasOne(d => d.Administrator)
       .WithMany()
-      .OnDelete(Microsoft.EntityFrameworkCore.Metadata.DeleteBehavior.Restrict)
+      .OnDelete(DeleteBehavior.Restrict)
 
 Modify the Enrollment entity
 ----------------------------
@@ -365,7 +370,7 @@ In *Models/Enrollment.cs*, replace the code you added earlier with the following
   :language: c#
   :start-after: snippet_Final
   :end-before:  #endregion
-  :emphasize-lines: 1-2,11,18
+  :emphasize-lines: 1-2,17
 
 Foreign key and navigation properties
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -413,37 +418,40 @@ Create *Models/CourseInstructor.cs* with the following code:
 .. literalinclude::  intro/samples/cu/Models/CourseInstructor.cs
   :language: c#
 
-Use the fluent API to customize the data model
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Since the foreign keys are not nullable and together uniquely identify each row of the table, there is no need for a separate primary key. The `InstructorID` and `CourseID` properties should function as a composite primary key. The only way to identify composite primary keys to EF is by using the *fluent API* (it can't be done by using attributes). You'll see how to configure the composite primary key in the next section.
 
-Since the foreign keys are not nullable and together uniquely identify each row of the table, there is no need for a separate primary key. The `InstructorID` and `CourseID` properties should function as a composite primary key. The only way to identify composite primary keys to EF is by using the *fluent API* (it can't be done by using attributes).
+Update the database context   
+---------------------------
 
-To configure the CourseInstructor entity's primary key, add the following code to *Data/SchoolContext.cs*, immediately after the last ``DbSet`` property.
+Add the following highlighted code to the *Data/SchoolContext.cs*:
 
 .. literalinclude::  intro/samples/cu/Data/SchoolContext.cs
   :language: c#
-  :start-after: snippet_OnModelCreating
+  :start-after: snippet_BeforeInheritance
   :end-before:  #endregion
-  :dedent: 8
+  :emphasize-lines: 15-18,25-31
 
-The API is "fluent" because it's often used by stringing a series of method calls together into a single statement, as in the preceding code example.
+This code adds the new entities and configures the CourseInstructor entity's composite primary key.
+
+Fluent API alternative to attributes
+------------------------------------
+
+The code in the ``OnModelCreating`` method of the ``DbContext`` class uses the *fluent API* to configure EF behavior. The API is called "fluent" because it's often used by stringing a series of method calls together into a single statement, as in this example from the `EF Core documentation <http://ef.readthedocs.io/en/latest/modeling/index.html#methods-of-configuration>`__:
+
+.. code-block:: c#
+
+  protected override void OnModelCreating(ModelBuilder modelBuilder)
+  {
+      modelBuilder.Entity<Blog>()
+          .Property(b => b.Url)
+          .IsRequired();
+  }
 
 In this tutorial you're using the fluent API only for database mapping that you can't do with attributes. However, you can also use the fluent API to specify most of the formatting, validation, and mapping rules that you can do by using attributes. Some attributes such as ``MinimumLength`` can't be applied with the fluent API. As mentioned previously, ``MinimumLength`` doesn't change the schema, it only applies a client and server side validation rule.
 
 Some developers prefer to use the fluent API exclusively so that they can keep their entity classes "clean." You can mix attributes and fluent API if you want, and there are a few customizations that can only be done by using fluent API, but in general the recommended practice is to choose one of these two approaches and use that consistently as much as possible. If you do use both, note that wherever there is a conflict, Fluent API overrides attributes.
 
 For more information about attributes vs. fluent API, see `Methods of configuration <https://ef.readthedocs.io/en/latest/modeling/index.html#methods-of-configuration>`__.
-
-Add the new entities to the data model 
---------------------------------------
-
-Add the following ``DbSet`` properties to *Data/SchoolContext.cs*:
-
-.. literalinclude::  intro/samples/cu/Data/SchoolContext.cs
-  :language: c#
-  :start-after: snippet_NewEntitySets
-  :end-before:  #endregion
-  :dedent: 8
 
 Entity Diagram Showing Relationships
 ------------------------------------
@@ -467,12 +475,14 @@ Replace the code in the *Data/DbInitializer.cs* file with the following code in 
 
 As you saw in the first tutorial, most of this code simply creates new entity objects and loads sample data into properties as required for testing. Notice how the many-to-many relationships are handled: the code creates relationships by creating entities in the ``Enrollments`` and ``CourseInstructor`` join entity sets.
 
-Add a migration and update the database
+Add a migration
+---------------
+
+
+ and update the database
 ---------------------------------------
 
-Save your changes and build the project.
-
-From the command window, enter the ``migrations add`` command (don't do the update-database command yet):
+Save your changes and build the project. Then open the command window in the project folder and enter the ``migrations add`` command (don't do the update-database command yet):
 
 .. code-block:: text
 
@@ -509,22 +519,23 @@ Open the `<timestamp>_ComplexDataModel.cs` file. Comment out the line of code th
 
 When the ``DbInitializer.Initialize`` method runs, it will insert rows in the Department table and it will relate Course rows to the new Department rows. You will then no longer need the "Temp" department or the default value on the Course.DepartmentID column.
 
-Make one more change to the `<timestamp>_ComplexDataModel.cs` file. Move the block of code that creates the CourseInstructor table so that it is located immediately before the two blocks of code that create indexes for that table. The code that creates the table is highlighted below.
+Save your changes and build the project.
 
-.. literalinclude::  intro/samples/cu/Migrations/20160727184013_ComplexDataModel.cs
-  :language: c#
-  :start-after: snippet_CourseInstructor
-  :end-before:  #endregion
-  :emphasize-lines: 1-23
-  :dedent: 12
+Change the connection string and update the database
+----------------------------------------------------
 
-This change is required because the scaffolded code drops the primary key of the Course table, creates the CourseInstructor table, and re-creates the primary key of the Course table in that order.  That results in an error when creating the CourseInstructor table because there is no primary key for the CourseID foreign key to point to.
+You now have new code in the ``DbInitializer`` class that adds seed data to an empty database. To make EF create a new empty database, change the name of the database in the connection string in *appsettings.json* to ContosoUniversity3 or some other name that you haven't used on the computer you're using.
 
-After you have finished editing the `<timestamp>_ComplexDataModel.cs` file, build the project, and then enter the ``database update`` command in the command window to execute the migration.
+.. literalinclude::  intro/samples/cu/appsettings.json
+  :language: json
+  :end-before:  Logging
+  :emphasize-lines: 6
+
+Save your change to *appsettings.json*, and then enter the ``database update`` command in the command window to execute the migration.
 
 .. code-block:: text
 
-  dotnet ef database update ComplexDataModel -c SchoolContext
+  dotnet ef database update -c SchoolContext
 
 .. note:: It's possible to get other errors when migrating data and making schema changes. If you get migration errors you can't resolve, you can either change the database name in the connection string or delete the database. The simplest approach is to rename the database in appsettings.json. The next time you run ``database update``, a new database will be created.
 

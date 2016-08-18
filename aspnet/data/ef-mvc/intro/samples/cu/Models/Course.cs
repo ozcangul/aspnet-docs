@@ -27,7 +27,6 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ContosoUniversity.Models
 {
-    [Table(name: "Course")]
     public class Course
     {
         [DatabaseGenerated(DatabaseGeneratedOption.None)]

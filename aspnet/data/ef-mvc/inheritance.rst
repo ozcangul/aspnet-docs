@@ -45,7 +45,7 @@ Create the Person class
 
 In the Models folder, create Person.cs and replace the template code with the following code:
 
-.. literalinclude::  intro/samples/cu-final/Models/Person.cs
+.. literalinclude::  intro/samples/cu/Models/Person.cs
   :language: c#
 
 Make Student and Instructor classes inherit from Person
@@ -53,33 +53,35 @@ Make Student and Instructor classes inherit from Person
 
 In *Instructor.cs*, derive the Instructor class from the Person class and remove the key and name fields. The code will look like the following example:
 
-.. literalinclude::  intro/samples/cu-final/Models/Instructor.cs
+.. literalinclude::  intro/samples/cu/Models/Instructor.cs
   :language: c#
+  :start-after: snippet_AfterInheritance
+  :end-before: #endregion
 
 Make the same changes in *Student.cs*.
 
-.. literalinclude:: intro/samples/cu-final/Models/Student.cs
+.. literalinclude:: intro/samples/cu/Models/Student.cs
   :language: c#
+  :start-after: snippet_AfterInheritance
+  :end-before: #endregion
 
 Add the Person entity type to the data model
 --------------------------------------------
 
-In *SchoolContext.cs*, add a ``DbSet`` property for the Person entity type:
+Add the Person entity type to *SchoolContext.cs*. The new lines are highlighted.
 
-.. literalinclude::  intro/samples/cu-final/Data/SchoolContext.cs
+.. literalinclude::  intro/samples/cu/Data/SchoolContext.cs
   :language: c#
-  :start-after: snippet_Person
+  :start-after: snippet_AfterInheritance
   :end-before:  #endregion
-  :dedent: 8
+  :emphasize-lines: 19,30
 
 This is all that the Entity Framework needs in order to configure table-per-hierarchy inheritance. As you'll see, when the database is updated, it will have a Person table in place of the Student and Instructor tables.
 
 Create and customize migration code
 -----------------------------------
 
-Save your changes and build the project.
-
-In the command window, enter the following command:
+Save your changes and build the project. Then open the command window in the project folder and enter the following command:
 
 .. code-block:: text
 
@@ -97,7 +99,7 @@ The command will fail at this point because you have existing data that migratio
 
 Open `Migrations\<timestamp>_Inheritance.cs` and replace the ``Up`` method with the following code:
 
-.. literalinclude::  intro/samples/cu-final/Migrations/20160817215858_Inheritance.cs
+.. literalinclude::  intro/samples/cu/Migrations/20160817215858_Inheritance.cs
   :language: c#
   :start-after: snippet_Up
   :end-before:  #endregion

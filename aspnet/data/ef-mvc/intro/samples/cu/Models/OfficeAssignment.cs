@@ -3,7 +3,6 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ContosoUniversity.Models
 {
-    [Table (name: "OfficeAssignment")]
     public class OfficeAssignment
     {
         [Key]

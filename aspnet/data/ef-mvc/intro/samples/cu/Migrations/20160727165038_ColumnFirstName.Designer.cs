@@ -8,8 +8,8 @@ using ContosoUniversity.Data;
 namespace ContosoUniversity.Migrations
 {
     [DbContext(typeof(SchoolContext))]
-    [Migration("20160815231940_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20160727165038_ColumnFirstName")]
+    partial class ColumnFirstName
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -57,9 +57,12 @@ namespace ContosoUniversity.Migrations
 
                     b.Property<DateTime>("EnrollmentDate");
 
-                    b.Property<string>("FirstMidName");
+                    b.Property<string>("FirstMidName")
+                        .HasColumnName("FirstName")
+                        .HasAnnotation("MaxLength", 50);
 
-                    b.Property<string>("LastName");
+                    b.Property<string>("LastName")
+                        .HasAnnotation("MaxLength", 50);
 
                     b.HasKey("ID");
 

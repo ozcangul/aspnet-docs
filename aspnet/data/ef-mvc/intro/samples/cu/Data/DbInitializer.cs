@@ -9,7 +9,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using ContosoUniversity.Data;
 
-
 namespace ContosoUniversity.Models
 {
     public static class DbInitializer
@@ -95,7 +94,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using ContosoUniversity.Data;
 
-
 namespace ContosoUniversity.Models
 {
     public static class DbInitializer
@@ -107,17 +105,11 @@ namespace ContosoUniversity.Models
             {
                 //context.Database.EnsureCreated();
 
-                // Look for any instructors.
-                if (context.Instructors.Any())
+                // Look for any students.
+                if (context.Students.Any())
                 {
                     return;   // DB has been seeded
                 }
-
-                //Make sure there is nothing left over from 
-                //earlier seeding.
-                context.Database.ExecuteSqlCommand("DELETE FROM Enrollment");
-                context.Database.ExecuteSqlCommand("DELETE FROM Course");
-                context.Database.ExecuteSqlCommand("DELETE FROM Student");
 
                 var students = new Student[]
                 {
