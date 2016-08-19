@@ -49,7 +49,7 @@ Call a Query that returns entities
 
 The ``DbSet<TEntity>`` class provides a method that you can use to execute a query that returns an entity of type ``TEntity``. To see how this works you'll change the code in the ``Details`` method of the Department controller.
 
-In *DepartmentController.cs*, in the ``Details`` method, replace the code that retrieves a department with a ``FromSql`` method call, as shown in the following highlighted code:
+In *DepartmentsController.cs*, in the ``Details`` method, replace the code that retrieves a department with a ``FromSql`` method call, as shown in the following highlighted code:
 
 .. literalinclude::  intro/samples/cu/Controllers/DepartmentsController.cs
   :language: c#
@@ -83,7 +83,7 @@ In HomeController.cs, replace the LINQ statement in the About method with a SQL 
   :language: c#
   :start-after: snippet_UseRawSQL
   :end-before:  #endregion
-  :emphasize-lines: 3-26
+  :emphasize-lines: 3-27
   :dedent: 8
 
 Add using statements:
@@ -162,12 +162,11 @@ Run the application in debug mode, and go to the Details page for a student.
 Go to the **Output** window showing debug output, and you see the query:
 
 .. code-block:: text
-  Microsoft.EntityFrameworkCore.Storage.Internal.RelationalCommandBuilderFactory:Information: Executed DbCommand (0ms) [Parameters=[@__id_0='?'], CommandType='Text', CommandTimeout='30']
-  SELECT TOP(2) [s].[ID], [s].[EnrollmentDate], [s].[FirstName], [s].[LastName]
-  FROM [Student] AS [s]
-  WHERE [s].[ID] = @__id_0
-  ORDER BY [s].[ID]
-  Microsoft.EntityFrameworkCore.Storage.Internal.RelationalCommandBuilderFactory:Information: Executed DbCommand (9ms) [Parameters=[@__id_0='?'], CommandType='Text', CommandTimeout='30']
+
+   Microsoft.EntityFrameworkCore.Storage.Internal
+  .RelationalCommandBuilderFactory:Information: 
+  Executed DbCommand (9ms) [Parameters=[@__id_0='?'], 
+  CommandType='Text', CommandTimeout='30']
   SELECT [e].[EnrollmentID], [e].[CourseID], [e].[Grade], [e].[StudentID], [c].[CourseID], [c].[Credits], [c].[DepartmentID], [c].[Title]
   FROM [Enrollment] AS [e]
   INNER JOIN [Course] AS [c] ON [e].[CourseID] = [c].[CourseID]
