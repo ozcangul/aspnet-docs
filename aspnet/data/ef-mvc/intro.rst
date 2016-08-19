@@ -262,10 +262,13 @@ The automatic creation of CRUD action methods and views is known as scaffolding.
 
 * Right-click the **Controllers** folder in **Solution Explorer** and select **Add > New Scaffolded Item**.
 * In the **Add Scaffold** dialog box:
+
   * Select **MVC controller with views, using Entity Framework**.
   * Click **Add**.
-* In the **Add Controller** dialog box
-  * In **Model class** select Student. 
+
+* In the **Add Controller** dialog box:
+
+  * In **Model class** select **Student**.
   * In **Data context class** select **SchoolContext**.
   * Accept the default **StudentsController.cs** as the name.
   * Click **Add**.
@@ -322,7 +325,7 @@ Close the browser.
 
 If the SSOX window isn't already open, select it from the **View** menu in Visual Studio.
 
-In SSOX, click **(localdb)\\MSSQLLocalDB > Databases**, and then click the entry for the database name that is in the connection string in your appsettings.json file.
+In SSOX, click **(localdb)\\MSSQLLocalDB > Databases**, and then click the entry for the database name that is in the connection string in your *appsettings.json* file.
 
 Expand the **Tables** node to see the tables in your database.
 
