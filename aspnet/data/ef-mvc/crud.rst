@@ -28,7 +28,7 @@ Customize the Details page
 
 The scaffolded code for the Students Index page left out the ``Enrollments`` property, because that property holds a collection. In the ``Details`` page you'll display the contents of the collection in an HTML table.
 
-In `Controllers\StudentController.cs`, the action method for the Details view uses the ``SingleOrDefaultAsync`` method to retrieve a single ``Student`` entity. Change the line that reads a ``Student`` entity so that it calls the ``Include`` method, as in the following highlighted code. 
+In *Controllers/StudentsController.cs*, the action method for the Details view uses the ``SingleOrDefaultAsync`` method to retrieve a single ``Student`` entity. Change the line that reads a ``Student`` entity so that it calls the ``Include`` method, as in the following highlighted code. 
 
 .. literalinclude::  intro/samples/cu/Controllers/StudentsController.cs
   :language: c#
@@ -39,7 +39,7 @@ In `Controllers\StudentController.cs`, the action method for the Details view us
 
 The ``Include`` method causes the context to load the ``Student.Enrollments`` navigation property, and within each enrollment the ``Enrollment.Course`` navigation property.  You'll learn more about the ``Include`` method in the :doc:`reading related data </data/ef-mvc/read-related-data>` tutorial.
 
-.. note::  The key value that is is passed to the ``Details`` method comes from *route data*.
+.. note::  The key value that is passed to the ``Details`` method comes from *route data*.
 
   Route data is data that the model binder found in a segment of the URL. For example, the default route specifies controller, action, and id segments:
 
@@ -77,7 +77,7 @@ The ``Include`` method causes the context to load the ``Student.Enrollments`` na
 Add enrollments to the Details view
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Open *Views/Student/Details.cshtml*. Each field is displayed using ``DisplayNameFor`` and ``DisplayFor`` helper, as shown in the following example:
+Open *Views/Students/Details.cshtml*. Each field is displayed using ``DisplayNameFor`` and ``DisplayFor`` helper, as shown in the following example:
 
 .. literalinclude::  intro/samples/cu/Views/Students/Details.cshtml
   :language: html
@@ -156,7 +156,7 @@ An alternative way to prevent overposting that is preferrred by many developers 
 Modify the Create view
 ^^^^^^^^^^^^^^^^^^^^^^
 
-The code in *Views/Student/Create.cshtml* uses ``label``, ``input``, and ``span`` (for validation messages) tag helpers for each field. 
+The code in *Views/Students/Create.cshtml* uses ``label``, ``input``, and ``span`` (for validation messages) tag helpers for each field. 
 
 in ASP.NET Core 1.0, validation messages aren't rendered if ``span`` elements are self-closing, so  convert the validation ``span`` tags from self-closing to explicit closing tags. (Remove the "/" before the closing angle bracket, and add `</span>`.) The changes are highlighted in the following example.
 
@@ -167,9 +167,9 @@ in ASP.NET Core 1.0, validation messages aren't rendered if ``span`` elements ar
   :emphasize-lines: 5,12,19
   :dedent: 8
 
-Run the page by selecting the Students tab and clicking Create New.
+Run the page by selecting the **Students** tab and clicking **Create New**.
 
-Enter names and an invalid date and click Create to see the error message.
+Enter names and an invalid date and click **Create** to see the error message.
 
 .. image:: crud/_static/date-error.png
    :alt: Date validation error
@@ -250,7 +250,7 @@ The HTML and Razor code in *Views/Students/Edit.cshtml* is similar to what you s
 
 Run the application and select the **Students** tab, then click an **Edit** hyperlink.
 
-.. image:: crud/_static/students-edit.png
+.. image:: crud/_static/student-edit.png
    :alt: Students edit page
 
 Change some of the data and click **Save**. The **Index** page opens and you see the changed data.

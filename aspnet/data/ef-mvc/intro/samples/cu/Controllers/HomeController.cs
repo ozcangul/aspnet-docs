@@ -4,10 +4,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 #region snippet_Usings2
-using System.Collections.Generic;
 using System.Data.Common;
 #endregion
-#region snippet_Usings
+#region snippet_Usings1
 using Microsoft.EntityFrameworkCore;
 using ContosoUniversity.Data;
 using ContosoUniversity.Models.SchoolViewModels;

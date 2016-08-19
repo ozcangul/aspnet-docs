@@ -20,11 +20,10 @@ To add sorting to the Student Index page, you'll change the ``Index`` method of 
 Add sorting Functionality to the Index method
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-In *StudentController.cs*, replace the ``Index`` method with the following code:
+In *StudentsController.cs*, replace the ``Index`` method with the following code:
 
 .. literalinclude::  intro/samples/cu/Controllers/StudentsController.cs
   :language: c#
-  :linenos:
   :start-after: snippet_SortOnly
   :end-before:  #endregion
   :dedent: 8
@@ -37,7 +36,6 @@ The two ``ViewData`` elements (NameSortParm and DateSortParm) are used by the vi
 
 .. literalinclude::  intro/samples/cu/Controllers/StudentsController.cs
   :language: c#
-  :linenos:
   :start-after: snippet_SortOnly
   :end-before:  #endregion
   :emphasize-lines: 3-4
@@ -59,7 +57,7 @@ The method uses LINQ to Entities to specify the column to sort by. The code crea
 Add column heading hyperlinks to the Student Index view
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Replace the code in *Views/Student/Index.cshtml*, with the following code to rearrange the column order and add column heading hyperlinks. The new column headings are highlighted.
+Replace the code in *Views/Students/Index.cshtml*, with the following code to rearrange the column order and add column heading hyperlinks. The new column headings are highlighted.
 
 .. literalinclude::  intro/samples/cu/Views/Students/Index2.cshtml
   :language: html
@@ -80,7 +78,7 @@ To add filtering to the Students Index page, you'll add a text box and a submit 
 Add filtering functionality to the Index method
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-In *StudentController.cs*, replace the Index method with the following code (the changes are highlighted).
+In *StudentsController.cs*, replace the ``Index`` method with the following code (the changes are highlighted).
 
 .. literalinclude::  intro/samples/cu/Controllers/StudentsController.cs
   :language: c#
@@ -143,7 +141,7 @@ A ``CreateAsync`` method is used instead of a constructor to create the ``Pagina
 Add paging functionality to the Index method
 --------------------------------------------
 
-In *StudentController.cs*, replace the ``Index`` method with the following code.
+In *StudentsController.cs*, replace the ``Index`` method with the following code.
 
 .. literalinclude::  intro/samples/cu/Controllers/StudentsController.cs
   :language: c#
@@ -192,7 +190,7 @@ The ``PaginatedList.CreateAsync`` method takes a page number. The two question m
 Add paging links to the Student Index view
 ------------------------------------------
 
-In *Views/Student/Index.cshtml*, replace the existing code with the following code. The changes are highlighted.
+In *Views/Students/Index.cshtml*, replace the existing code with the following code. The changes are highlighted.
 
 .. literalinclude::  intro/samples/cu/Views/Students/Index.cshtml
   :language: html
@@ -225,7 +223,7 @@ Run the page.
 
 Click the paging links in different sort orders to make sure paging works. Then enter a search string and try paging again to verify that paging also works correctly with sorting and filtering.
 
-Create an About page That shows Student statistics
+Create an About page that shows Student statistics
 --------------------------------------------------
 
 For the Contoso University website's **About** page, you'll display how many students have enrolled for each enrollment date. This requires grouping and simple calculations on the groups. To accomplish this, you'll do the following:
@@ -234,7 +232,7 @@ For the Contoso University website's **About** page, you'll display how many stu
 * Modify the About method in the Home controller.
 * Modify the About view.
 
-Create the View Model
+Create the view model
 ^^^^^^^^^^^^^^^^^^^^^
 
 Create a *SchoolViewModels* folder in the *Models* folder. 
@@ -251,7 +249,7 @@ In *HomeController.cs*, add the following using statements at the top of the fil
 
 .. literalinclude::  intro/samples/cu/Controllers/HomeController.cs
   :language: c#
-  :start-after: snippet_Usings
+  :start-after: snippet_Usings1
   :end-before:  #endregion
 
 Add a class variable for the database context immediately after the opening curly brace for the class, and get an instance of the context from ASP.NET Core DI:
