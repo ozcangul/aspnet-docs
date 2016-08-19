@@ -41,6 +41,7 @@ namespace ContosoUniversity.Models
 }
 #endregion
 #elif AfterInheritance
+#region snippet_AfterInheritance
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -48,7 +49,6 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ContosoUniversity.Models
 {
-    [Table(name: "Instructor")]
     public class Instructor : Person
     {
         [DataType(DataType.Date)]
@@ -60,6 +60,5 @@ namespace ContosoUniversity.Models
         public OfficeAssignment OfficeAssignment { get; set; }
     }
 }
-#region snippet_AfterInheritance
 #endregion
 #endif

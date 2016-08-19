@@ -10,7 +10,7 @@ The following illustrations show some of the pages that you'll work with.
 .. image:: update-related-data/_static/course-edit.png
    :alt: Course Edit page
 
-.. image:: update-related-data/_static/instructor-edit.png
+.. image:: update-related-data/_static/instructor-edit-courses.png
    :alt: Instructor Edit page
 
 Customize the Create and Edit Pages for Courses
@@ -115,7 +115,7 @@ In both *Views/Courses/Create.cshtml*, add a "Select Department" option to the *
   :emphasize-lines: 2,4-6
   :dedent: 8
 
-In *Views/Courses/Edit.cshtml*, make the same change that you just did in *Create.cshtml*.
+In *Views/Courses/Edit.cshtml*, make the same change for the Department field that you just did in *Create.cshtml*.
 
 Also in *Views/Courses/Edit.cshtml*, add a course number field before the Title field. Because it's the primary key, it's displayed, but it can't be changed.
 

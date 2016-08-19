@@ -74,9 +74,9 @@ namespace ContosoUniversity.Data
             modelBuilder.Entity<Enrollment>().ToTable("Enrollment");
             modelBuilder.Entity<Student>().ToTable("Student");
             modelBuilder.Entity<Department>().ToTable("Department");
-            modelBuilder.Entity<Instructor>().ToTable("Instructors");
-            modelBuilder.Entity<OfficeAssignment>().ToTable("OfficeAssignments");
-            modelBuilder.Entity<CourseInstructor>().ToTable("CourseInstructors");
+            modelBuilder.Entity<Instructor>().ToTable("Instructor");
+            modelBuilder.Entity<OfficeAssignment>().ToTable("OfficeAssignment");
+            modelBuilder.Entity<CourseInstructor>().ToTable("CourseInstructor");
 
             modelBuilder.Entity<CourseInstructor>()
                 .HasKey(c => new { c.CourseID, c.InstructorID });
@@ -101,9 +101,9 @@ namespace ContosoUniversity.Data
         public DbSet<Enrollment> Enrollments { get; set; }
         public DbSet<Student> Students { get; set; }
         public DbSet<Department> Departments { get; set; }
-        public DbSet<Instructor> Instructors { get; set; }
-        public DbSet<OfficeAssignment> OfficeAssignments { get; set; }
-        public DbSet<CourseInstructor> CourseInstructors { get; set; }
+        public DbSet<Instructor> Instructor { get; set; }
+        public DbSet<OfficeAssignment> OfficeAssignment { get; set; }
+        public DbSet<CourseInstructor> CourseInstructor { get; set; }
         public DbSet<Person> People { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

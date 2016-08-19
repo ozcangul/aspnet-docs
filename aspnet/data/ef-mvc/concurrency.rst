@@ -7,10 +7,10 @@ In earlier tutorials you learned how to update data. This tutorial shows how to 
 
 You'll create web pages that work with the Department entity and handle concurrency errors. The following illustrations show the Edit and Delete pages, including some messages that are displayed if a concurrency conflict occurs.
 
-.. image:: concurrency/_static/department-edit.png
+.. image:: concurrency/_static/edit-error.png
    :alt: Department Edit page
 
-.. image:: concurrency/_static/department-delete.png
+.. image:: concurrency/_static/delete-error.png
    :alt: Department Delete page
 
 Concurrency conflicts
@@ -89,7 +89,7 @@ In *Models/Department.cs*, add a tracking property named RowVersion:
 
 The ``Timestamp`` attribute specifies that this column will be included in the Where clause of Update and Delete commands sent to the database. The attribute is called ``Timestamp`` because previous versions of SQL Server used a SQL ``timestamp`` data type before the SQL ``rowversion`` replaced it. The .NET type for ``rowversion`` is a byte array. 
 
-If you prefer to use the fluent API, you can use the IsConcurrencyToken method to specify the tracking property, as shown in the following example:
+If you prefer to use the fluent API, you can use the ``IsConcurrencyToken`` method to specify the tracking property, as shown in the following example:
 
 .. code-block:: c#
 
@@ -115,6 +115,12 @@ Scaffold a Departments controller and views as you did earlier for Students, Cou
 
 In the *DepartmentsController.cs* file, change all four occurrences of "FirstMidName" to "FullName" so that the department administrator drop-down lists will contain the full name of the instructor rather than just the last name.
 
+.. literalinclude::  intro/samples/cu/Controllers/DepartmentsController.cs
+  :language: c#
+  :start-after: snippet_Dropdown
+  :end-before:  #endregion
+  :dedent: 12
+
 Update the Departments Index view
 ---------------------------------
 
@@ -131,13 +137,7 @@ This changes the heading to "Departments", reorders the fields, and replaces the
 Update the Edit methods in the Departments controller
 -----------------------------------------------------
 
-.. literalinclude::  intro/samples/cu/Controllers/DepartmentsController.cs
-  :language: c#
-  :start-after: snippet_Dropdown
-  :end-before:  #endregion
-  :dedent: 12
-
-In the HttpGet ``Edit`` method, do eager loading for the ``Administrator`` navigation property.
+In both the HttpGet ``Edit`` method and the ``Details`` method, do eager loading for the ``Administrator`` navigation property.
 
 .. literalinclude::  intro/samples/cu/Controllers/DepartmentsController.cs
   :language: c#
@@ -214,9 +214,6 @@ Run the site and click Departments to go to the Departments Index page.
 
 Right click the **Edit** hyperlink for the English department and select **Open in new tab**, then click the **Edit** hyperlink for the English department. The two browser tabs now display the same information.
 
-.. image:: concurrency/_static/edit-before-edits.png
-   :alt: Department Edit page before edits
-
 Change a field in the first browser tab and click **Save**.
 
 .. image:: concurrency/_static/edit-after-change-1.png
@@ -244,13 +241,14 @@ For the Delete page, the Entity Framework detects concurrency conflicts caused b
 Update the Delete methods in the Departments controller 
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-In *DepartmentController.cs*, replace the HttpGet Delete method with the following code:
+In *DepartmentController.cs*, replace the HttpGet ``Delete`` method with the following code:
 
 .. literalinclude::  intro/samples/cu/Controllers/DepartmentsController.cs
   :language: c#
   :start-after: snippet_DeleteGet
   :end-before:  #endregion
   :emphasize-lines: 1,8,18-26
+  :dedent: 8
 
 The method accepts an optional parameter that indicates whether the page is being redisplayed after a concurrency error. If this flag is true, an error message is sent to the view using ``ViewData``.
 
@@ -306,7 +304,7 @@ In the first window, change one of the values, and click **Save**:
 
 In the second tab, click **Delete**. You see the concurrency error message, and the Department values are refreshed with what's currently in the database.
 
-.. image:: concurrency/_static/delete-page-with-error.png
+.. image:: concurrency/_static/delete-error.png
    :alt: Department Delete confirmation page with concurrency error
 
 If you click **Delete** again, you're redirected to the Index page, which shows that the department has been deleted.
@@ -322,7 +320,7 @@ Replace the code in *Views/Departments/Details.cshtml* to change the RowVersion 
   :language: html
   :emphasize-lines: 25-30
 
-Replace the code in *Views/Create/Details.cshtml* to add a Select option to the drop-down list.
+Replace the code in *Views/Departments/Create.cshtml* to add a Select option to the drop-down list.
 
 .. literalinclude::  intro/samples/cu/Views/Departments/Create.cshtml
   :language: html

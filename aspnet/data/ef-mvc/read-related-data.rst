@@ -59,7 +59,7 @@ Replace the ``Index`` method with the following code that uses a more appropriat
   :end-before:  #endregion
   :dedent: 8
 
-Open *Views/Course/Index.cshtml* and replace the template code with the following code. The changes are highlighted:
+Open *Views/Courses/Index.cshtml* and replace the template code with the following code. The changes are highlighted:
 
 .. literalinclude::  intro/samples/cu/Views/Courses/Index.cshtml
   :language: html
@@ -71,9 +71,9 @@ You've made the following changes to the scaffolded code:
 * Added a **Number** column that shows the ``CourseID`` property value. By default, primary keys aren't scaffolded because normally they are meaningless to end users. However, in this case the primary key is meaningful and you want to show it.
 * Added the **Department** column. Notice that for the **Department** column, the code displays the ``Name`` property of the Department entity that's loaded into the ``Department`` navigation property:
 
-.. code-block:: html
+  .. code-block:: html
 
-  @Html.DisplayFor(modelItem => item.Department.Name)
+    @Html.DisplayFor(modelItem => item.Department.Name)
 
 Run the page (select the Courses tab on the Contoso University home page) to see the list with department names.
 
@@ -194,10 +194,10 @@ You've made the following changes to the existing code:
 
 * Added code that dynamically adds ``class="success"`` to the ``tr`` element of the selected instructor. This sets a background color for the selected row using a Bootstrap class.
 
-    .. literalinclude::  intro/samples/cu/Views/Instructors/Index1.cshtml
-      :language: html
-      :lines: 26-31
-      :dedent: 12
+  .. literalinclude::  intro/samples/cu/Views/Instructors/Index1.cshtml
+    :language: html
+    :lines: 26-31
+    :dedent: 12
 
 * Added a new hyperlink labeled **Select** immediately before the other links in each row, which causes the selected instructor's ID to be sent to the ``Index`` method.
 

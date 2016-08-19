@@ -57,6 +57,7 @@ In *Instructor.cs*, derive the Instructor class from the Person class and remove
   :language: c#
   :start-after: snippet_AfterInheritance
   :end-before: #endregion
+  :emphasize-lines: 8
 
 Make the same changes in *Student.cs*.
 
@@ -64,6 +65,7 @@ Make the same changes in *Student.cs*.
   :language: c#
   :start-after: snippet_AfterInheritance
   :end-before: #endregion
+  :emphasize-lines: 8
 
 Add the Person entity type to the data model
 --------------------------------------------

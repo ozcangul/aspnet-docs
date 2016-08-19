@@ -42,13 +42,13 @@ namespace ContosoUniversity.Models
 #endregion
 
 #elif StringLength
+#region snippet_StringLength
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace ContosoUniversity.Models
 {
-    //#region snippet_StringLength
     public class Student
     {
         public int ID { get; set; }
@@ -62,8 +62,8 @@ namespace ContosoUniversity.Models
 
         public ICollection<Enrollment> Enrollments { get; set; }
     }
-    //#endregion
 }
+#endregion
 
 #elif Column
 #region snippet_Column
@@ -139,7 +139,6 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ContosoUniversity.Models
 {
-    [Table(name: "Student")]
     public class Student : Person
     {
         [DataType(DataType.Date)]

@@ -15,7 +15,7 @@ Customize the Data Model by Using Attributes
 
 In this section you'll see how to customize the data model by using attributes that specify formatting, validation, and database mapping rules. Then in several of the following sections you'll create the complete School data model by adding attributes to the classes you already created and creating new classes for the remaining entity types in the model.
 
-The DataType Attribute
+The DataType attribute
 ^^^^^^^^^^^^^^^^^^^^^^
 
 For student enrollment dates, all of the web pages currently display the time along with the date, although all you care about for this field is the date. By using data annotation attributes, you can make one code change that will fix the display format in every view that shows the data. To see an example of how to do that, you'll add an attribute to the ``EnrollmentDate`` property in the ``Student`` class.
@@ -61,12 +61,10 @@ Suppose you want to ensure that users don't enter more than 50 characters for a 
 
 .. literalinclude::  intro/samples/cu/Models/Student.cs
   :language: c#
-  :linenos:
   :start-after: snippet_StringLength
   :end-before:  #endregion
-  :emphasize-lines: 4, 6
-  :dedent: 4
-
+  :emphasize-lines: 10, 12
+  
 The ``StringLength`` attribute won't prevent a user from entering white space for a name. You can use the ``RegularExpression`` attribute to apply restrictions to the input. For example the following code requires the first character to be upper case and the remaining characters to be alphabetical:
 
 .. code-block:: c#
@@ -104,7 +102,6 @@ In the *Student.cs* file, add a ``using`` statement for ``System.ComponentModel.
 
 .. literalinclude::  intro/samples/cu/Models/Student.cs
   :language: c#
-  :linenos:
   :start-after: snippet_Column
   :end-before:  #endregion
   :emphasize-lines: 4, 14
@@ -317,7 +314,6 @@ Create *Models/Department.cs* with the following code:
 
 .. literalinclude::  intro/samples/cu/Models/Department.cs
   :language: c#
-  :linenos:
   :start-after: snippet_Begin
   :end-before:  #endregion
 
@@ -480,10 +476,6 @@ As you saw in the first tutorial, most of this code simply creates new entity ob
 Add a migration
 ---------------
 
-
- and update the database
----------------------------------------
-
 Save your changes and build the project. Then open the command window in the project folder and enter the ``migrations add`` command (don't do the update-database command yet):
 
 .. code-block:: text
@@ -526,7 +518,7 @@ Save your changes and build the project.
 Change the connection string and update the database
 ----------------------------------------------------
 
-You now have new code in the ``DbInitializer`` class that adds seed data to an empty database. To make EF create a new empty database, change the name of the database in the connection string in *appsettings.json* to ContosoUniversity3 or some other name that you haven't used on the computer you're using.
+You now have new code in the ``DbInitializer`` class that adds seed data for the new entities to an empty database. To make EF create a new empty database, change the name of the database in the connection string in *appsettings.json* to ContosoUniversity3 or some other name that you haven't used on the computer you're using.
 
 .. literalinclude::  intro/samples/cu/appsettings.json
   :language: json
