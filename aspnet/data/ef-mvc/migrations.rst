@@ -39,6 +39,8 @@ Save your changes and build the project. Then open a command window and navigate
   .. image:: migrations/_static/open-command-window.png
      :alt: Open command window
 
+.. note:: Before you can enter a command, stop IIS Express for the site, or you may get an error message: "cannot access the file ... ContosoUniversity.dll because it is being used by another process." To stop the site, find the IIS Express icon in the Windows System Tray, and right-click it, then click **ContosoUniversity > Stop Site**. 
+
 In the command window, enter the following command:
 
 .. code-block:: text
@@ -77,7 +79,7 @@ Examine the data model snapshot
 
 Migrations also creates a "snapshot" of the current database schema in *Migrations/SchoolContextModelSnapshot.cs*. Here's what that code looks like:
 
-.. literalinclude::  intro/samples/cu/Migrations/SchoolContextModelSnapshot.cs
+.. literalinclude::  intro/samples/cu/Migrations/SchoolContextModelSnapshot1.cs
   :start-after: snippet_Truncate
   :end-before:  #endregion
   :language: c#
