@@ -81,7 +81,7 @@ In *Views/Home/Index.cshtml*, replace the contents of the file with the followin
 .. literalinclude::  intro/samples/cu/Views/Home/Index.cshtml
    :language: html
 
-Press CTRL+F5 to run the project or choose **Debug > Start Without Debugging** from the menu. You see the home page with the main menu.
+Press CTRL+F5 to run the project or choose **Debug > Start Without Debugging** from the menu. You see the home page with tabs for the pages you'll create in these tutorials.
 
 .. image:: intro/_static/home-page.png
    :alt: Contoso University home page
@@ -308,7 +308,7 @@ The *Views/Students/Index.cshtml* view displays this list in a table:
 
 Press CTRL+F5 to run the project or choose **Debug > Start Without Debugging** from the menu.
 
-Click the Students tab to see the test data that the ``DbInitializer.Initialize`` method inserted. Depending on how narrow your browser window is, you'll see the ``Student`` tab link in the top address bar or you'll have to click the navigation icon in the upper right corner to see the link.
+Click the Students tab to see the test data that the ``DbInitializer.Initialize`` method inserted. Depending on how narrow your browser window is, you'll see the ``Student`` tab link at the top of the page or you'll have to click the navigation icon in the upper right corner to see the link.
 
 .. image:: intro/_static/home-page-narrow.png
    :alt: Contoso University home page narrow

@@ -128,11 +128,11 @@ Run the ``database update`` command again:
 
 (In a production system you would make corresponding changes to the ``Down`` method in case you ever had to use that to go back to the previous database version. For this tutorial you won't be using the ``Down`` method.) 
 
-.. note:: It's possible to get other errors when migrating data and making schema changes. If you get migration errors you can't resolve, you can either change the database name in the connection string or delete the database. The simplest approach is to rename the database in appsettings.json. The next time you run ``database update``, a new database will be created.
+.. note:: It's possible to get other errors when making schema changes in a database that has existing data. If you get migration errors you can't resolve, you can either change the database name in the connection string or delete the database. With a new database, there is no data to migrate, and the update-database command is much more likely to complete without errors. 
 
-  With a new database, there is no data to migrate, and the update-database command is much more likely to complete without errors. To delete a database, right-click the database in SSOX, click Delete, and then in the **Delete Database** dialog box select **Close existing connections**.
+  The simplest approach is to rename the database in *appsettings.json*. The next time you run ``database update``, a new database will be created.
 
-  If that fails, another thing you can try is re-initialize the database by entering the following command in the PMC:   ``update-database -Migration:0``
+  To delete a database, right-click the database in SSOX, click **Delete**, and then in the **Delete Database** dialog box select **Close existing connections** and click **OK**.
 
 Test with inheritance implemented
 ---------------------------------

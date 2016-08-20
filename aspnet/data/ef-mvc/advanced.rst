@@ -208,21 +208,15 @@ Automatic change detection
 
 The Entity Framework determines how an entity has changed (and therefore which updates need to be sent to the database) by comparing the current values of an entity with the original values. The original values are stored when the entity is queried or attached. Some of the methods that cause automatic change detection are the following:
 
-* DbSet.Find
-* DbSet.Local
-* DbSet.Remove
-* DbSet.Add
-* DbSet.Attach
 * DbContext.SaveChanges
-* DbContext.GetValidationErrors
 * DbContext.Entry
+* ChangeTracker.Entries
 
-If you're tracking a large number of entities and you call one of these methods many times in a loop, you might get significant performance improvements by temporarily turning off automatic change detection using the AutoDetectChangesEnabled property.
+If you're tracking a large number of entities and you call one of these methods many times in a loop, you might get significant performance improvements by temporarily turning off automatic change detection using the ``ChangeTracker.AutoDetectChangesEnabled`` property. For example:
 
-Automatic validation
---------------------
+.. code-block:: c#
 
-When you call the ``SaveChanges`` method, by default the Entity Framework validates the data in all properties of all changed entities before updating the database. If you've updated a large number of entities and you've already validated the data, this work is unnecessary and you could make the process of saving the changes take less time by temporarily turning off validation.
+  _context.ChangeTracker.AutoDetectChangesEnabled = false;
 
 Entity Framework Core source code
 ---------------------------------
@@ -284,6 +278,15 @@ The EF CLI commands don't automatically close and save code files. If you have u
 Solution:
 
 Run the ``migrations remove`` command, save your code changes and rerun the ``migrations add`` command.
+
+Errors while running database update
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+It's possible to get other errors when making schema changes in a database that has existing data. If you get migration errors you can't resolve, you can either change the database name in the connection string or delete the database. With a new database, there is no data to migrate, and the update-database command is much more likely to complete without errors. 
+
+The simplest approach is to rename the database in *appsettings.json*. The next time you run ``database update``, a new database will be created.
+
+To delete a database, right-click the database in SSOX, click **Delete**, and then in the **Delete Database** dialog box select **Close existing connections** and click **OK**.
 
 Error locating SQL Server instance
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

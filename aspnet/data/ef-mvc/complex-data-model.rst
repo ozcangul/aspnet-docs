@@ -501,7 +501,9 @@ If you tried to run the ``database update`` command at this point (don't do it y
 
   The ALTER TABLE statement conflicted with the FOREIGN KEY constraint "FK_dbo.Course_dbo.Department_DepartmentID". The conflict occurred in database "ContosoUniversity", table "dbo.Department", column 'DepartmentID'.
 
-Sometimes when you execute migrations with existing data, you need to insert stub data into the database to satisfy foreign key constraints, and that's what you have to do now. The generated code in the ComplexDataModel ``Up`` method adds a non-nullable DepartmentID foreign key to the Course table. Because there are already rows in the Course table when the code runs, the ``AddColumn`` operation will fail because SQL Server doesn't know what value to put in the column that can't be null. Therefore you have to change the code to give the new column a default value, and create a stub department named "Temp" to act as the default department. As a result, existing Course rows will all be related to the "Temp" department after the ``Up`` method runs.  You can relate them to the correct departments in the ``Seed`` method.
+Sometimes when you execute migrations with existing data, you need to insert stub data into the database to satisfy foreign key constraints. The generated code in the ``Up`` method adds a non-nullable DepartmentID foreign key to the Course table. If there are already rows in the Course table when the code runs, the ``AddColumn`` operation fails because SQL Server doesn't know what value to put in the column that can't be null. For this tutorial you'll run the migration on a new database, but in a production application you'd have to make the migration handle existing data, so the following directions show an example of how to do that.
+
+To make this migration work with existing data you have to change the code to give the new column a default value, and create a stub department named "Temp" to act as the default department. As a result, existing Course rows will all be related to the "Temp" department after the ``Up`` method runs.
 
 Open the `<timestamp>_ComplexDataModel.cs` file. Comment out the line of code that adds the DepartmentID column to the Course table, and add before it the following code (the commented line is also shown):
 
@@ -511,7 +513,7 @@ Open the `<timestamp>_ComplexDataModel.cs` file. Comment out the line of code th
   :end-before:  #endregion
   :dedent: 12
 
-When the ``DbInitializer.Initialize`` method runs, it will insert rows in the Department table and it will relate Course rows to the new Department rows. You will then no longer need the "Temp" department or the default value on the Course.DepartmentID column.
+In a production application, you would write code or scripts to add Department rows and relate Course rows to the new Department rows. You would then no longer need the "Temp" department or the default value on the Course.DepartmentID column.
 
 Save your changes and build the project.
 
@@ -530,12 +532,6 @@ Save your change to *appsettings.json*, and then enter the ``database update`` c
 .. code-block:: text
 
   dotnet ef database update -c SchoolContext
-
-.. note:: It's possible to get other errors when migrating data and making schema changes. If you get migration errors you can't resolve, you can either change the database name in the connection string or delete the database. The simplest approach is to rename the database in appsettings.json. The next time you run ``database update``, a new database will be created.
-
-  With a new database, there is no data to migrate, and the update-database command is much more likely to complete without errors. To delete a database, right-click the database in SSOX, click Delete, and then in the **Delete Database** dialog box select **Close existing connections**.
-
-  If that fails, another thing you can try is re-initialize the database by entering the following command in the PMC:   ``update-database -Migration:0``
 
 Run the app to cause the ``DbInitializer.Initialize`` method to run and populate the new database.
 

@@ -85,7 +85,7 @@ In *Models/Department.cs*, add a tracking property named RowVersion:
   :language: c#
   :start-after: snippet_Final
   :end-before:  #endregion
-  :emphasize-lines: 28-29
+  :emphasize-lines: 26-27
 
 The ``Timestamp`` attribute specifies that this column will be included in the Where clause of Update and Delete commands sent to the database. The attribute is called ``Timestamp`` because previous versions of SQL Server used a SQL ``timestamp`` data type before the SQL ``rowversion`` replaced it. The .NET type for ``rowversion`` is a byte array. 
 
