@@ -1,4 +1,4 @@
----
+﻿---
 title: Publishing | Microsoft Docs
 author: rick-anderson
 description: 
@@ -18,7 +18,10 @@ The following articles are available for learning about how to host and deploy A
 * [Set up a Windows hosting environment and deploy to it](windows/index.md)
   * [Publishing to IIS](iis.md)
     * [ASP.NET Core Module Configuration Reference](../hosting/aspnet-core-module.md)
-  * [Hosting in a Windows service](publishing/windows/windows-service.md)
+  * [🔧 Hosting in a Windows service](windows/windows-service.md)
+  * [Directory structure](../hosting/directory-structure.md)
+  * [Application pools](../hosting/apppool.md)
+  * [Configuring data protection](../hosting/dataprotection.md)
 * [Set up a Linux hosting environment and deploy to it](linux/index.md)
   * [Publish to a Linux Production Environment using nginx](linuxproduction.md)
   * [Using Apache Web Server on CentOS as a reverse proxy](apache-proxy.md)

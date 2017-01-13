@@ -1,4 +1,4 @@
-# [Introduction](index.md)
+﻿# [Introduction](index.md)
 # [Getting Started](getting-started.md)
 # [Tutorials](tutorials/toc.md)
 # [Fundamentals](fundamentals/index.md)
@@ -23,6 +23,7 @@
 ## [Request Features](fundamentals/request-features.md)
 ## [Open Web Interface for .NET (OWIN)](fundamentals/owin.md)
 ## [Choosing between .NET Core and .NET Framework runtime](https://docs.microsoft.com/dotnet/articles/standard/choosing-core-framework-server)
+
 # [MVC](mvc/toc.md)
 # [Testing](testing/toc.md)
 # [Working with Data](data/toc.md)
@@ -33,7 +34,7 @@
 ## [Set up a Windows hosting environment and deploy to it](publishing/windows/index.md)
 ### [Publishing to IIS](publishing/iis.md)
 #### [ASP.NET Core Module Configuration Reference](hosting/aspnet-core-module.md)
-### [Hosting in a Windows service](publishing/windows/windows-service.md)
+### [🔧 Hosting in a Windows service](publishing/windows/windows-service.md)
 ### [Directory structure](hosting/directory-structure.md)
 ### [Application pools](hosting/apppool.md)
 ### [Configuring data protection](hosting/dataprotection.md)
@@ -48,12 +49,7 @@
 ## [Continuous deployment to an Azure Web App using VSTS](publishing/vsts-continuous-deployment.md)
 ## [Continuous deployment to an Azure Web App using Visual Studio](publishing/azure-continuous-deployment.md)
 ## [How Web Publishing In Visual Studio Works](publishing/web-publishing-vs.md)
-
-# [Directory Structure](directory-structure.md)
-# [Application Pools](apppool.md)
-# [Servicing](servicing.md)
-# [Data Protection](dataprotection.md)
-
+## [Servicing](https://docs.microsoft.com/dotnet/articles/core/versions/servicing)
 
 # [Security](security/toc.md)
 # [Performance](performance/toc.md)

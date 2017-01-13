@@ -10,7 +10,7 @@ ms.topic: article
 ms.assetid: f0930c68-4d17-4748-adbf-801e17601eb6
 ms.technology: aspnet
 ms.prod: aspnet-core
-uid: publishing/windows/index
+uid: publishing/linux/index
 ---
 
 # Set up a Linux hosting environment and deploy to it
