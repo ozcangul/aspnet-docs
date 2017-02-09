@@ -10,8 +10,11 @@ using System.Reflection;
 
 namespace CustomFormatterDemo.Formatters
 {
+    #region classdef
     public class VcardOutputFormatter : TextOutputFormatter
+    #endregion
     {
+        #region ctor
         public VcardOutputFormatter()
         {
             SupportedMediaTypes.Add(MediaTypeHeaderValue.Parse("text/vcard"));
@@ -19,7 +22,9 @@ namespace CustomFormatterDemo.Formatters
             SupportedEncodings.Add(Encoding.UTF8);
             SupportedEncodings.Add(Encoding.Unicode);
         }
+        #endregion
 
+        #region canwritetype
         protected override bool CanWriteType(Type type)
         {
             if (typeof(Contact).IsAssignableFrom(type) || typeof(IEnumerable<Contact>).IsAssignableFrom(type))
@@ -28,7 +33,9 @@ namespace CustomFormatterDemo.Formatters
             }
             return false;
         }
+        #endregion
 
+        #region writeresponse
         public override Task WriteResponseBodyAsync(OutputFormatterWriteContext context, Encoding selectedEncoding)
         {
             var response = context.HttpContext.Response;
@@ -58,5 +65,6 @@ namespace CustomFormatterDemo.Formatters
             buffer.AppendFormat($"UID:{contact.ID}\r\n");
             buffer.AppendLine("END:VCARD");
         }
+        #endregion
     }
 }

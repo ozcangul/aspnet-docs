@@ -8,8 +8,11 @@ using CustomFormatterDemo.Models;
 
 namespace CustomFormatterDemo.Formatters
 {
+    #region classdef
     public class VcardInputFormatter : TextInputFormatter
+    #endregion
     {
+        #region ctor
         public VcardInputFormatter()
         {
             SupportedMediaTypes.Add(MediaTypeHeaderValue.Parse("text/vcard"));
@@ -17,7 +20,9 @@ namespace CustomFormatterDemo.Formatters
             SupportedEncodings.Add(Encoding.UTF8);
             SupportedEncodings.Add(Encoding.Unicode);
         }
+        #endregion
 
+        #region canreadtype
         protected override bool CanReadType(Type type)
         {
             if (type == typeof(Contact))
@@ -26,7 +31,9 @@ namespace CustomFormatterDemo.Formatters
             }
             return false;
         }
+        #endregion
 
+        #region readrequest
         public override async Task<InputFormatterResult> ReadRequestBodyAsync(InputFormatterContext context, Encoding effectiveEncoding)
         {
             if (context == null)
@@ -77,5 +84,6 @@ namespace CustomFormatterDemo.Formatters
             }
             return line;
         }
+        #endregion
     }
 }
