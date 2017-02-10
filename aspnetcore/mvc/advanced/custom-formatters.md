@@ -24,17 +24,17 @@ ASP.NET Core MVC has built-in support for data exchange in web APIs by using JSO
 
 Use a custom formatter when you want the [content negotiation](xref:mvc/models/formatting) process to support a content type that isn't supported by the built-in formatters (JSON, XML, and plain text).
 
-For example, if some of the clients for your web API can handle the [Protobuf](https://github.com/google/protobuf) format, you might want to use Protobuf instead of JSON or XML with those clients because it's a binary format that is more efficient than text types.  Or you might want your web API to send contact names and addresses in [vCard](https://en.wikipedia.org/wiki/VCard) format, a commonly used format for exchanging contact data. The sample app provided with this article implements a simple vCard formatter.
+For example, if some of the clients for your web API can handle the [Protobuf](https://github.com/google/protobuf) format, you might want to use Protobuf with those clients because it's more efficient.  Or you might want your web API to send contact names and addresses in [vCard](https://en.wikipedia.org/wiki/VCard) format, a commonly used format for exchanging contact data. The sample app provided with this article implements a simple vCard formatter.
 
 ## Overview of how to use a custom formatter
 
-At a high level, here are the steps to create and use a custom formatter:
+Here are the steps to create and use a custom formatter:
 
 * Create an output formatter class if you want to serialize data to send to the client.
 * Create an input formatter class if you want to deserialize data received from the client. 
 * Add instances of your formatters to the `InputFormatters` and `OutputFormatters` collections in [MvcOptions](https://docs.microsoft.com/aspnet/core/api/microsoft.aspnetcore.mvc.mvcoptions).
 
-The following sections provide detailed guidance and code examples for each of these steps.
+The following sections provide guidance and code examples for each of these steps.
 
 ## How to create a custom formatter class
 
@@ -60,7 +60,7 @@ In the constructor, specify valid media types and encodings by adding to the `Su
 [!code-csharp[Main](custom-formatters/sample/Formatters/VcardOutputFormatter.cs?name=ctor&highlight=3,5-6)]
 
 > [!NOTE]  
-> You can't do constructor dependency injection in a formatter class. For example, you can't get a logger by adding a logger parameter to the constructor. To access services, you have to use the context object that gets passed in to your methods.
+> You can't do constructor dependency injection in a formatter class. For example, you can't get a logger by adding a logger parameter to the constructor. To access services, you have to use the context object that gets passed in to your methods. A code example [below](#read-write) shows how to do this.
 
 ### Override CanReadType/CanWriteType 
 
@@ -68,8 +68,9 @@ Specify the type you can deserialize into or serialize from by overriding the `C
 
 [!code-csharp[Main](custom-formatters/sample/Formatters/VcardOutputFormatter.cs?name=canwritetype)]
 
-For output formatters, you use `CanWriteType` for design time type, and `CanWriteResult` for runtime type.  For example, suppose a method signature returns a `Person` type, but depending on the request parameters may return a `Student` or `Instructor` type that derives from `Person`. A formatter class for `Student` objects would indicate in `CanWriteType` that it handles `Person` and in `CanWriteResult` that it handles `Student`.
+For output formatters, in some scenarios you have to override `CanWriteResult` instead of `CanWriteType`. You need to use `CanWriteResult` if your action method returns a model class, and there are derived classes, and you need to know at runtime which derived class was returned by the action.  For example, suppose your action method signature returns a `Person` type, but it may return a `Student` or `Instructor` type that derives from `Person`. If you want your formatter to handle only `Student` objects, you would check the type of [Object](https://docs.microsoft.com/aspnet/core/api/microsoft.aspnetcore.mvc.formatters.outputformattercanwritecontext#Microsoft_AspNetCore_Mvc_Formatters_OutputFormatterCanWriteContext_Object) in the context object provided to the `CanWriteResult` method. Note that there is no need to use `CanWriteResult` if the action method returns `IActionResult`: in that case, the `CanWriteType` method receives the runtime type.
 
+<a id="read-write"></a>
 ### Override ReadRequestBodyAsync/WriteResponseBodyAsync 
 
 You do the actual work of deserializing or serializing in `ReadRequestBodyAsync` or `WriteResponseBodyAsync`.  The highlighted lines in the following code example show how to get services from the dependency injection container, since you can't get them from constructor parameters.
