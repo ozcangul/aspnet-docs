@@ -68,18 +68,19 @@ Specify the type you can deserialize into or serialize from by overriding the `C
 
 [!code-csharp[Main](custom-formatters/sample/Formatters/VcardOutputFormatter.cs?name=canwritetype)]
 
-> [!NOTE]  
-> For output formatters, you use `CanWriteType` for design time type, and `CanWriteResult` for runtime type.  For example, suppose a method signature returns a `Person` type, but depending on data requested may return a `Student` or `Instructor` type that derives from `Person`. A formatter class for `Student` objects would indicate in `CanWriteType` that it handles `Person` and in `CanWriteResult` that it handles `Student`.
+For output formatters, you use `CanWriteType` for design time type, and `CanWriteResult` for runtime type.  For example, suppose a method signature returns a `Person` type, but depending on the request parameters may return a `Student` or `Instructor` type that derives from `Person`. A formatter class for `Student` objects would indicate in `CanWriteType` that it handles `Person` and in `CanWriteResult` that it handles `Student`.
 
 ### Override ReadRequestBodyAsync/WriteResponseBodyAsync 
 
-You do the actual work of deserializing or serializing in `ReadRequestBodyAsync` or `WriteResponseBodyAsync`.
+You do the actual work of deserializing or serializing in `ReadRequestBodyAsync` or `WriteResponseBodyAsync`.  The highlighted lines in the following code example show how to get services from the dependency injection container, since you can't get them from constructor parameters.
 
-[!code-csharp[Main](custom-formatters/sample/Formatters/VcardOutputFormatter.cs?name=writeresponse)]
+[!code-csharp[Main](custom-formatters/sample/Formatters/VcardOutputFormatter.cs?name=writeresponse&highlight=3-4)]
 
 ## How to configure MVC to use a custom formatter
  
-To use a custom formatter, add an instance of the formatter to the InputFormatters or OutputFormatters collection in MvcOptions.
+To use a custom formatter, add an instance of the formatter class to the `InputFormatters` or `OutputFormatters` collection in `MvcOptions`.
+
+[!code-csharp[Main](custom-formatters/sample/Startup.cs?name=mvcoptions&highlight=3-4)]
 
 ## Next steps
 
@@ -94,6 +95,6 @@ UID:20293482-9240-4d68-b475-325df4a83728
 END:VCARD
 ```
 
-To see vCard output, run the application and send a Get request with Accept header "text/vcard" to `http://localhost:63313/api/contacts/` (when running in Visual Studio) or `http://localhost:5000/api/contacts/` (when running from the command line).
+To see vCard output, run the application and send a Get request with Accept header "text/vcard" to `http://localhost:63313/api/contacts/` (when running from Visual Studio) or `http://localhost:5000/api/contacts/` (when running from the command line).
 
 To add a vCard to the in-memory collection of contacts, send a Post request to the same URL, with Content-Type header "text/vcard" and with vCard text in the body, formatted like the example above.

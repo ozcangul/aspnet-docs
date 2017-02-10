@@ -7,6 +7,7 @@ using System.Text;
 using CustomFormatterDemo.Models;
 using Microsoft.Net.Http.Headers;
 using System.Reflection;
+using Microsoft.Extensions.Logging;
 
 namespace CustomFormatterDemo.Formatters
 {
@@ -38,6 +39,9 @@ namespace CustomFormatterDemo.Formatters
         #region writeresponse
         public override Task WriteResponseBodyAsync(OutputFormatterWriteContext context, Encoding selectedEncoding)
         {
+            IServiceProvider serviceProvider = context.HttpContext.RequestServices;
+            var logger = serviceProvider.GetService(typeof(ILogger<VcardOutputFormatter>)) as ILogger;
+
             var response = context.HttpContext.Response;
 
             var buffer = new StringBuilder();
@@ -45,18 +49,18 @@ namespace CustomFormatterDemo.Formatters
             {
                 foreach (Contact contact in context.Object as IEnumerable<Contact>)
                 {
-                    FormatVcard(buffer, contact);
+                    FormatVcard(buffer, contact, logger);
                 }
             }
             else
             {
                 var contact = context.Object as Contact;
-                FormatVcard(buffer, contact);
+                FormatVcard(buffer, contact, logger);
             }
             return response.WriteAsync(buffer.ToString());
         }
 
-        private static void FormatVcard(StringBuilder buffer, Contact contact)
+        private static void FormatVcard(StringBuilder buffer, Contact contact, ILogger logger)
         {
             buffer.AppendLine("BEGIN:VCARD");
             buffer.AppendLine("VERSION:2.1");
@@ -64,6 +68,7 @@ namespace CustomFormatterDemo.Formatters
             buffer.AppendFormat($"FN:{contact.FirstName} {contact.LastName}\r\n");
             buffer.AppendFormat($"UID:{contact.ID}\r\n");
             buffer.AppendLine("END:VCARD");
+            logger.LogInformation($"Writing {contact.FirstName} {contact.LastName}");
         }
         #endregion
     }

@@ -26,11 +26,13 @@ namespace CustomFormatterDemo
         public void ConfigureServices(IServiceCollection services)
         {
             // Add framework services.
+            #region mvcoptions
             services.AddMvc(options =>
             {
                 options.InputFormatters.Add(new VcardInputFormatter());
                 options.OutputFormatters.Add(new VcardOutputFormatter());
             });
+            #endregion
 
             services.AddSingleton<IContactRepository, ContactRepository>();
         }
