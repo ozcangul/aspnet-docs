@@ -2,10 +2,10 @@
 title: ASP.NET Core MVC with EF Core - CRUD - 2 of 10 | Microsoft Docs
 author: tdykstra
 description: 
-keywords: ASP.NET Core,
+keywords: ASP.NET Core, Entity Framework Core, CRUD, create, read, update, delete
 ms.author: tdykstra
 manager: wpickett
-ms.date: 10/14/2016
+ms.date: 03/07/2017
 ms.topic: article
 ms.assetid: 6e1cd570-40f1-4b24-8b6e-7d2d27758f18
 ms.technology: aspnet
@@ -16,9 +16,10 @@ uid: data/ef-mvc/crud
 
 By [Tom Dykstra](https://github.com/tdykstra) and [Rick Anderson](https://twitter.com/RickAndMSFT)
 
-The Contoso University sample web application demonstrates how to create ASP.NET Core 1.0 MVC web applications using Entity Framework Core 1.0 and Visual Studio 2015. For information about the tutorial series, see [the first tutorial in the series](intro.md).
+The Contoso University sample web application demonstrates how to create ASP.NET Core 1.1 MVC web applications using Entity Framework Core 1.1 and Visual Studio 2017. For information about the tutorial series, see [the first tutorial in the series](intro.md).
 
 In the previous tutorial you created an MVC application that stores and displays data using the Entity Framework and SQL Server LocalDB. In this tutorial you'll review and customize the CRUD (create, read, update, delete) code that the MVC scaffolding automatically creates for you in controllers and views.
+
 > [!NOTE] 
 > It's a common practice to implement the repository pattern in order to create an abstraction layer between your controller and the data access layer. To keep these tutorials simple and focused on teaching how to use the Entity Framework itself, they don't use repositories. For information about repositories with EF, see [the last tutorial in this series](advanced.md).
 
@@ -138,13 +139,6 @@ An alternative way to prevent overposting that is preferred by many developers i
 
 The code in *Views/Students/Create.cshtml* uses `label`, `input`, and `span` (for validation messages) tag helpers for each field.
 
-in ASP.NET Core 1.0, validation messages aren't rendered if `span` elements are self-closing, but scaffolding creates them as self-closing. To enable validation, convert the validation `span` tags from self-closing to explicit closing tags. (Remove the "/" before the closing angle bracket, and add `</span>`.) The changes are highlighted in the following example.
-
-[!code-html[](intro/samples/cu/Views/Students/Create.cshtml?range=15-35&highlight=5,12,19)]
-
-> [!NOTE]
-> The 1.0.1 release of the scaffolding tooling generates explicitly closed span tags, but as of September, 2016, the 1.0.1 tooling is not included in the new-project templates. If you want to get the newer version of scaffolding code, you can update NuGet packages `Microsoft.VisualStudio.Web.CodeGenerators.Mvc` and `Microsoft.VisualStudio.Web.Codegeneration.Tools` to "1.0.0-preview2-update1".
-
 Run the page by selecting the **Students** tab and clicking **Create New**.
 
 Enter names and an invalid date and click **Create** to see the error message.
@@ -210,8 +204,6 @@ But if you don't want to do the extra read operation, you have to use the entity
 If you want to avoid the read-first approach, but you also want the SQL UPDATE statement to update only the fields that the user actually changed, the code is more complex. You have to save the original values in some way (such as by using hidden fields) so that they are available when the HttpPost `Edit` method is called. Then you can create a Student entity using the original values, call the `Attach` method with that original version of the entity, update the entity's values to the new values, and then call `SaveChanges`.
 
 ### Test the Edit page
-
-The HTML and Razor code in *Views/Students/Edit.cshtml* is similar to what you saw in *Create.cshtml*. The only change required is to convert the `<span>` elements to use explicit closing tags.
 
 Run the application and select the **Students** tab, then click an **Edit** hyperlink.
 
