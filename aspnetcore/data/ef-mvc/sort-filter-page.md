@@ -166,7 +166,7 @@ The `PaginatedList.CreateAsync` method takes a page number. The two question mar
 
 In *Views/Students/Index.cshtml*, replace the existing code with the following code. The changes are highlighted.
 
-[!code-html[](intro/samples/cu/Views/Students/Index.cshtml?highlight=1,30,33,61-79)]
+[!code-html[](intro/samples/cu/Views/Students/Index.cshtml?highlight=1,27,30,33,61-79)]
 
 The `@model` statement at the top of the page specifies that the view now gets a `PaginatedList<T>` object instead of a `List<T>` object.
 
