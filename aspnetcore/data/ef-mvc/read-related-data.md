@@ -1,11 +1,11 @@
 ---
 title: ASP.NET Core MVC with EF Core - Read Related Data - 6 of 10 | Microsoft Docs
 author: tdykstra
-description: 
-keywords: ASP.NET Core,
+description: In this tutorial you'll read and display related data -- that is, data that the Entity Framework loads into navigation properties.
+keywords: ASP.NET Core, Entity Framework Core, related data, joins
 ms.author: tdykstra
 manager: wpickett
-ms.date: 10/14/2016
+ms.date: 03/07/2017
 ms.topic: article
 ms.assetid: 71fec30f-8ea7-4ca8-96e3-d2e26c5be44e
 ms.technology: aspnet
@@ -17,7 +17,7 @@ uid: data/ef-mvc/read-related-data
 
 By [Tom Dykstra](https://github.com/tdykstra) and [Rick Anderson](https://twitter.com/RickAndMSFT)
 
-The Contoso University sample web application demonstrates how to create ASP.NET Core 1.0 MVC web applications using Entity Framework Core 1.0 and Visual Studio 2015. For information about the tutorial series, see [the first tutorial in the series](intro.md).
+The Contoso University sample web application demonstrates how to create ASP.NET Core 1.1 MVC web applications using Entity Framework Core 1.1 and Visual Studio 2017. For information about the tutorial series, see [the first tutorial in the series](intro.md).
 
 In the previous tutorial you completed the School data model. In this tutorial you'll read and display related data -- that is, data that the Entity Framework loads into navigation properties.
 
@@ -39,7 +39,9 @@ There are several ways that Object-Relational Mapping (ORM) software such as Ent
 
   ![Separate queries example](read-related-data/_static/separate-queries.png)
 
-* Explicit loading. When the entity is first read, related data isn't retrieved. You write code that retrieves the related data if it's needed. As in the case of eager loading with separate queries, explicit loading results in multiple queries sent to the database. The difference is that with explicit loading, the code specifies the navigation properties to be loaded. Entity Framework Core 1.0 does not provide an API specifically for explicit loading, but you can accomplish the same purpose by using the `.Load` method to retrieve related data in separate queries.
+* Explicit loading. When the entity is first read, related data isn't retrieved. You write code that retrieves the related data if it's needed. As in the case of eager loading with separate queries, explicit loading results in multiple queries sent to the database. The difference is that with explicit loading, the code specifies the navigation properties to be loaded. In Entity Framework Core 1.1 you can use the `Load` method to do explicit loading. For example:
+
+  ![Explicit loading example](read-related-data/_static/explicit-loading.png)
 
 * Lazy loading. When the entity is first read, related data isn't retrieved. However, the first time you attempt to access a navigation property, the data required for that navigation property is automatically retrieved. A query is sent to the database each time you try to get data from a navigation property for the first time. Entity Framework Core 1.0 does not support lazy loading.
 
@@ -65,7 +67,7 @@ Replace the `Index` method with the following code that uses a more appropriate 
 
 Open *Views/Courses/Index.cshtml* and replace the template code with the following code. The changes are highlighted:
 
-[!code-html[](intro/samples/cu/Views/Courses/Index.cshtml?highlight=4,7,15-17,24-26,34-36,43-45)]
+[!code-html[](intro/samples/cu/Views/Courses/Index.cshtml?highlight=4,7,15-17,34-36,44)]
 
 You've made the following changes to the scaffolded code:
 
@@ -73,7 +75,7 @@ You've made the following changes to the scaffolded code:
 
 * Added a **Number** column that shows the `CourseID` property value. By default, primary keys aren't scaffolded because normally they are meaningless to end users. However, in this case the primary key is meaningful and you want to show it.
 
-* Added the **Department** column. Notice that for the **Department** column, the code displays the `Name` property of the Department entity that's loaded into the `Department` navigation property:
+* Changed the **Department** column to display the department name. The code displays the `Name` property of the Department entity that's loaded into the `Department` navigation property:
 
   ```html
   @Html.DisplayFor(modelItem => item.Department.Name)
@@ -161,9 +163,9 @@ Next, if a course was selected, the selected course is retrieved from the list o
 
 ### Modify the Instructor Index view
 
-In *Views/Instructor/Index.cshtml*, replace the template code with the following code. The changes (other than column reordering)are highlighted.
+In *Views/Instructor/Index.cshtml*, replace the template code with the following code. The changes are highlighted.
 
-[!code-html[](intro/samples/cu/Views/Instructors/Index1.cshtml?range=2-65&highlight=1,3-7,18,41-54,56)]
+[!code-html[](intro/samples/cu/Views/Instructors/Index1.cshtml?range=2-65&highlight=1,3-7,18-19,41-54,56)]
 
 You've made the following changes to the existing code:
 
@@ -197,8 +199,6 @@ You've made the following changes to the existing code:
   ```html
   <a asp-action="Index" asp-route-id="@item.ID">Select</a> |
   ```
-
-* Reordered the columns to display Last Name, First Name, Hire Date, and Office in that order.
 
 Run the application and select the Instructors tab. The page displays the Location property of related OfficeAssignment entities and an empty table cell when there's no related OfficeAssignment entity.
 
