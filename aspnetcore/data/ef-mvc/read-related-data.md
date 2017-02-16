@@ -224,21 +224,15 @@ Run the page and select an instructor. Then select a course to see the list of e
 
 ![Instructors Index page instructor and course selected](read-related-data/_static/instructors-index.png)
 
-## Use multiple queries
+## Explicit loading
 
 When you retrieved the list of instructors in *InstructorsController.cs*, you specified eager loading for the `Courses` navigation property.
 
-Suppose you expected users to only rarely want to see enrollments in a selected instructor and course. In that case, you might want to load the enrollment data only if it's requested. To do that you (a) omit eager loading for enrollments when reading instructors, and (b) only when enrollments are needed, call the `Load` method on an `IQueryable` that reads the ones you need (starting in EF Core 1.0.1, you can use `LoadAsync`).  EF automatically "fixes up" the `Courses` navigation property of already-retrieved Instructor entities with data retrieved by the `Load` method.
+Suppose you expected users to only rarely want to see enrollments in a selected instructor and course. In that case, you might want to load the enrollment data only if it's requested. To see an example of how to do explicit loading, replace the `Index` method with the following code, which removes eager loading for Enrollments and loads that property explicitly. The code changes are highlighted.
 
-To see this in action, replace the `Index` method with the following code:
+[!code-csharp[Main](intro/samples/cu/Controllers/InstructorsController.cs?name=snippet_ExplicitLoading&highlight=25-31)]
 
-[!code-csharp[Main](intro/samples/cu/Controllers/InstructorsController.cs?name=snippet_ExplicitLoading&highlight=25-27)]
-
-The new code drops the *ThenInclude* method calls for enrollment data from the code that retrieves instructor entities. If an instructor and course are selected, the highlighted code retrieves Enrollment entities for the selected course.  With these Enrollment entities, the code eagerly loads the Student navigation property.
-
-So now, only enrollments taught by the selected instructor in the selected course are retrieved from the database.
-
-Notice that the original query on the Instructors entity set now omits the `AsNoTracking` method call. Entities must be tracked for EF to "fix up" navigation properties when you call the `Load` method.
+The new code drops the *ThenInclude* method calls for enrollment data from the code that retrieves instructor entities. If an instructor and course are selected, the highlighted code retrieves Enrollment entities for the selected course, and Student entities for each Enrollment.
 
 Run the Instructor Index page now and you'll see no difference in what's displayed on the page, although you've changed how the data is retrieved.
 
