@@ -26,11 +26,11 @@ EF Core 1.1 is the latest version of EF but does not yet have all the features o
 
 ## Prerequisites
 
-* [Visual Studio 2017](https://docs.microsoft.com/visualstudio/install/install-visual-studio) with the **ASP.NET and web development** and **.NET Core cross-platform development workloads** installed.
+[Visual Studio 2017](https://docs.microsoft.com/visualstudio/install/install-visual-studio) with the **ASP.NET and web development** and **.NET Core cross-platform development workloads** installed.
 
 ## Troubleshooting
 
-If you run into a problem you can't resolve, you can generally find the solution by comparing your code to the [completed project]((https://github.com/aspnet/Docs/tree/master/aspnetcore/data/ef-mvc/intro/samples/cu-final)). For a list of common errors and how to solve them, see [the Troubleshooting section of the last tutorial in the series](advanced.md#common-errors). If you don't find what you need there, you can post questions to the [ASP.NET Entity Framework forum](http://forums.asp.net/1227.aspx), the [Entity Framework forum](http://social.msdn.microsoft.com/forums/en-US/adodotnetentityframework/threads/), or StackOverflow.com for [ASP.NET Core](http://stackoverflow.com/questions/tagged/asp.net-core) or [EF Core](http://stackoverflow.com/questions/tagged/entity-framework-core).
+If you run into a problem you can't resolve, you can generally find the solution by comparing your code to the [completed project](https://github.com/aspnet/Docs/tree/master/aspnetcore/data/ef-mvc/intro/samples/cu-final). For a list of common errors and how to solve them, see [the Troubleshooting section of the last tutorial in the series](advanced.md#common-errors). If you don't find what you need there, you can post questions to the [ASP.NET Entity Framework forum](http://forums.asp.net/1227.aspx), the [Entity Framework forum](http://social.msdn.microsoft.com/forums/en-US/adodotnetentityframework/threads/), or StackOverflow.com for [ASP.NET Core](http://stackoverflow.com/questions/tagged/asp.net-core) or [EF Core](http://stackoverflow.com/questions/tagged/entity-framework-core).
 
 > [!TIP] 
 > This is a series of 10 tutorials, each of which builds on what is done in earlier tutorials.  Consider saving a copy of the project after each successful tutorial completion.  Then if you run into problems and need to start over, you can start from the previous tutorial instead of going back to the beginning of the whole series.
@@ -86,7 +86,7 @@ Open *Views/Shared/_Layout.cshtml* and make the following changes:
 
 The changes are highlighted.
 
-[!code-html[](intro/samples/cu/Views/Shared/_Layout.cshtml?highlight=6,29,35,36,37,38,48)]
+[!code-html[](intro/samples/cu/Views/Shared/_Layout.cshtml?highlight=7,31,37-40,50)]
 
 In *Views/Home/Index.cshtml*, replace the contents of the file with the following code to replace the text about ASP.NET and MVC with text about this application:
 
@@ -110,9 +110,9 @@ If you want to add EF Core support to a new project that you create without the 
 
   This package is installed by adding it to the `DotNetCliToolReference` collection in the *.csproj* file, as shown.
 
-  [!code-xml[](intro/samples/cu/ContosoUniversity.csproj?range=30-34;highlight=2)]
+  [!code-xml[](intro/samples/cu/ContosoUniversity.csproj?range=30-34&highlight=2)]
   
- (You can edit the .csproj file by right-clicking the project name in **Solution Explorer** and selecting **Edit ContosoUniversity.csproj** from the context menu.)
+ (You can edit the *.csproj* file by right-clicking the project name in **Solution Explorer** and selecting **Edit ContosoUniversity.csproj** from the context menu.)
 
 All of these packages are already installed in the project you created.
 

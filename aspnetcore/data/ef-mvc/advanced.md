@@ -51,7 +51,7 @@ Earlier you created a student statistics grid for the About page that showed the
 
 In *HomeController.cs*, replace the `About` method with the following code:
 
-[!code-csharp[Main](intro/samples/cu/Controllers/HomeController.cs)]
+[!code-csharp[Main](intro/samples/cu/Controllers/HomeController.cs?name=snippet_UseRawSQL&highlight=3-32)]
 
 Add a using statement:
 
@@ -182,7 +182,7 @@ Tom Dykstra and Rick Anderson (twitter @RickAndMSFT) wrote this tutorial. Rowan 
 
 Error message:
 
-> Cannot open 'C:\ContosoUniversity\src\ContosoUniversity\bin\Debug\netcoreapp1.0\ContosoUniversity.dll' for writing -- 'The process cannot access the file 'C:\ContosoUniversity\src\ContosoUniversity\bin\Debug\netcoreapp1.0\ContosoUniversity.dll' because it is being used by another process.
+> Cannot open '...bin\Debug\netcoreapp1.0\ContosoUniversity.dll' for writing -- 'The process cannot access the file '...\bin\Debug\netcoreapp1.0\ContosoUniversity.dll' because it is being used by another process.
 
 Solution:
 

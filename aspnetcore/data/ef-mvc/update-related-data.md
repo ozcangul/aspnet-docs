@@ -85,9 +85,9 @@ Also in *Views/Courses/Edit.cshtml*, add a course number field before the Credit
 
 There's already a hidden field (`<input type="hidden">`) for the course number in the Edit view. Adding a `<label>` tag helper doesn't eliminate the need for the hidden field because it doesn't cause the course number to be included in the posted data when the user clicks **Save** on the **Edit** page.
 
-In *Views/Course/Delete.cshtml*, add a course number field at the top and change department ID to department name.
+In *Views/Courses/Delete.cshtml*, add a course number field at the top and change department ID to department name.
 
-[!code-html[Main](intro/samples/cu/Views/Courses/Details.cshtml?highlight=2-7,20-25&range=13-38)]
+[!code-html[Main](intro/samples/cu/Views/Courses/Details.cshtml?highlight=2-7,24&range=13-38)]
 
 In *Views/Course/Details.cshtml*, make the same change that you just did for *Delete.cshtml*.
 
@@ -222,7 +222,7 @@ In *Views/Instructors/Edit.cshtml*, add a **Courses** field with an array of che
 > [!NOTE] 
 > Open the file in a text editor such as Notepad to make this change.  If you use Visual Studio, line breaks will be changed in a way that breaks the code.  If that happens, fix the line breaks so that they look like what you see here. The indentation doesn't have to be perfect, but the `@</tr><tr>`, `@:<td>`, `@:</td>`, and `@:</tr>` lines must each be on a single line as shown or you'll get a runtime error. After editing the file in a text editor, you can open it in Visual Studio, highlight the block of new code, and press Tab twice to line up the new code with the existing code.
 
-[!code-html[Main](intro/samples/cu/Views/Instructors/Edit.cshtml?range=47-73)]
+[!code-html[Main](intro/samples/cu/Views/Instructors/Edit.cshtml?range=43-69)]
 
 This code creates an HTML table that has three columns. In each column is a check box followed by a caption that consists of the course number and title. The check boxes all have the same name ("selectedCourses"), which informs the model binder that they are to be treated as a group. The value attribute of each check box is set to the value of `CourseID`. When the page is posted, the model binder passes an array to the controller that consists of the `CourseID` values for only the check boxes which are selected.
 

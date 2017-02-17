@@ -79,11 +79,11 @@ In the following Razor code, `studentID` doesn't match a parameter in the defaul
 
 Open *Views/Students/Details.cshtml*. Each field is displayed using `DisplayNameFor` and `DisplayFor` helper, as shown in the following example:
 
-[!code-html[](intro/samples/cu/Views/Students/Details.cshtml?range=14-19&highlight=2,5)]
+[!code-html[](intro/samples/cu/Views/Students/Details.cshtml?range=13-18&highlight=2,5)]
 
 After the last field and immediately before the closing `</dl>` tag, add the following code to display a list of enrollments:
 
-[!code-html[](intro/samples/cu/Views/Students/Details.cshtml?range=34-55)]
+[!code-html[](intro/samples/cu/Views/Students/Details.cshtml?range=31-52)]
 
 If code indentation is wrong after you paste the code, press CTRL-K-D to correct it.
 
@@ -112,7 +112,6 @@ The `ValidateAntiForgeryToken` attribute helps prevent cross-site request forger
 The `Bind` attribute that the scaffolded code includes on the `Create` method is one way to protect against overposting in create scenarios. For example, suppose the Student entity includes a `Secret` property that you don't want this web page to set.
 
 ```csharp
-
 public class Student
 {
     public int ID { get; set; }
@@ -245,7 +244,7 @@ If the entity has related data that should also be deleted, make sure that casca
 
 In *Views/Student/Delete.cshtml*, add an error message between the h2 heading and the h3 heading, as shown in the following example:
 
-[!code-html[](intro/samples/cu/Views/Students/Delete.cshtml?range=8-10&highlight=2)]
+[!code-html[](intro/samples/cu/Views/Students/Delete.cshtml?range=7-9&highlight=2)]
 
 Run the page by selecting the **Students** tab and clicking a **Delete** hyperlink:
 

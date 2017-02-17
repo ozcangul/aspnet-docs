@@ -88,3 +88,34 @@ namespace ContosoUniversity.Migrations
         }
     }
 }
+#if Truncate
+    public partial class InitialCreate : Migration
+    {
+        protected override void Up(MigrationBuilder migrationBuilder)
+        {
+            migrationBuilder.CreateTable(
+                name: "Student",
+                columns: table => new
+                {
+                    ID = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    EnrollmentDate = table.Column<DateTime>(nullable: false),
+                    FirstMidName = table.Column<string>(nullable: true),
+                    LastName = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Student", x => x.ID);
+                });
+
+            // Additional code not shown
+        }
+
+        protected override void Down(MigrationBuilder migrationBuilder)
+        {
+            migrationBuilder.DropTable(
+                name: "Course");
+            // Additional code not shown
+        }
+    }
+#endif

@@ -31,7 +31,7 @@ This method of keeping the database in sync with the data model works well until
 
 In the *appsettings.json* file, change the name of the database in the connection string to ContosoUniversity2 or some other name that you haven't used on the computer you're using.
 
-[!code-json[](intro/samples/cu/appsettings2.json?range=1-4)]
+[!code-json[Main](intro/samples/cu/appsettings2.json?range=1-4)]
 
 This change sets up the project so that the first migration will create a new database. This isn't required for getting started with migrations, but you'll see later why it's a good idea.
 
@@ -79,7 +79,7 @@ You have to include the `-c SchoolContext` parameter to specify the database con
 
 When you executed the `migrations add` command, EF generated the code that will create the database from scratch. This code is in the *Migrations* folder, in the file named *<timestamp>_InitialCreate.cs*. The `Up` method of the `InitialCreate` class creates the database tables that correspond to the data model entity sets, and the `Down` method deletes them, as shown in the following example.
 
-[!code-csharp[Main](intro/samples/cu/Migrations/20160726224716_InitialCreate.cs?range=92-120)]
+[!code-csharp[Main](intro/samples/cu/Migrations/20170215220724_InitialCreate.cs?range=92-120)]
 
 Migrations calls the `Up` method to implement the data model changes for a migration. When you enter a command to roll back the update, Migrations calls the `Down` method.
 
